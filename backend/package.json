@@ -2,7 +2,7 @@
   "name": "split-my-prs-backend",
   "version": "1.0.0",
   "main": "src/app.js",
-  "repository": "git@github.com:clintoon/split-my-prs-backend.git",
+  "repository": "git@github.com:clintoon/split-my-prs.git",
   "author": "clinton <clintonfeng@gmail.com>",
   "private": true,
   "dependencies": {
@@ -14,37 +14,13 @@
     "lodash": "^4.17.11",
     "nodegit": "^0.24.3",
     "supertest": "^4.0.2",
-    "typescript": "^3.4.5"
+    "request": "^2.34"
   },
   "devDependencies": {
-    "eslint": "^5.16.0",
-    "husky": ">=1",
-    "lint-staged": ">=8",
     "nodemon": "^1.19.0",
-    "prettier": "^1.17.0",
-    "ts-node": "^8.1.0",
-    "tslint": "^5.16.0"
+    "ts-node": "^8.1.0"
   },
   "scripts": {
     "start": "nodemon src/app.ts"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,ts,json,md}": [
-      "prettier --write",
-      "git add"
-    ],
-    "*{ts}": [
-      "tslint --fix",
-      "git add"
-    ],
-    "*{js}": [
-      "eslint --fix",
-      "git add"
-    ]
   }
 }

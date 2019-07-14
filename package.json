@@ -1,0 +1,39 @@
+{
+  "name": "split-my-prs",
+  "version": "1.0.0",
+  "repository": "git@github.com:clintoon/split-my-prs.git",
+  "author": "clinton <clintonfeng@gmail.com>",
+  "private": true,
+  "devDependencies": {
+    "husky": "^3.0.0",
+    "lint-staged": "^9.2.0",
+    "prettier": "^1.18.2",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3",
+    "tslint-react": "^4.0.0"
+  },
+  "dependencies": {},
+  "workspaces": [
+    "backend",
+    "web"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,json,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*{ts}": [
+      "tslint --fix",
+      "git add"
+    ],
+    "*{js}": [
+      "eslint --fix",
+      "git add"
+    ]
+  }
+}
