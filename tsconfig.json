@@ -5,11 +5,11 @@
     "sourceMap": true,
     "strict": true,
     "esModuleInterop": true,
-    "jsx": "react"
+    "jsx": "react",
+    "baseUrl": "./",
+    "paths": {
+      "@web/*": ["web/src/*"]
+    }
   },
   "exclude": ["node_modules"],
-  "baseUrl": "./src",
-  "paths": {
-    "@app/*": ["*"]
-  }
 }
