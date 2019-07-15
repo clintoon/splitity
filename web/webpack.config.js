@@ -1,29 +1,32 @@
-const path = require("path");
+const path = require('path');
 
 module.exports = {
-  mode: "development",
-  devtool: "inline-source-map",
-  entry: "./src/index.tsx",
+  mode: 'development',
+  devtool: 'inline-source-map',
+  entry: './src/index.tsx',
   output: {
-    filename: "bundle.js"
+    filename: 'bundle.js',
   },
   resolve: {
-    modules: ["src", "node_modules"],
-    extensions: [".ts", ".tsx", ".js", ".jsx"]
+    modules: ['src', 'node_modules'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    alias: {
+      '@app': path.resolve(__dirname, 'src/'),
+    },
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        loader: "ts-loader"
-      }
-    ]
+        loader: 'ts-loader',
+      },
+    ],
   },
   devServer: {
-    contentBase: path.join(__dirname, "public"),
-    index: "index.html",
+    contentBase: path.join(__dirname, 'public'),
+    index: 'index.html',
     compress: true,
     port: 8080,
-    hot: true
-  }
+    hot: true,
+  },
 };
