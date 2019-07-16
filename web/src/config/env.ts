@@ -1,20 +1,66 @@
-let env;
+import * as log from 'loglevel';
 
-switch (process.env.ENVIRONMENT) {
-  case 'dev':
-    env = {};
-    break;
+export interface Env {
+  firebaseConfig: {
+    apiKey: string;
+    authDomain: string;
+    databaseURL: string;
+    projectId: string;
+    storageBucket: string;
+    messagingSenderId: string;
+    appId: string;
+  };
+}
 
-  case 'stage':
-    env = {};
-    break;
+const config = {
+  dev: {
+    firebaseConfig: {
+      apiKey: 'AIzaSyCg1Oqq7zDgg-AjYHiKnmJ7teAHMTZnTrY',
+      authDomain: 'split-my-prs-dev.firebaseapp.com',
+      databaseURL: 'https://split-my-prs-dev.firebaseio.com',
+      projectId: 'split-my-prs-dev',
+      storageBucket: 'split-my-prs-dev.appspot.com',
+      messagingSenderId: '283161176367',
+      appId: '1:283161176367:web:ab88ba6d8bb3ef41',
+    },
+  },
+  stage: {
+    // TODO: Update to new env
+    firebaseConfig: {
+      apiKey: 'AIzaSyCg1Oqq7zDgg-AjYHiKnmJ7teAHMTZnTrY',
+      authDomain: 'split-my-prs-dev.firebaseapp.com',
+      databaseURL: 'https://split-my-prs-dev.firebaseio.com',
+      projectId: 'split-my-prs-dev',
+      storageBucket: 'split-my-prs-dev.appspot.com',
+      messagingSenderId: '283161176367',
+      appId: '1:283161176367:web:ab88ba6d8bb3ef41',
+    },
+  },
+  prod: {
+    // TODO: Update to new env
+    firebaseConfig: {
+      apiKey: 'AIzaSyCg1Oqq7zDgg-AjYHiKnmJ7teAHMTZnTrY',
+      authDomain: 'split-my-prs-dev.firebaseapp.com',
+      databaseURL: 'https://split-my-prs-dev.firebaseio.com',
+      projectId: 'split-my-prs-dev',
+      storageBucket: 'split-my-prs-dev.appspot.com',
+      messagingSenderId: '283161176367',
+      appId: '1:283161176367:web:ab88ba6d8bb3ef41',
+    },
+  },
+};
 
-  case 'prod':
-    env = {};
-    break;
+let env: Env;
 
-  default:
-    throw new Error('Error: Unknown process.env.ENVIRONMENT');
+if (
+  process.env.ENVIRONMENT !== undefined &&
+  (process.env.ENVIRONMENT === 'dev' ||
+    process.env.ENVIRONMENT === 'stage' ||
+    process.env.ENVIRONMENT === 'prod')
+) {
+  env = config[process.env.ENVIRONMENT];
+} else {
+  log.error('Invalid process.env.ENVIRONMENT');
 }
 
 export { env };
