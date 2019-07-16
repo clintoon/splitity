@@ -38,6 +38,6 @@
     "webpack-dev-server": "^3.7.1"
   },
   "scripts": {
-    "start": "webpack-dev-server"
+    "start": " NODE_ENV=dev webpack-dev-server"
   }
 }

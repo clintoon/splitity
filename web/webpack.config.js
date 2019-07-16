@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   mode: 'development',
@@ -22,6 +23,7 @@ module.exports = {
       },
     ],
   },
+  plugins: [new webpack.EnvironmentPlugin(['NODE_ENV'])],
   devServer: {
     contentBase: path.join(__dirname, 'public'),
     index: 'index.html',

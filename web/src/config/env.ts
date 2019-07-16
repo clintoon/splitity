@@ -53,14 +53,14 @@ const config = {
 let env: Env;
 
 if (
-  process.env.ENVIRONMENT !== undefined &&
-  (process.env.ENVIRONMENT === 'dev' ||
-    process.env.ENVIRONMENT === 'stage' ||
-    process.env.ENVIRONMENT === 'prod')
+  process.env.NODE_ENV !== undefined &&
+  (process.env.NODE_ENV === 'dev' ||
+    process.env.NODE_ENV === 'stage' ||
+    process.env.NODE_ENV === 'prod')
 ) {
-  env = config[process.env.ENVIRONMENT];
+  env = config[process.env.NODE_ENV];
 } else {
-  log.error('Invalid process.env.ENVIRONMENT');
+  log.error('Invalid process.env.NODE_ENV');
 }
 
 export { env };
