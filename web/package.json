@@ -30,7 +30,7 @@
     "eslint-plugin-react": "^7.14.2",
     "jest": "^24.8.0",
     "ts-loader": "^6.0.2",
-    "webpack": "^4.33.0",
+    "webpack": "^4.36.1",
     "webpack-cli": "^3.3.6",
     "webpack-dev-server": "^3.7.1"
   },
