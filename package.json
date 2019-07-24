@@ -5,12 +5,15 @@
   "author": "clinton <clintonfeng@gmail.com>",
   "private": true,
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
     "eslint": "^6.0.1",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.3",
     "husky": "^3.0.1",
     "lint-staged": "^9.2.0",
     "prettier": "^1.18.2",
-    "tslint": "^5.18.0",
-    "tslint-react": "^4.0.0",
     "typescript": "^3.5.3"
   },
   "dependencies": {},
@@ -28,11 +31,7 @@
       "prettier --write",
       "git add"
     ],
-    "*{ts,tsx}": [
-      "tslint --fix",
-      "git add"
-    ],
-    "*{js,jsx}": [
+    "*{js,jsx,ts,tsx}": [
       "eslint --fix",
       "git add"
     ]

@@ -1,15 +1,17 @@
 import * as log from 'loglevel';
 
+export interface FirebaseConfig {
+  apiKey: string;
+  authDomain: string;
+  databaseURL: string;
+  projectId: string;
+  storageBucket: string;
+  messagingSenderId: string;
+  appId: string;
+}
+
 export interface Env {
-  firebaseConfig: {
-    apiKey: string;
-    authDomain: string;
-    databaseURL: string;
-    projectId: string;
-    storageBucket: string;
-    messagingSenderId: string;
-    appId: string;
-  };
+  firebaseConfig: FirebaseConfig;
 }
 
 const config = {
@@ -25,7 +27,7 @@ const config = {
     },
   },
   stage: {
-    // TODO: Update to new env
+    // TODO: Update firebaseConfig
     firebaseConfig: {
       apiKey: 'AIzaSyCg1Oqq7zDgg-AjYHiKnmJ7teAHMTZnTrY',
       authDomain: 'split-my-prs-dev.firebaseapp.com',
@@ -37,7 +39,7 @@ const config = {
     },
   },
   prod: {
-    // TODO: Update to new env
+    // TODO: Update firebaseConfig
     firebaseConfig: {
       apiKey: 'AIzaSyCg1Oqq7zDgg-AjYHiKnmJ7teAHMTZnTrY',
       authDomain: 'split-my-prs-dev.firebaseapp.com',
