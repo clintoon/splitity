@@ -1,0 +1,6 @@
+const LIGHT_ORANGE = '#F5ECE4';
+const LIGHT_GRAY = '#F3F3F3';
+
+const BLACK = '#000000';
+
+export { LIGHT_ORANGE, LIGHT_GRAY, BLACK };
