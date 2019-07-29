@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { css, CSSProp } from 'styled-components';
 import PropTypes from 'prop-types';
+import { Color } from '@web/design/styles/color';
 
 export enum ButtonSize {
   Small = 's',
@@ -32,10 +33,27 @@ const buttonSizeMap = {
   },
 };
 
+const buttonStyleOfMap = {
+  primary: {
+    backgroundColor: Color.Orange,
+  },
+  secondary: {
+    backgroundColor: Color.LightGray, // TODO: Update color
+  },
+};
+
 const ButtonBase = styled('button')<ButtonBaseProps>`
+  border-radius: 4px;
+
   ${({ size }): CSSProp => {
     return css`
       padding: ${buttonSizeMap[size].padding};
+    `;
+  }}
+
+  ${({ styleOf }): CSSProp => {
+    return css`
+      background-color: ${buttonStyleOfMap[styleOf].backgroundColor};
     `;
   }}
 `;

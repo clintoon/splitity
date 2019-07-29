@@ -1,30 +1,24 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-// import { Button } from '@web/design/components/Button/Button';
-import { Button, ButtonStyle, ButtonSize } from './Button';
+import {
+  Button,
+  ButtonStyle,
+  ButtonSize,
+} from '@web/design/components/Button/Button';
+import { select } from '@storybook/addon-knobs';
 
-storiesOf('Button', module)
-  .add(
-    'Medium',
-    (): JSX.Element => (
-      <Button styleOf={ButtonStyle.Primary} size={ButtonSize.Medium}>
-        Hello Button
-      </Button>
-    )
+storiesOf('Button', module).add(
+  'Documentation',
+  (): JSX.Element => (
+    <Button
+      styleOf={select(
+        'styleOf',
+        Object.values(ButtonStyle),
+        ButtonStyle.Primary
+      )}
+      size={select('size', Object.values(ButtonSize), ButtonSize.Medium)}
+    >
+      Hello Button
+    </Button>
   )
-  .add(
-    'Small',
-    (): JSX.Element => (
-      <Button styleOf={ButtonStyle.Primary} size={ButtonSize.Small}>
-        Hello Button
-      </Button>
-    )
-  )
-  .add(
-    'Large',
-    (): JSX.Element => (
-      <Button styleOf={ButtonStyle.Primary} size={ButtonSize.Large}>
-        Hello Button
-      </Button>
-    )
-  );
+);
