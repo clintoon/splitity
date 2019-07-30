@@ -1,11 +1,12 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'prettier'],
+  plugins: ['@typescript-eslint', 'prettier', 'jest'],
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
     'plugin:react/recommended',
     'prettier/react',
+    'plugin:jest/recommended',
   ],
   rules: {
     '@typescript-eslint/indent': ['error', 2],
