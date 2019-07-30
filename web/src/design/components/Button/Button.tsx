@@ -11,6 +11,7 @@ export enum ButtonSize {
 
 export enum ButtonStyle {
   Primary = 'primary',
+  Secondary = 'secondary',
 }
 
 export interface ButtonProps {
@@ -38,7 +39,7 @@ const buttonStyleOfMap = {
     backgroundColor: Color.Orange,
   },
   secondary: {
-    backgroundColor: Color.LightGray, // TODO: Update color
+    backgroundColor: Color.LightGray,
   },
 };
 
