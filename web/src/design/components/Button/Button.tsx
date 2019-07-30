@@ -73,4 +73,4 @@ Button.defaultProps = {
   size: ButtonSize.Medium,
 };
 
-export { Button };
+export { Button, ButtonBase as ButtonBaseForTest };
