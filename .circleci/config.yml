@@ -1,9 +1,9 @@
 version: 2
 jobs:
   build:
+    working_directory: split-my-prs
     docker:
       - image: circleci/node:10
-      - working_directory: split-my-prs
     steps:
       - checkout
       - restore_cache:
