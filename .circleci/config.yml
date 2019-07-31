@@ -14,7 +14,6 @@ jobs:
       - save_cache:
           key: yarn-cache-v2-{{ checksum "yarn.lock" }}
           paths:
-            - node_modules
             - ~/.cache/yarn
       - run:
           name: Run jest unit tests
