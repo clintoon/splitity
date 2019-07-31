@@ -9,15 +9,29 @@ import {
 import { Color } from '@web/design/styles/color';
 
 describe('<Button/>', (): void => {
+  beforeEach((): void => {
+    jest.clearAllMocks();
+  });
+
   describe('basic', (): void => {
     let wrapper: ShallowWrapper;
+    const onClickMock = jest.fn();
 
     beforeEach((): void => {
-      wrapper = shallow(<Button styleOf={ButtonStyle.Primary}>label</Button>);
+      wrapper = shallow(
+        <Button styleOf={ButtonStyle.Primary} onClick={onClickMock}>
+          label
+        </Button>
+      );
     });
 
     it('renders the button label', (): void => {
-      expect(wrapper.text()).toBe('label');
+      expect(wrapper.find(ButtonBaseForTest).text()).toBe('label');
+    });
+
+    it('calls onClick prop when button is clicked', (): void => {
+      wrapper.find(ButtonBaseForTest).simulate('click');
+      expect(onClickMock).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { css, CSSProp } from 'styled-components';
 import PropTypes from 'prop-types';
 import { Color } from '@web/design/styles/color';
+import { noop } from 'lodash';
 
 export enum ButtonSize {
   Small = 's',
@@ -18,6 +19,7 @@ export interface ButtonProps {
   children: string;
   size: ButtonSize;
   styleOf: ButtonStyle;
+  onClick: (event: React.MouseEvent) => void;
 }
 
 type ButtonBaseProps = Omit<ButtonProps, 'children'>;
@@ -71,6 +73,7 @@ Button.propTypes = {
 
 Button.defaultProps = {
   size: ButtonSize.Medium,
+  onClick: noop,
 };
 
 export { Button, ButtonBase as ButtonBaseForTest };
