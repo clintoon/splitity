@@ -15,6 +15,7 @@ jobs:
           key: yarn-cache-v1-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
+            - ~/split-my-prs/web/node_modules
       - run:
           name: Run jest unit tests
           command: yarn jest
