@@ -1,14 +1,21 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/web
+    working_directory: ~/split-my-prs
     docker:
       - image: circleci/node:10
     steps:
       - checkout
+      - restore_cache:
+          key: yarn-cache-v2-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
-          command: yarn install
+          command: yarn install --frozen-lockfile
+      - save_cache:
+          key: yarn-cache-v2-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
       - run:
           name: Run jest unit tests
           command: yarn jest
+          working_directory: ~/split-my-prs/web
