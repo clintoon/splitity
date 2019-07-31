@@ -1,0 +1,14 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/web
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run:
+        name: Install dependencies
+        command: yarn install
+      - run:
+        name: Run jest unit tests
+        command: yarn jest
