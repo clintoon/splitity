@@ -14,3 +14,4 @@ jobs:
       - run:
           name: Run jest unit tests
           command: yarn jest
+          working_directory: ~/project/web
