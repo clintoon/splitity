@@ -1,0 +1,181 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Text/> as prop has correct html tag for div 1`] = `
+.c0 {
+  font-size: 14px;
+}
+
+<div
+  class="c0"
+>
+  example
+</div>
+`;
+
+exports[`<Text/> as prop has correct html tag for h1 1`] = `
+.c0 {
+  font-size: 14px;
+}
+
+<h1
+  class="c0"
+>
+  example
+</h1>
+`;
+
+exports[`<Text/> as prop has correct html tag for h2 1`] = `
+.c0 {
+  font-size: 14px;
+}
+
+<h2
+  class="c0"
+>
+  example
+</h2>
+`;
+
+exports[`<Text/> as prop has correct html tag for h3 1`] = `
+.c0 {
+  font-size: 14px;
+}
+
+<h3
+  class="c0"
+>
+  example
+</h3>
+`;
+
+exports[`<Text/> as prop has correct html tag for h4 1`] = `
+.c0 {
+  font-size: 14px;
+}
+
+<h4
+  class="c0"
+>
+  example
+</h4>
+`;
+
+exports[`<Text/> as prop has correct html tag for h5 1`] = `
+.c0 {
+  font-size: 14px;
+}
+
+<h5
+  class="c0"
+>
+  example
+</h5>
+`;
+
+exports[`<Text/> as prop has correct html tag for h6 1`] = `
+.c0 {
+  font-size: 14px;
+}
+
+<h6
+  class="c0"
+>
+  example
+</h6>
+`;
+
+exports[`<Text/> as prop has correct html tag for p 1`] = `
+.c0 {
+  font-size: 14px;
+}
+
+<p
+  class="c0"
+>
+  example
+</p>
+`;
+
+exports[`<Text/> styleOf prop has correct CSS properties for body 1`] = `
+.c0 {
+  font-size: 14px;
+}
+
+<div
+  class="c0"
+>
+  example
+</div>
+`;
+
+exports[`<Text/> styleOf prop has correct CSS properties for title1 1`] = `
+.c0 {
+  font-size: 40px;
+}
+
+<div
+  class="c0"
+>
+  example
+</div>
+`;
+
+exports[`<Text/> styleOf prop has correct CSS properties for title2 1`] = `
+.c0 {
+  font-size: 32px;
+}
+
+<div
+  class="c0"
+>
+  example
+</div>
+`;
+
+exports[`<Text/> styleOf prop has correct CSS properties for title3 1`] = `
+.c0 {
+  font-size: 28px;
+}
+
+<div
+  class="c0"
+>
+  example
+</div>
+`;
+
+exports[`<Text/> styleOf prop has correct CSS properties for title4 1`] = `
+.c0 {
+  font-size: 24px;
+}
+
+<div
+  class="c0"
+>
+  example
+</div>
+`;
+
+exports[`<Text/> styleOf prop has correct CSS properties for title5 1`] = `
+.c0 {
+  font-size: 20px;
+}
+
+<div
+  class="c0"
+>
+  example
+</div>
+`;
+
+exports[`<Text/> styleOf prop has correct CSS properties for title6 1`] = `
+.c0 {
+  font-size: 16px;
+}
+
+<div
+  class="c0"
+>
+  example
+</div>
+`;
