@@ -59,7 +59,7 @@ const textStyleMapping = {
 const applyTextCSSProperties = (props: TextBaseProps): CSSProp => {
   const { styleOf } = props;
   return css`
-    font-size: ${textStyleMapping[styleOf]};
+    font-size: ${textStyleMapping[styleOf].fontSize};
   `;
 };
 
