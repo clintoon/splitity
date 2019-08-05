@@ -59,6 +59,8 @@ const textStyleMapping = {
 const applyTextCSSProperties = (props: TextBaseProps): CSSProp => {
   const { styleOf } = props;
   return css`
+    @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+    font-family: 'Roboto', sans-serif;
     font-size: ${textStyleMapping[styleOf].fontSize};
   `;
 };
