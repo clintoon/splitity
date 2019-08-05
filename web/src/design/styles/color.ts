@@ -3,6 +3,7 @@ enum Color {
   Orange = '#EB864D',
   LightGray = '#F3F3F3',
   Black = '#000000',
+  White = '#FFFFFF',
 }
 
 export { Color };
