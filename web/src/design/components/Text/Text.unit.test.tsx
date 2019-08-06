@@ -65,4 +65,11 @@ describe('<Text/>', (): void => {
       )
     );
   });
+
+  describe('margin prop', (): void => {
+    it('has correct CSS properties when set', (): void => {
+      const wrapper = mount(<Text margin="1 1 1 1">example</Text>);
+      expect(wrapper.getDOMNode()).toMatchSnapshot();
+    });
+  });
 });

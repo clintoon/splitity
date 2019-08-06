@@ -126,6 +126,20 @@ exports[`<Text/> has correct default html tag and css properties 1`] = `
 </div>
 `;
 
+exports[`<Text/> margin prop has correct CSS properties when set 1`] = `
+.c0 {
+  font-family: 'Roboto',sans-serif;
+  font-size: 14px;
+  margin: 1 1 1 1;
+}
+
+<div
+  class="c0"
+>
+  example
+</div>
+`;
+
 exports[`<Text/> styleOf prop has correct CSS properties for body 1`] = `
 .c0 {
   font-family: 'Roboto',sans-serif;
