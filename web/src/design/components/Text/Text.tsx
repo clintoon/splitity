@@ -22,19 +22,29 @@ export enum TextAs {
   P = 'p',
 }
 
+export enum TextAlign {
+  Center = 'center',
+  Left = 'left',
+  Right = 'right',
+}
+
 export interface TextProps {
   styleOf: TextStyle;
   as: TextAs;
   children: string;
+  margin: string;
+  textAlign?: TextAlign;
 }
 
 interface TextBaseProps {
   styleOf: TextStyle;
+  margin: string;
+  textAlign?: TextAlign;
 }
 
 const textStyleMapping = {
   [TextStyle.Title1]: {
-    fontSize: '40px',
+    fontSize: '64px',
   },
   [TextStyle.Title2]: {
     fontSize: '32px',
@@ -57,11 +67,16 @@ const textStyleMapping = {
 };
 
 const applyTextCSSProperties = (props: TextBaseProps): CSSProp => {
-  const { styleOf } = props;
+  const { styleOf, margin, textAlign } = props;
   return css`
     @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
     font-family: 'Roboto', sans-serif;
     font-size: ${textStyleMapping[styleOf].fontSize};
+    margin: ${margin};
+    ${textAlign &&
+      css`
+        text-align: ${textAlign};
+      `}
   `;
 };
 
@@ -124,14 +139,25 @@ const textTagTypeToComponentMap = {
   [TextAs.P]: TextParagraph,
 };
 
-const Text = ({ styleOf, as, children }: TextProps): JSX.Element => {
+const Text = ({
+  styleOf,
+  as,
+  margin,
+  textAlign,
+  children,
+}: TextProps): JSX.Element => {
   const BaseComponent = textTagTypeToComponentMap[as];
-  return <BaseComponent styleOf={styleOf}>{children}</BaseComponent>;
+  return (
+    <BaseComponent styleOf={styleOf} margin={margin} textAlign={textAlign}>
+      {children}
+    </BaseComponent>
+  );
 };
 
 Text.defaultProps = {
   as: TextAs.Div,
   styleOf: TextStyle.Body,
+  margin: '0',
 };
 
 export { Text };
