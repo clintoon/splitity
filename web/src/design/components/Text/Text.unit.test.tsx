@@ -1,14 +1,15 @@
 import React from 'react';
-import { mount, ReactWrapper } from 'enzyme';
+import { mount } from 'enzyme';
 import {
   Text,
   TextAs,
   TextStyle,
   TextProps,
+  TextAlign,
 } from '@web/design/components/Text/Text';
 
 type OptionalTextProps = Omit<Partial<TextProps>, 'children'>;
-type TestProp = 'styleOf' | 'as';
+type TestProp = 'styleOf' | 'as' | 'textAlign' | 'margin';
 
 describe('<Text/>', (): void => {
   const testStyleOfTextSnapshots = (
@@ -24,28 +25,51 @@ describe('<Text/>', (): void => {
     });
   };
 
+  it('has correct default html tag and css properties', (): void => {
+    const wrapper = mount(<Text>example</Text>);
+    expect(wrapper.getDOMNode()).toMatchSnapshot();
+  });
+
   describe('styleOf prop', (): void => {
-    testStyleOfTextSnapshots('has correct CSS properties for', 'styleOf', [
-      { styleOf: TextStyle.Body },
-      { styleOf: TextStyle.Title1 },
-      { styleOf: TextStyle.Title2 },
-      { styleOf: TextStyle.Title3 },
-      { styleOf: TextStyle.Title4 },
-      { styleOf: TextStyle.Title5 },
-      { styleOf: TextStyle.Title6 },
-    ]);
+    testStyleOfTextSnapshots(
+      'has correct CSS properties for',
+      'styleOf',
+      Object.values(TextStyle).map(
+        (propValue): OptionalTextProps => {
+          return { styleOf: propValue };
+        }
+      )
+    );
   });
 
   describe('as prop', (): void => {
-    testStyleOfTextSnapshots('has correct html tag for', 'as', [
-      { as: TextAs.Div },
-      { as: TextAs.P },
-      { as: TextAs.H1 },
-      { as: TextAs.H2 },
-      { as: TextAs.H3 },
-      { as: TextAs.H4 },
-      { as: TextAs.H5 },
-      { as: TextAs.H6 },
-    ]);
+    testStyleOfTextSnapshots(
+      'has correct html tag for',
+      'as',
+      Object.values(TextAs).map(
+        (propValue): OptionalTextProps => {
+          return { as: propValue };
+        }
+      )
+    );
+  });
+
+  describe('textAlign prop', (): void => {
+    testStyleOfTextSnapshots(
+      'has correct CSS properties for',
+      'textAlign',
+      Object.values(TextAlign).map(
+        (propValue): OptionalTextProps => {
+          return { textAlign: propValue };
+        }
+      )
+    );
+  });
+
+  describe('margin prop', (): void => {
+    it('has correct CSS properties when set', (): void => {
+      const wrapper = mount(<Text margin="1 1 1 1">example</Text>);
+      expect(wrapper.getDOMNode()).toMatchSnapshot();
+    });
   });
 });
