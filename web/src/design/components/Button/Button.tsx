@@ -1,8 +1,8 @@
 import React from 'react';
 import styled, { css, CSSProp } from 'styled-components';
-import PropTypes from 'prop-types';
 import { Color } from '@web/design/styles/color';
 import { noop } from 'lodash';
+import { fontFamily } from '@web/design/styles/font';
 
 export enum ButtonSize {
   Small = 's',
@@ -26,13 +26,13 @@ type ButtonBaseProps = Omit<ButtonProps, 'children'>;
 
 const buttonSizeMap = {
   s: {
-    padding: '4px',
+    padding: '6px 10px',
   },
   m: {
-    padding: '8px',
+    padding: '12px 18px',
   },
   l: {
-    padding: '12px',
+    padding: '18px 26px',
   },
 };
 
@@ -46,7 +46,9 @@ const buttonStyleOfMap = {
 };
 
 const ButtonBase = styled('button')<ButtonBaseProps>`
+  ${fontFamily};
   border-radius: 4px;
+  font-size: 14px;
 
   ${({ size }): CSSProp => {
     return css`
@@ -64,11 +66,6 @@ const ButtonBase = styled('button')<ButtonBaseProps>`
 const Button = (props: ButtonProps): JSX.Element => {
   const { children } = props;
   return <ButtonBase {...props}>{children}</ButtonBase>;
-};
-
-Button.propTypes = {
-  children: PropTypes.string.isRequired,
-  size: PropTypes.oneOf(Object.values(ButtonSize)),
 };
 
 Button.defaultProps = {
