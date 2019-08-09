@@ -13,7 +13,7 @@
     "lodash": "^4.17.15",
     "lodash-es": "^4.17.15",
     "loglevel": "^1.6.3",
-    "react": "^16.8.6",
+    "react": "^16.9.0",
     "react-dom": "^16.8.6",
     "react-router": "^5.0.1",
     "redux": "^4.0.1",
