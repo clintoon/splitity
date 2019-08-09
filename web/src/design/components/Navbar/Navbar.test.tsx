@@ -1,16 +1,16 @@
 import React from 'react';
-import { mount, ReactWrapper } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
 import { Navbar } from '@web/design/components/Navbar/Navbar';
 
 describe('<Navbar/>', (): void => {
-  let wrapper: ReactWrapper;
+  let wrapper: ShallowWrapper;
   const leftItem1 = <div key="l1">l1</div>;
   const leftItem2 = <div key="l2">l2</div>;
   const rightItem1 = <div key="r1">r1</div>;
   const rightItem2 = <div key="r2">r2</div>;
 
   beforeEach((): void => {
-    wrapper = mount(
+    wrapper = shallow(
       <Navbar
         leftItems={[leftItem1, leftItem2]}
         rightItems={[rightItem1, rightItem2]}
