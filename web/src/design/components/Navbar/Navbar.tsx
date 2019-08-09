@@ -44,7 +44,7 @@ const Navbar = ({ leftItems, rightItems }: NavbarProps): JSX.Element => {
     return items.map(
       (item): JSX.Element => {
         if (item.key === undefined) {
-          console.error('Error: key not passed to <Navbar />');
+          console.error('Error: key not passed to <Navbar /> items');
         }
 
         return (
