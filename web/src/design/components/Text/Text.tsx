@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { CSSProp, css } from 'styled-components';
+import { fontFamily } from '@web/design/styles/font';
 
 export enum TextStyle {
   Title1 = 'title1',
@@ -69,8 +70,7 @@ const textStyleMapping = {
 const applyTextCSSProperties = (props: TextBaseProps): CSSProp => {
   const { styleOf, margin, textAlign } = props;
   return css`
-    @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
-    font-family: 'Roboto', sans-serif;
+    ${fontFamily};
     font-size: ${textStyleMapping[styleOf].fontSize};
     margin: ${margin};
     ${textAlign &&

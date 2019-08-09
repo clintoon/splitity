@@ -93,9 +93,9 @@ describe('<Button/>', (): void => {
     };
 
     testSizePropPadding([
-      { size: ButtonSize.Small, padding: '4px' },
-      { size: ButtonSize.Medium, padding: '8px' },
-      { size: ButtonSize.Large, padding: '12px' },
+      { size: ButtonSize.Small, padding: '6px 10px' },
+      { size: ButtonSize.Medium, padding: '12px 18px' },
+      { size: ButtonSize.Large, padding: '18px 26px' },
     ]);
   });
 });
