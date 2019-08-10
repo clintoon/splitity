@@ -27,5 +27,5 @@ jobs:
           path: web/coverage
       - codecov/upload:
           file: web/coverage/*.json
-          flags: frontend unit
+          flags: frontend,unit
 
