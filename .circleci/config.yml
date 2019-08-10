@@ -26,5 +26,6 @@ jobs:
       - store_artifacts:
           path: web/coverage
       - codecov/upload:
-          file: web/coverage
+          file: web/coverage/*.json
+          flags: frontend unit
 
