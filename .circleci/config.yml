@@ -1,4 +1,6 @@
-version: 2
+version: 2.1
+orbs:
+  codecov: codecov/codecov@1.0.5
 jobs:
   build:
     working_directory: ~/split-my-prs
@@ -18,6 +20,11 @@ jobs:
             - node_modules
             - web/node_modules
       - run:
-          name: Run jest unit tests
-          command: yarn jest
+          name: Run jest unit tests and collect codecov coverage reports
+          command: yarn jest --collectCoverage=true
           working_directory: ~/split-my-prs/web
+      - store_artifacts:
+          path: coverage
+      - codecov/upload:
+          file: coverage
+
