@@ -7,15 +7,16 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: yarn-cache-v3-{{ checksum "yarn.lock" }}
+          key: yarn-cache-v4-{{ checksum "yarn.lock" }}
       - run:
           name: Install dependencies
           command: yarn install --frozen-lockfile
       - save_cache:
-          key: yarn-cache-v3-{{ checksum "yarn.lock" }}
+          key: yarn-cache-v4-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
             - node_modules
+            - web/node_modules
       - run:
           name: Run jest unit tests
           command: yarn jest
