@@ -22,9 +22,9 @@ jobs:
       - run:
           name: Run jest unit tests and collect codecov coverage reports
           command: yarn jest --collectCoverage=true
-          working_directory: ~/split-my-prs/web
+          working_directory: web
       - store_artifacts:
-          path: coverage
+          path: web/coverage
       - codecov/upload:
-          file: coverage
+          file: web/coverage
 
