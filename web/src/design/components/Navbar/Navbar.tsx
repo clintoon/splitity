@@ -8,11 +8,9 @@ export interface NavbarProps {
 }
 
 const NavbarBox = styled.div`
-  position: fixed;
   display: flex;
   align-items: center;
   width: 100%;
-  top: 0;
   margin: 0;
   height: 60px;
   background-color: ${Color.LightOrange};
