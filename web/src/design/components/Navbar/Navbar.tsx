@@ -14,7 +14,7 @@ const NavbarBox = styled.div`
   margin: 0;
   height: 60px;
   background-color: ${Color.LightOrange};
-  box-shadow: 0 4px 4px -4px ${Color.Gray};
+  box-shadow: 0 3px 3px -3px ${Color.Gray};
   position: relative;
   z-index: 1;
 `;
