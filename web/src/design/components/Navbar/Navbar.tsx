@@ -36,24 +36,24 @@ const Content = styled.div`
   width: 100%;
 `;
 
-const Navbar = ({ leftItems, rightItems }: NavbarProps): JSX.Element => {
-  const renderItems = (items?: JSX.Element[]): JSX.Element[] | null => {
-    if (!items) {
-      return null;
-    }
-    return items.map(
-      (item): JSX.Element => {
-        if (item.key === undefined) {
-          console.error('Error: key not passed to <Navbar /> items');
-        }
-
-        return (
-          <ItemWrapper key={item.key as string | number}>{item}</ItemWrapper>
-        );
+const renderItems = (items?: JSX.Element[]): JSX.Element[] | null => {
+  if (!items) {
+    return null;
+  }
+  return items.map(
+    (item): JSX.Element => {
+      if (item.key === null) {
+        console.error('Error: key not passed to <Navbar /> items');
       }
-    );
-  };
 
+      return (
+        <ItemWrapper key={item.key as string | number}>{item}</ItemWrapper>
+      );
+    }
+  );
+};
+
+const Navbar = ({ leftItems, rightItems }: NavbarProps): JSX.Element => {
   return (
     <NavbarBox>
       <Content>
@@ -64,4 +64,4 @@ const Navbar = ({ leftItems, rightItems }: NavbarProps): JSX.Element => {
   );
 };
 
-export { Navbar };
+export { Navbar, renderItems as renderItemsForTest };
