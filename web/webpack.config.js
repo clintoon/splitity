@@ -1,6 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
 
+const Dotenv = require('dotenv-webpack');
+
 module.exports = {
   mode: 'development',
   devtool: 'inline-source-map',
@@ -23,7 +25,7 @@ module.exports = {
       },
     ],
   },
-  plugins: [new webpack.EnvironmentPlugin(['NODE_ENV'])],
+  plugins: [new Dotenv()],
   devServer: {
     contentBase: path.join(__dirname, 'public'),
     index: 'index.html',
