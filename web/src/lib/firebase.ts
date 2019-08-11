@@ -1,7 +1,7 @@
-import { env } from '@web/config/env';
+import { firebaseConfig } from '@web/config/firebase';
 import * as firebaseApp from 'firebase/app';
 import 'firebase/auth';
 
-const firebase = firebaseApp.initializeApp(env.firebaseConfig);
+const firebase = firebaseApp.initializeApp(firebaseConfig);
 
 export { firebase };
