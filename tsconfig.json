@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
+    "lib": ["dom", "es2015.iterable"], // For redux-saga
     "sourceMap": true,
     "strict": true,
     "esModuleInterop": true,
@@ -11,5 +12,5 @@
       "@web/*": ["web/src/*"]
     }
   },
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules"]
 }
