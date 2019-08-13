@@ -1,0 +1,32 @@
+{
+  "folders": [
+    {
+      "path": "/Users/clintonfeng/workspace/split-my-prs"
+    },
+    {
+      "path": "/Users/clintonfeng/workspace/split-my-prs/web"
+    },
+    {
+      "path": "/Users/clintonfeng/workspace/split-my-prs/backend"
+    }
+  ],
+  "settings": {
+    "eslint.autoFixOnSave": true,
+    "eslint.validate": [
+      {
+        "language": "html",
+        "autoFix": true
+      },
+      {
+        "language": "javascript",
+        "autoFix": true
+      },
+      { "language": "javascriptreact", "autoFix": true },
+      {
+        "language": "typescript",
+        "autoFix": true
+      },
+      { "language": "typescriptreact", "autoFix": true }
+    ]
+  }
+}
