@@ -11,7 +11,7 @@ const Navbar = (): JSX.Element => {
         <Button
           key="login"
           styleOf={ButtonStyle.Primary}
-          onClick={(): Promise<void> => signIn()}
+          onClick={(): void => signIn()}
         >
           Login
         </Button>,
