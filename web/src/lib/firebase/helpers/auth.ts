@@ -4,7 +4,6 @@ export interface CurrentUser {
   email: string;
   oauthToken: string;
   emailVerified: boolean;
-  providerId: string;
   userId: string;
 }
 
@@ -26,7 +25,6 @@ const transformRedirectResult = (
     oauthToken: credentials.oauthAccessToken,
     email: result.user.email as string,
     emailVerified: result.user.emailVerified as boolean,
-    providerId: credentials.providerId,
     userId: result.user.uid as string,
   };
 };

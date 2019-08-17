@@ -21,6 +21,11 @@ class FirebaseAuth {
     const result = await this.firebaseAuth.getRedirectResult();
     return transformRedirectResult(result);
   }
+
+  // public async getCurrentUser() {
+  //   const result = await this.firebaseAuth.currentUser;
+  //   return transformRedirectResult(result);
+  // }
 }
 
 export { FirebaseAuth };

@@ -7,7 +7,6 @@ describe('auth', (): void => {
     const credentialMock = mock<auth.AuthCredential>();
     when(credentialMock.toJSON()).thenReturn({
       oauthAccessToken: 'oauthAccessToken',
-      providerId: 'providerId',
     });
 
     const userMock: User = mock<User>();
@@ -44,7 +43,6 @@ describe('auth', (): void => {
           "email": "email",
           "emailVerified": true,
           "oauthToken": "oauthAccessToken",
-          "providerId": "providerId",
           "userId": "uid",
         }
       `);
