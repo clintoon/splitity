@@ -1,13 +1,28 @@
 import React from 'react';
 import { Navbar as DesignNavbar } from '@web/design/components/Navbar/Navbar';
 import { Button, ButtonStyle } from '@web/design/components/Button/Button';
+import { FirebaseAuth } from '@web/lib/firebase/auth';
+import { firebaseApp } from '@web/lib/firebase/firebase';
+import { withRouter } from 'react-router-dom';
+import { History } from 'history';
+import { RoutePath } from '@web/constants/routes';
 
 // TODO: if logged in display don't display login button
-const Navbar = (): JSX.Element => {
+const WrappedNavbar = ({ history }: { history: History }): JSX.Element => {
+  const signIn = (): void => {
+    const auth = new FirebaseAuth(firebaseApp);
+    history.push(RoutePath.AuthToSignInRoute);
+    auth.redirectSignInWithGithub();
+  };
+
   return (
     <DesignNavbar
       rightItems={[
-        <Button key="login" styleOf={ButtonStyle.Primary}>
+        <Button
+          key="login"
+          styleOf={ButtonStyle.Primary}
+          onClick={(): void => signIn()}
+        >
           Login
         </Button>,
       ]}
@@ -15,4 +30,6 @@ const Navbar = (): JSX.Element => {
   );
 };
 
-export { Navbar };
+const Navbar = withRouter(WrappedNavbar);
+
+export { Navbar, WrappedNavbar as NavbarForTest };
