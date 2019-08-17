@@ -1,4 +1,8 @@
 import { app, auth } from 'firebase';
+import {
+  transformRedirectResult,
+  CurrentUser,
+} from '@web/lib/firebase/helpers/auth';
 
 class FirebaseAuth {
   private firebaseAuth: auth.Auth;
@@ -13,8 +17,9 @@ class FirebaseAuth {
     return this.firebaseAuth.signInWithRedirect(provider);
   }
 
-  public async getRedirectResult(): Promise<auth.UserCredential> {
-    return this.firebaseAuth.getRedirectResult();
+  public async getRedirectResult(): Promise<CurrentUser | null> {
+    const result = await this.firebaseAuth.getRedirectResult();
+    return transformRedirectResult(result);
   }
 }
 

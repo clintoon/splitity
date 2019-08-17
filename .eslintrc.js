@@ -10,7 +10,7 @@ module.exports = {
     'plugin:jsx-a11y/recommended',
   ],
   rules: {
-    '@typescript-eslint/indent': ['error', 2],
+    '@typescript-eslint/indent': ['off', 2],
     '@typescript-eslint/no-explicit-any': 'error',
   },
   overrides: [

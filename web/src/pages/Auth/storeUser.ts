@@ -3,9 +3,11 @@ import { firebaseApp } from '@web/lib/firebase/firebase';
 
 const storeUser = async (): Promise<void> => {
   const auth = new FirebaseAuth(firebaseApp);
-  await auth.getRedirectResult();
-  // TODO
-  // console.log(result.user);
+  const result = await auth.getRedirectResult();
+  if (result) {
+    // TODO store in redux and cookie
+    console.log('result:', result);
+  }
 };
 
 export { storeUser };
