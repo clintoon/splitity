@@ -4,11 +4,11 @@ import { Button, ButtonStyle } from '@web/design/components/Button/Button';
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import { firebaseApp } from '@web/lib/firebase/firebase';
 import { withRouter } from 'react-router-dom';
-import { RouteComponentProps } from 'react-router';
+import { History } from 'history';
 import { RoutePath } from '@web/constants/routes';
 
 // TODO: if logged in display don't display login button
-const WrappedNavbar = ({ history }: RouteComponentProps): JSX.Element => {
+const WrappedNavbar = ({ history }: { history: History }): JSX.Element => {
   const signIn = (): void => {
     const auth = new FirebaseAuth(firebaseApp);
     history.push(RoutePath.AuthToSignInRoute);
@@ -32,4 +32,4 @@ const WrappedNavbar = ({ history }: RouteComponentProps): JSX.Element => {
 
 const Navbar = withRouter(WrappedNavbar);
 
-export { Navbar, WrappedNavbar };
+export { Navbar, WrappedNavbar as NavbarForTest };
