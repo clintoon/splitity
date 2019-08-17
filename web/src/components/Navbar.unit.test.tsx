@@ -2,13 +2,15 @@ import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
 import { NavbarForTest } from '@web/components/Navbar';
 import { Navbar as DesignNavbar } from '@web/design/components/Navbar/Navbar';
-import { historyFake } from '@web/test/helpers/fakes';
+import { History, createMemoryHistory } from 'history';
 
 describe('<Navbar />', (): void => {
   let wrapper: ShallowWrapper;
+  let history: History;
 
   beforeEach((): void => {
-    wrapper = shallow(<NavbarForTest history={historyFake} />);
+    history = createMemoryHistory();
+    wrapper = shallow(<NavbarForTest history={history} />);
   });
 
   it('renders design <Navbar />', (): void => {
