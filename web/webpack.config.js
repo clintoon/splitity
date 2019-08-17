@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 
 const Dotenv = require('dotenv-webpack');
 
@@ -9,12 +8,14 @@ module.exports = {
   entry: './src/index.tsx',
   output: {
     filename: 'bundle.js',
+    publicPath: '/',
+    path: path.resolve(__dirname, 'public'),
   },
   resolve: {
     modules: ['src', 'node_modules'],
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
     alias: {
-      '@web': path.resolve(__dirname, 'src/'),
+      '@web': path.resolve(__dirname, './src/'),
     },
   },
   module: {
@@ -27,10 +28,9 @@ module.exports = {
   },
   plugins: [new Dotenv()],
   devServer: {
-    contentBase: path.join(__dirname, 'public'),
-    index: 'index.html',
+    contentBase: path.resolve(__dirname, 'public'),
     compress: true,
     port: 8080,
-    hot: true,
+    historyApiFallback: true,
   },
 };
