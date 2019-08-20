@@ -29,8 +29,10 @@ module.exports = {
   plugins: [new Dotenv()],
   devServer: {
     contentBase: path.resolve(__dirname, 'public'),
-    compress: true,
     port: 8080,
+    compress: true,
     historyApiFallback: true,
+    hot: true,
+    open: true,
   },
 };
