@@ -7,7 +7,7 @@
   "private": true,
   "dependencies": {
     "@octokit/rest": "^16.28.7",
-    "@types/express": "^4.16.1",
+    "@types/express": "^4.17.1",
     "@types/lodash": "^4.14.137",
     "@types/nodegit": "^0.24.10",
     "express": "^4.16.4",
