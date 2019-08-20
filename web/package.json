@@ -62,7 +62,7 @@
     "webpack-dev-server": "^3.8.0"
   },
   "scripts": {
-    "start": "webpack-dev-server --mode development --open --hot --history-api-fallback",
+    "start": "webpack-dev-server --mode development",
     "storybook": "start-storybook --config-dir storybook"
   }
 }
