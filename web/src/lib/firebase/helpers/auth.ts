@@ -1,11 +1,5 @@
 import { auth } from 'firebase';
-
-export interface CurrentUser {
-  email: string;
-  oauthToken: string;
-  emailVerified: boolean;
-  userId: string;
-}
+import { CurrentUser } from '@web/stores/authStore';
 
 interface AuthCredentialJSON {
   oauthAccessToken: string;
