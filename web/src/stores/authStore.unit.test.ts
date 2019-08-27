@@ -1,12 +1,8 @@
 import { omit } from 'lodash';
 import { AuthModel } from '@web/stores/authStore';
+import { currentUserFactory } from '@web/testing/mockCurrentUser';
 
-const mockCurrentUser = {
-  email: 'clintonfeng@gmail.com',
-  oauthToken: 'oAuthToken',
-  emailVerified: false,
-  userId: 'abc123',
-};
+const mockCurrentUser = currentUserFactory();
 
 describe('authStore', (): void => {
   describe('views', (): void => {
