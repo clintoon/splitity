@@ -23,6 +23,9 @@ const AuthModel = types
     isLoggedIn: (): boolean => {
       return !!self.currentUser;
     },
+    getCurrentUser: (): CurrentUser | null => {
+      return self.currentUser;
+    },
   }))
   .actions(self => ({
     signInUser: (user: CurrentUser): void => {
@@ -39,9 +42,6 @@ const AuthModel = types
       Object.assign(newUser, user);
 
       self.currentUser = newUser;
-    },
-    getCurrentUser: (): CurrentUser | null => {
-      return self.currentUser;
     },
   }));
 
