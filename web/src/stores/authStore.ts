@@ -32,7 +32,7 @@ const AuthModel = types
       self.currentUser = null;
     },
     updateUser: (user: Partial<CurrentUser>): void => {
-      if (self.currentUser === null) {
+      if (!self.currentUser) {
         return;
       }
       const newUser = { ...self.currentUser };
