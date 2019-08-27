@@ -1,4 +1,4 @@
-import { types, ModelActions, ModelViews } from 'mobx-state-tree';
+import { types, ModelActions } from 'mobx-state-tree';
 import produce from 'immer';
 
 export interface CurrentUser {
@@ -20,7 +20,7 @@ const AuthModel = types
     currentUser: types.maybeNull(CurrentUserModel),
   })
   .views(
-    (self): ModelViews => ({
+    (self): ModelActions => ({
       isLoggedIn: (): boolean => {
         return !!self.currentUser;
       },
@@ -50,4 +50,6 @@ const AuthModel = types
     })
   );
 
-export { AuthModel };
+type AuthModelType = typeof AuthModel.Type;
+
+export { AuthModel, AuthModelType };

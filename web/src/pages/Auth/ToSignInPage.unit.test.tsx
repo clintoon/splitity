@@ -2,13 +2,20 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { ToSignInPage } from '@web/pages/Auth/ToSignInPage';
 import * as StoreUser from '@web/pages/Auth/storeUser';
+import { StoreProvider } from '@web/stores/storeProvider';
 
-describe('<ToSignIn />', (): void => {
+describe('<ToSignInPage />', (): void => {
   let storeUserSpy: jest.SpyInstance;
 
   beforeEach((): void => {
-    storeUserSpy = jest.spyOn(StoreUser, 'storeUser');
-    mount(<ToSignInPage />);
+    storeUserSpy = jest
+      .spyOn(StoreUser, 'storeUser')
+      .mockResolvedValue(undefined);
+    mount(
+      <StoreProvider>
+        <ToSignInPage />
+      </StoreProvider>
+    );
   });
 
   afterEach((): void => {
