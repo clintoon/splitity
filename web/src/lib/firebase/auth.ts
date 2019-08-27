@@ -1,8 +1,6 @@
 import { app, auth } from 'firebase';
-import {
-  transformRedirectResult,
-  CurrentUser,
-} from '@web/lib/firebase/helpers/auth';
+import { transformRedirectResult } from '@web/lib/firebase/helpers/auth';
+import { CurrentUser } from '@web/stores/authStore';
 
 class FirebaseAuth {
   private firebaseAuth: auth.Auth;
@@ -21,11 +19,6 @@ class FirebaseAuth {
     const result = await this.firebaseAuth.getRedirectResult();
     return transformRedirectResult(result);
   }
-
-  // public async getCurrentUser() {
-  //   const result = await this.firebaseAuth.currentUser;
-  //   return transformRedirectResult(result);
-  // }
 }
 
 export { FirebaseAuth };

@@ -1,13 +1,12 @@
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import { firebaseApp } from '@web/lib/firebase/firebase';
+import { StoreType } from '@web/stores/storeProvider';
 
-const storeUser = async (): Promise<void> => {
+const storeUser = async (store: StoreType): Promise<void> => {
   const auth = new FirebaseAuth(firebaseApp);
-  // TODO try catch potential errors from getRedirectResult
   const result = await auth.getRedirectResult();
   if (result) {
-    // TODO store in redux and redirect to dashboard
-    console.log('result:', result);
+    store.auth.signInUser(result);
   }
 };
 
