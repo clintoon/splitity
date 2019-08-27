@@ -1,5 +1,5 @@
-import { types, ModelActions } from 'mobx-state-tree';
-import produce from 'immer';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { types } from 'mobx-state-tree';
 
 export interface CurrentUser {
   email: string;
@@ -19,36 +19,31 @@ const AuthModel = types
   .model({
     currentUser: types.maybeNull(CurrentUserModel),
   })
-  .views(
-    (self): ModelActions => ({
-      isLoggedIn: (): boolean => {
-        return !!self.currentUser;
-      },
-    })
-  )
-  .actions(
-    (self): ModelActions => ({
-      signInUser: (user: CurrentUser): void => {
-        self.currentUser = user;
-      },
-      signOutUser: (): void => {
-        self.currentUser = null;
-      },
-      updateUser: (user: Partial<CurrentUser>): void => {
-        if (self.currentUser === undefined) {
-          return;
-        }
+  .views(self => ({
+    isLoggedIn: (): boolean => {
+      return !!self.currentUser;
+    },
+  }))
+  .actions(self => ({
+    signInUser: (user: CurrentUser): void => {
+      self.currentUser = user;
+    },
+    signOutUser: (): void => {
+      self.currentUser = null;
+    },
+    updateUser: (user: Partial<CurrentUser>): void => {
+      if (self.currentUser === null) {
+        return;
+      }
+      const newUser = { ...self.currentUser };
+      Object.assign(newUser, user);
 
-        const newUser = produce(
-          self.currentUser,
-          (draft: CurrentUser): void => {
-            Object.assign(draft, user);
-          }
-        );
-        self.currentUser = newUser;
-      },
-    })
-  );
+      self.currentUser = newUser;
+    },
+    getCurrentUser: (): CurrentUser | null => {
+      return self.currentUser;
+    },
+  }));
 
 type AuthModelType = typeof AuthModel.Type;
 
