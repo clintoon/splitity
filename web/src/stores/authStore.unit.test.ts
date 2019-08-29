@@ -38,18 +38,18 @@ describe('authStore', (): void => {
 
     describe('updateUser', (): void => {
       const updatedEmailVerified = true;
-      const updatedOauthToken = 'newAuthToken';
+      const updatedOAuthToken = 'newAuthToken';
 
       it('correctly updates currentUser state', (): void => {
         const authStore = AuthModel.create({ currentUser: mockCurrentUser });
         authStore.updateUser({
           emailVerified: updatedEmailVerified,
-          oauthToken: updatedOauthToken,
+          oAuthToken: updatedOAuthToken,
         });
         const expectedUser = {
           ...omit(mockCurrentUser, ['emailVerified', 'oauthToken']),
           emailVerified: updatedEmailVerified,
-          oauthToken: updatedOauthToken,
+          oAuthToken: updatedOAuthToken,
         };
         expect(authStore.getCurrentUser()).toEqual(expectedUser);
       });
@@ -58,7 +58,7 @@ describe('authStore', (): void => {
         const authStore = AuthModel.create({ currentUser: null });
         authStore.updateUser({
           emailVerified: updatedEmailVerified,
-          oauthToken: updatedOauthToken,
+          oAuthToken: updatedOAuthToken,
         });
         expect(authStore.getCurrentUser()).toBe(null);
       });

@@ -3,6 +3,7 @@ import { mount } from 'enzyme';
 import { ToSignInPage } from '@web/pages/Auth/ToSignInPage';
 import * as StoreUser from '@web/pages/Auth/storeUser';
 import { StoreProvider } from '@web/stores/storeProvider';
+import { mockStoreFactory, TestStoreProvider } from '@web/testing/mockStore';
 
 describe('<ToSignInPage />', (): void => {
   let storeUserSpy: jest.SpyInstance;
@@ -12,9 +13,9 @@ describe('<ToSignInPage />', (): void => {
       .spyOn(StoreUser, 'storeUser')
       .mockResolvedValue(undefined);
     mount(
-      <StoreProvider>
+      <TestStoreProvider stores={mockStoreFactory()}>
         <ToSignInPage />
-      </StoreProvider>
+      </TestStoreProvider>
     );
   });
 

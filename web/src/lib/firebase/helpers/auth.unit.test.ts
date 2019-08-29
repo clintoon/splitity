@@ -1,6 +1,9 @@
 import { mock, when, instance } from 'ts-mockito';
 import { User, auth } from 'firebase';
-import { transformRedirectResult } from '@web/lib/firebase/helpers/auth';
+import {
+  transformRedirectResult,
+  transformFirebaseUser,
+} from '@web/lib/firebase/helpers/auth';
 
 describe('auth', (): void => {
   describe('transformRedirectResult', (): void => {
@@ -42,7 +45,31 @@ describe('auth', (): void => {
         Object {
           "email": "email",
           "emailVerified": true,
-          "oauthToken": "oauthAccessToken",
+          "oAuthToken": "oauthAccessToken",
+          "userId": "uid",
+        }
+      `);
+    });
+  });
+
+  describe('transformFirebaseUser', (): void => {
+    const userMock: User = mock<User>();
+    when(userMock.email).thenReturn('email');
+    when(userMock.emailVerified).thenReturn(true);
+    when(userMock.uid).thenReturn('uid');
+    const oAuthTokenMock = 'authToken';
+
+    it('returns the correct output', (): void => {
+      expect(
+        transformFirebaseUser({
+          oAuthToken: oAuthTokenMock,
+          user: instance(userMock),
+        })
+      ).toMatchInlineSnapshot(`
+        Object {
+          "email": "email",
+          "emailVerified": true,
+          "oAuthToken": "authToken",
           "userId": "uid",
         }
       `);
