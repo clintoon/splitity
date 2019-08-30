@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount, ReactWrapper } from 'enzyme';
+import { mount } from 'enzyme';
 import { useStore } from '@web/stores/useStore';
 import { StoreProvider } from '@web/stores/storeProvider';
 
