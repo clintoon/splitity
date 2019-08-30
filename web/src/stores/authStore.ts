@@ -3,14 +3,14 @@ import { types } from 'mobx-state-tree';
 
 export interface CurrentUser {
   email: string;
-  oauthToken: string;
+  oAuthToken: string;
   emailVerified: boolean;
   userId: string;
 }
 
 const CurrentUserModel = types.model({
   email: types.string,
-  oauthToken: types.string,
+  oAuthToken: types.string,
   emailVerified: types.boolean,
   userId: types.string,
 });

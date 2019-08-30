@@ -1,6 +1,7 @@
 import { app, auth } from 'firebase';
 import { transformRedirectResult } from '@web/lib/firebase/helpers/auth';
 import { CurrentUser } from '@web/stores/authStore';
+import { User, Unsubscribe } from 'firebase';
 
 class FirebaseAuth {
   private firebaseAuth: auth.Auth;
@@ -18,6 +19,14 @@ class FirebaseAuth {
   public async getRedirectResult(): Promise<CurrentUser | null> {
     const result = await this.firebaseAuth.getRedirectResult();
     return transformRedirectResult(result);
+  }
+
+  public onAuthStateChanged(
+    onChange: (user: User | null) => void
+  ): Unsubscribe {
+    return this.firebaseAuth.onAuthStateChanged((user: User | null): void => {
+      onChange(user);
+    });
   }
 }
 

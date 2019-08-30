@@ -8,19 +8,13 @@ export interface StoreType {
 
 export interface StoreProviderProps {
   children: React.ReactNode;
-  storeValues: Partial<StoreType>;
 }
 
 const storeContext = React.createContext<StoreType | null>(null);
 
-const StoreProvider = ({
-  children,
-  storeValues,
-}: StoreProviderProps): JSX.Element => {
+const StoreProvider = ({ children }: StoreProviderProps): JSX.Element => {
   const stores = {
-    auth: useLocalStore(
-      (): AuthModelType => AuthModel.create(storeValues.auth || {})
-    ),
+    auth: useLocalStore((): AuthModelType => AuthModel.create({})),
   };
 
   return (

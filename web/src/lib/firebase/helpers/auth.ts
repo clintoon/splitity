@@ -1,5 +1,6 @@
 import { auth } from 'firebase';
 import { CurrentUser } from '@web/stores/authStore';
+import { User } from 'firebase';
 
 interface AuthCredentialJSON {
   oauthAccessToken: string;
@@ -16,11 +17,28 @@ const transformRedirectResult = (
   let credentials = result.credential.toJSON() as AuthCredentialJSON;
 
   return {
-    oauthToken: credentials.oauthAccessToken,
+    oAuthToken: credentials.oauthAccessToken,
     email: result.user.email as string,
     emailVerified: result.user.emailVerified as boolean,
     userId: result.user.uid as string,
   };
 };
 
-export { transformRedirectResult };
+interface TransformFirebaseUser {
+  oAuthToken: string;
+  user: User;
+}
+
+const transformFirebaseUser = ({
+  oAuthToken,
+  user,
+}: TransformFirebaseUser): CurrentUser => {
+  return {
+    oAuthToken,
+    email: user.email as string,
+    emailVerified: user.emailVerified as boolean,
+    userId: user.uid as string,
+  };
+};
+
+export { transformRedirectResult, transformFirebaseUser };
