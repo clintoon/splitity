@@ -109,11 +109,24 @@ describe('<Navbar />', (): void => {
         );
       });
     });
+  });
+
+  describe('at route route', (): void => {
+    beforeEach((): void => {
+      const signedInStore = mockStoreFactory({
+        auth: { currentUser: currentUserFactory() },
+      });
+
+      wrapper = mount(
+        <MemoryRouter initialEntries={['/']}>
+          <TestStoreProvider stores={signedInStore}>
+            <Navbar />
+          </TestStoreProvider>
+        </MemoryRouter>
+      );
+    });
 
     it('displays the unauthenticated navbar at homepage', (): void => {
-      wrapper.setProps({ initialEntries: [RoutePath.RootRoute] });
-      wrapper.unmount().mount();
-
       const rightItems = wrapper.find(DesignNavbar).props()
         .rightItems as JSX.Element[];
 
