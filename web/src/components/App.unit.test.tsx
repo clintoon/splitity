@@ -1,15 +1,17 @@
 import React from 'react';
 import { mount, ReactWrapper } from 'enzyme';
-import { App } from '@web/components/App';
+import { App, AppForTest } from '@web/components/App';
 import { GlobalStyle } from '@web/design/styles/GlobalStyle';
 import { PageContent } from '@web/components/PageContent';
 import { StoreType } from '@web/stores/storeProvider';
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import * as authCookie from '@web/lib/cookie/authCookie';
 import { mock, when, instance } from 'ts-mockito';
-import { User } from 'firebase';
+import { User, Unsubscribe } from 'firebase';
 import { mockStoreFactory, TestStoreProvider } from '@web/testing/mockStore';
 import { currentUserFactory } from '@web/testing/mockCurrentUser';
+import { MemoryRouter } from 'react-router';
+import { RoutePath } from '@web/constants/routes';
 
 jest.mock('@web/lib/firebase/auth');
 
@@ -22,16 +24,23 @@ describe('<App />', (): void => {
 
   const onAuthStateChangedMock = FirebaseAuth.prototype
     .onAuthStateChanged as jest.Mock;
-  onAuthStateChangedMock.mockReturnValue(unsubscribeMock);
 
   jest.spyOn(authCookie, 'getOAuthToken').mockReturnValue(mockOAuthToken);
 
   beforeEach((): void => {
+    onAuthStateChangedMock.mockImplementation(
+      (callback: () => void): Unsubscribe => {
+        callback();
+        return unsubscribeMock;
+      }
+    );
     stores = mockStoreFactory();
     wrapper = mount(
-      <TestStoreProvider stores={stores}>
-        <App />
-      </TestStoreProvider>
+      <MemoryRouter>
+        <TestStoreProvider stores={stores}>
+          <App />
+        </TestStoreProvider>
+      </MemoryRouter>
     );
   });
 
@@ -59,19 +68,25 @@ describe('<App />', (): void => {
 
     describe('useSyncUserStore callback', (): void => {
       it('signs in user passed in user object', (): void => {
-        const callback: (user: User) => void =
-          onAuthStateChangedMock.mock.calls[0][0];
-
         const mockEmail = 'clinton@gmail.com';
         const mockEmailVerified = false;
         const mockUserId = 'abc123';
-
         const userMock = mock<User>();
         when(userMock.email).thenReturn(mockEmail);
         when(userMock.emailVerified).thenReturn(mockEmailVerified);
         when(userMock.uid).thenReturn(mockUserId);
 
-        callback(instance(userMock));
+        onAuthStateChangedMock.mockImplementation(
+          (callback: (user: User) => void): Unsubscribe => {
+            callback(instance(userMock));
+            return unsubscribeMock;
+          }
+        );
+
+        wrapper.unmount();
+        jest.clearAllMocks();
+        wrapper.mount();
+
         expect(stores.auth.getCurrentUser()).toEqual({
           email: mockEmail,
           emailVerified: mockEmailVerified,
@@ -79,32 +94,69 @@ describe('<App />', (): void => {
           oAuthToken: mockOAuthToken,
         });
       });
+    });
+  });
 
-      it('removes user from store and clear cookie if passed null', (): void => {
-        // setup component
-        jest.clearAllMocks();
-        const user = currentUserFactory();
+  describe('useUpdateNotAuthenticated', (): void => {
+    interface SetupAuthenticatedResult {
+      store: StoreType;
+      wrapper: ReactWrapper;
+    }
 
-        const signedInStore = mockStoreFactory({
-          auth: {
-            currentUser: user,
-          },
-        });
-
-        mount(
+    const setupAuthenticated = (
+      routePath: string = '/'
+    ): SetupAuthenticatedResult => {
+      jest.clearAllMocks();
+      const user = currentUserFactory();
+      const signedInStore = mockStoreFactory({
+        auth: {
+          currentUser: user,
+        },
+      });
+      const authenticatedWrapper = mount(
+        <MemoryRouter initialEntries={[routePath]}>
           <TestStoreProvider stores={signedInStore}>
             <App />
           </TestStoreProvider>
+        </MemoryRouter>
+      );
+      authenticatedWrapper.update();
+      return { store: signedInStore, wrapper: authenticatedWrapper };
+    };
+
+    it('removes user from store and clear cookie if passed null', (): void => {
+      const { store } = setupAuthenticated();
+      expect(store.auth.getCurrentUser()).toBe(null);
+      expect(clearCookieSpy).toHaveBeenCalled();
+    });
+
+    describe('redirects', (): void => {
+      it('does not redirect to homepage is /route', (): void => {
+        const route = '/route';
+        const { wrapper } = setupAuthenticated(route);
+        expect(wrapper.find(AppForTest).prop('location').pathname).toBe(route);
+      });
+
+      it('does not redirect to homepage is /apple', (): void => {
+        const route = '/apple';
+        const { wrapper } = setupAuthenticated(route);
+        expect(wrapper.find(AppForTest).prop('location').pathname).toBe(route);
+      });
+
+      it('redirects to homepage when is /app', (): void => {
+        const route = '/app';
+        const { wrapper } = setupAuthenticated(route);
+        expect(wrapper.find(AppForTest).prop('location').pathname).toBe(
+          RoutePath.RootRoute
         );
+      });
 
-        // begin test
-        const callback: (user: null) => void =
-          onAuthStateChangedMock.mock.calls[0][0];
-
-        callback(null);
-
-        expect(signedInStore.auth.getCurrentUser()).toBe(null);
-        expect(clearCookieSpy).toHaveBeenCalled();
+      it('redirects to homepage when is /app/route', (): void => {
+        const route = '/app';
+        const { wrapper } = setupAuthenticated(route);
+        expect(wrapper.find(AppForTest).prop('location').pathname).toBe(
+          RoutePath.RootRoute
+        );
       });
     });
   });

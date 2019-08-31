@@ -28,6 +28,10 @@ class FirebaseAuth {
       onChange(user);
     });
   }
+
+  public async signOut(): Promise<void> {
+    return await this.firebaseAuth.signOut();
+  }
 }
 
 export { FirebaseAuth };
