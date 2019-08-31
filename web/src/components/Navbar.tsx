@@ -3,13 +3,14 @@ import { Navbar as DesignNavbar } from '@web/design/components/Navbar/Navbar';
 import { Button, ButtonStyle } from '@web/design/components/Button/Button';
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import { firebaseApp } from '@web/lib/firebase/firebase';
-import { withRouter } from 'react-router-dom';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { History } from 'history';
 import { RoutePath } from '@web/constants/routes';
+import { useStore } from '@web/stores/useStore';
+import { observer } from 'mobx-react-lite';
 
-// TODO: if logged in display don't display login button
-const WrappedNavbar = ({ history }: { history: History }): JSX.Element => {
-  const signIn = (): void => {
+const renderNotAuthenticatedNavbar = (history: History): JSX.Element => {
+  const handleSignIn = async (): Promise<void> => {
     const auth = new FirebaseAuth(firebaseApp);
     history.push(RoutePath.AuthToSignInRoute);
     auth.redirectSignInWithGithub();
@@ -21,7 +22,7 @@ const WrappedNavbar = ({ history }: { history: History }): JSX.Element => {
         <Button
           key="login"
           styleOf={ButtonStyle.Primary}
-          onClick={(): void => signIn()}
+          onClick={handleSignIn}
         >
           Login
         </Button>,
@@ -29,6 +30,41 @@ const WrappedNavbar = ({ history }: { history: History }): JSX.Element => {
     />
   );
 };
+
+const renderAuthenticatedNavbar = (history: History): JSX.Element => {
+  const handleSignOut = async (): Promise<void> => {
+    const auth = new FirebaseAuth(firebaseApp);
+    // This triggers the useUpdateNotAuthenticated hook
+    // which will clear the cookies and store
+    history.push(RoutePath.RootRoute);
+    await auth.signOut();
+  };
+
+  return (
+    <DesignNavbar
+      rightItems={[
+        <Button
+          key="logout"
+          styleOf={ButtonStyle.Primary}
+          onClick={handleSignOut}
+        >
+          Logout
+        </Button>,
+      ]}
+    />
+  );
+};
+
+const WrappedNavbar = observer(
+  ({ history }: RouteComponentProps): JSX.Element => {
+    const store = useStore();
+    if (store.auth.isLoggedIn()) {
+      return renderAuthenticatedNavbar(history);
+    } else {
+      return renderNotAuthenticatedNavbar(history);
+    }
+  }
+);
 
 const Navbar = withRouter(WrappedNavbar);
 

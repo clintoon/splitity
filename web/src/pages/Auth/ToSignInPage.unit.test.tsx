@@ -2,7 +2,6 @@ import React from 'react';
 import { mount } from 'enzyme';
 import { ToSignInPage } from '@web/pages/Auth/ToSignInPage';
 import * as StoreUser from '@web/pages/Auth/storeUser';
-import { StoreProvider } from '@web/stores/storeProvider';
 import { mockStoreFactory, TestStoreProvider } from '@web/testing/mockStore';
 
 describe('<ToSignInPage />', (): void => {

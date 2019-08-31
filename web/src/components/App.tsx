@@ -9,6 +9,9 @@ import { User } from 'firebase';
 import { transformFirebaseUser } from '@web/lib/firebase/helpers/auth';
 import { getOAuthToken, clearAuthCookie } from '@web/lib/cookie/authCookie';
 import { StoreType } from '@web/stores/storeProvider';
+import { History } from 'history';
+import { withRouter, RouteComponentProps } from 'react-router';
+import { RoutePath } from '@web/constants/routes';
 
 const useSyncUserStore = (store: StoreType): void => {
   useEffect((): (() => void) => {
@@ -30,9 +33,34 @@ const useSyncUserStore = (store: StoreType): void => {
   }, []);
 };
 
-const App: React.FC<{}> = (): JSX.Element => {
+const useUpdateNotAuthenticated = (
+  store: StoreType,
+  history: History
+): void => {
+  useEffect((): (() => void) => {
+    const auth = new FirebaseAuth(firebaseApp);
+    const unsubscribe = auth.onAuthStateChanged((user: User | null): void => {
+      if (!user) {
+        store.auth.signOutUser();
+        clearAuthCookie();
+        // Redirect to homepage when in app routes
+        const path = history.location.pathname;
+        if (path.match(/^\/app$/) || path.match(/^\/app\/*$/)) {
+          history.replace(RoutePath.RootRoute);
+        }
+      }
+    });
+
+    return (): void => {
+      unsubscribe();
+    };
+  }, []);
+};
+
+const WrappedApp = ({ history }: RouteComponentProps): JSX.Element => {
   const store = useStore();
   useSyncUserStore(store);
+  useUpdateNotAuthenticated(store, history);
 
   return (
     <React.Fragment>
@@ -42,4 +70,6 @@ const App: React.FC<{}> = (): JSX.Element => {
   );
 };
 
-export { App };
+const App = withRouter(WrappedApp);
+
+export { App, WrappedApp as AppForTest };

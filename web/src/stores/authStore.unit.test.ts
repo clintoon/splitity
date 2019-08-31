@@ -47,7 +47,7 @@ describe('authStore', (): void => {
           oAuthToken: updatedOAuthToken,
         });
         const expectedUser = {
-          ...omit(mockCurrentUser, ['emailVerified', 'oauthToken']),
+          ...omit(mockCurrentUser, ['emailVerified', 'oAuthToken']),
           emailVerified: updatedEmailVerified,
           oAuthToken: updatedOAuthToken,
         };
