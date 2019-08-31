@@ -56,9 +56,9 @@ const renderAuthenticatedNavbar = (history: History): JSX.Element => {
 };
 
 const WrappedNavbar = observer(
-  ({ history }: RouteComponentProps): JSX.Element => {
+  ({ history, location }: RouteComponentProps): JSX.Element => {
     const store = useStore();
-    if (store.auth.isLoggedIn()) {
+    if (store.auth.isLoggedIn() && location.pathname !== RoutePath.RootRoute) {
       return renderAuthenticatedNavbar(history);
     } else {
       return renderNotAuthenticatedNavbar(history);

@@ -28,6 +28,15 @@ describe('<Navbar />', (): void => {
       expect(wrapper.find(DesignNavbar).exists()).toBe(true);
     });
 
+    it('has login button', (): void => {
+      const rightItems = wrapper.find(DesignNavbar).props()
+        .rightItems as JSX.Element[];
+
+      const logoutButton = shallow(rightItems[0]);
+
+      expect(logoutButton.text()).toBe('Login');
+    });
+
     describe('signIn onClick', (): void => {
       beforeEach((): void => {
         const rightItems = wrapper.find(DesignNavbar).props()
@@ -59,16 +68,25 @@ describe('<Navbar />', (): void => {
       });
 
       wrapper = mount(
-        <TestStoreProvider stores={signedInStore}>
-          <MemoryRouter>
+        <MemoryRouter initialEntries={['/app']}>
+          <TestStoreProvider stores={signedInStore}>
             <Navbar />
-          </MemoryRouter>
-        </TestStoreProvider>
+          </TestStoreProvider>
+        </MemoryRouter>
       );
     });
 
     it('renders design <Navbar />', (): void => {
       expect(wrapper.find(DesignNavbar).exists()).toBe(true);
+    });
+
+    it('has logout button', (): void => {
+      const rightItems = wrapper.find(DesignNavbar).props()
+        .rightItems as JSX.Element[];
+
+      const logoutButton = shallow(rightItems[0]);
+
+      expect(logoutButton.text()).toBe('Logout');
     });
 
     describe('signIn onClick', (): void => {
@@ -90,6 +108,18 @@ describe('<Navbar />', (): void => {
           RoutePath.RootRoute
         );
       });
+    });
+
+    it('displays the unauthenticated navbar at homepage', (): void => {
+      wrapper.setProps({ initialEntries: [RoutePath.RootRoute] });
+      wrapper.unmount().mount();
+
+      const rightItems = wrapper.find(DesignNavbar).props()
+        .rightItems as JSX.Element[];
+
+      const loginButton = shallow(rightItems[0]);
+
+      expect(loginButton.text()).toBe('Login');
     });
   });
 });
