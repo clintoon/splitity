@@ -111,7 +111,7 @@ describe('<Navbar />', (): void => {
     });
   });
 
-  describe('at route route', (): void => {
+  describe('at root route', (): void => {
     beforeEach((): void => {
       const signedInStore = mockStoreFactory({
         auth: { currentUser: currentUserFactory() },
