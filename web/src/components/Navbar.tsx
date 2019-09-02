@@ -5,14 +5,14 @@ import { FirebaseAuth } from '@web/lib/firebase/auth';
 import { firebaseApp } from '@web/lib/firebase/firebase';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { History } from 'history';
-import { RoutePath } from '@web/constants/routes';
+import { AuthRoutePath, RoutePath } from '@web/constants/routes';
 import { useStore } from '@web/stores/useStore';
 import { observer } from 'mobx-react-lite';
 
 const renderNotAuthenticatedNavbar = (history: History): JSX.Element => {
   const handleSignIn = async (): Promise<void> => {
     const auth = new FirebaseAuth(firebaseApp);
-    history.push(RoutePath.AuthToSignInRoute);
+    history.push(AuthRoutePath.ToSignIn);
     auth.redirectSignInWithGithub();
   };
 
@@ -36,7 +36,7 @@ const renderAuthenticatedNavbar = (history: History): JSX.Element => {
     const auth = new FirebaseAuth(firebaseApp);
     // This triggers the useUpdateNotAuthenticated hook
     // which will clear the cookies and store
-    history.push(RoutePath.RootRoute);
+    history.push(RoutePath.Root);
     await auth.signOut();
   };
 
@@ -58,7 +58,7 @@ const renderAuthenticatedNavbar = (history: History): JSX.Element => {
 const WrappedNavbar = observer(
   ({ history, location }: RouteComponentProps): JSX.Element => {
     const store = useStore();
-    if (store.auth.isLoggedIn() && location.pathname !== RoutePath.RootRoute) {
+    if (store.auth.isLoggedIn() && location.pathname !== RoutePath.Root) {
       return renderAuthenticatedNavbar(history);
     } else {
       return renderNotAuthenticatedNavbar(history);

@@ -11,7 +11,7 @@ import { getOAuthToken, clearAuthCookie } from '@web/lib/cookie/authCookie';
 import { StoreType } from '@web/stores/storeProvider';
 import { History } from 'history';
 import { withRouter, RouteComponentProps } from 'react-router';
-import { RoutePath } from '@web/constants/routes';
+import { RoutePath, GithubRoutePath } from '@web/constants/routes';
 
 const useSyncUserStore = (store: StoreType): void => {
   useEffect((): (() => void) => {
@@ -43,10 +43,13 @@ const useUpdateNotAuthenticated = (
       if (!user) {
         store.auth.signOutUser();
         clearAuthCookie();
-        // Redirect to homepage when in app routes
+        // Redirect to homepage when in github app routes
         const path = history.location.pathname;
-        if (path.match(/^\/app$/) || path.match(/^\/app\/*$/)) {
-          history.replace(RoutePath.RootRoute);
+        if (
+          path.match(new RegExp(`^\\${GithubRoutePath.AppRoot}$\/`)) ||
+          path.match(new RegExp(`^\\${GithubRoutePath.AppRoot}\/*$`))
+        ) {
+          history.replace(RoutePath.Root);
         }
       }
     });

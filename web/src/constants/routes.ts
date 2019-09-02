@@ -1,6 +1,13 @@
 enum RoutePath {
-  RootRoute = '/',
-  AuthToSignInRoute = '/auth/to-sign-in',
+  Root = '/',
 }
 
-export { RoutePath };
+enum AuthRoutePath {
+  ToSignIn = '/auth/to-sign-in',
+}
+
+enum GithubRoutePath {
+  AppRoot = '/gh',
+}
+
+export { RoutePath, AuthRoutePath, GithubRoutePath };

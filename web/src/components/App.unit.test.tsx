@@ -137,25 +137,25 @@ describe('<App />', (): void => {
         expect(wrapper.find(AppForTest).prop('location').pathname).toBe(route);
       });
 
-      it('does not redirect to homepage is /apple', (): void => {
-        const route = '/apple';
+      it('does not redirect to homepage is /gh123', (): void => {
+        const route = '/git123';
         const { wrapper } = setupAuthenticated(route);
         expect(wrapper.find(AppForTest).prop('location').pathname).toBe(route);
       });
 
-      it('redirects to homepage when is /app', (): void => {
-        const route = '/app';
+      it('redirects to homepage when is /gh', (): void => {
+        const route = '/gh';
         const { wrapper } = setupAuthenticated(route);
         expect(wrapper.find(AppForTest).prop('location').pathname).toBe(
-          RoutePath.RootRoute
+          RoutePath.Root
         );
       });
 
-      it('redirects to homepage when is /app/route', (): void => {
-        const route = '/app';
+      it('redirects to homepage when is /gh/route', (): void => {
+        const route = '/gh';
         const { wrapper } = setupAuthenticated(route);
         expect(wrapper.find(AppForTest).prop('location').pathname).toBe(
-          RoutePath.RootRoute
+          RoutePath.Root
         );
       });
     });

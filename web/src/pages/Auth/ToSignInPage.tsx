@@ -1,13 +1,16 @@
 import { useEffect } from 'react';
-import { storeUser } from '@web/pages/Auth/storeUser';
+import { handleSignIn } from '@web/pages/Auth/handleSignIn';
 import { useStore } from '@web/stores/useStore';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 
-const ToSignInPage = (): null => {
+const WrappedToSignInPage = ({ history }: RouteComponentProps): null => {
   const store = useStore();
   useEffect((): void => {
-    storeUser(store);
+    handleSignIn(store, history);
   }, []);
   return null;
 };
 
-export { ToSignInPage };
+const ToSignInPage = withRouter(WrappedToSignInPage);
+
+export { ToSignInPage, WrappedToSignInPage as ToSignInPageForTest };
