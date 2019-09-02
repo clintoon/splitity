@@ -14,6 +14,8 @@ const handleSignIn = async (
   if (result) {
     setOAuthToken(result.oAuthToken);
     store.auth.signInUser(result);
+    // So that we remove the to sign in route from history
+    history.goBack();
     history.replace(GithubRoutePath.AppRoot);
   }
 };
