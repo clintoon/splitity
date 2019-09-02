@@ -68,7 +68,7 @@ const WrappedApp = ({ history }: RouteComponentProps): JSX.Element | null => {
   const fetchingRedirectResult = handleSignIn(store, history);
   console.log('app', fetchingRedirectResult);
   if (fetchingRedirectResult) {
-    return null;
+    return <div>loading...</div>;
   }
 
   return (

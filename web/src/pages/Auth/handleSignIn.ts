@@ -7,12 +7,12 @@ import { GithubRoutePath } from '@web/constants/routes';
 import { useEffect, useState } from 'react';
 
 const handleSignIn = (store: StoreType, history: History): boolean => {
-  const [fetchResult, setFetchResult] = useState(false);
+  // Initially set as fetching, and set as done when getRedirectResult is done
+  const [fetchResult, setFetchResult] = useState(true);
 
   useEffect((): void => {
     const getRedirectResult = async (): Promise<void> => {
       const auth = new FirebaseAuth(firebaseApp);
-      setFetchResult(true);
       const result = await auth.getRedirectResult();
       if (result) {
         setOAuthToken(result.oAuthToken);
