@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { storeUser } from '@web/pages/Auth/storeUser';
+import { handleSignIn } from '@web/pages/Auth/handleSignIn';
 import { useStore } from '@web/stores/useStore';
 
 const ToSignInPage = (): null => {
   const store = useStore();
   useEffect((): void => {
-    storeUser(store);
+    handleSignIn(store);
   }, []);
   return null;
 };

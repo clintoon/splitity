@@ -1,4 +1,4 @@
-import { storeUser } from '@web/pages/Auth/storeUser';
+import { handleSignIn } from '@web/pages/Auth/handleSignIn';
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import { mockStoreFactory } from '@web/testing/mockStore';
 import { StoreType } from '@web/stores/storeProvider';
@@ -9,7 +9,7 @@ jest.mock('@web/lib/firebase/auth');
 
 const mockCurrentUser = currentUserFactory();
 
-describe('storeUser', (): void => {
+describe('handleSignIn', (): void => {
   let mockStore: StoreType;
   const setOAuthTokenSpy = jest.spyOn(authCookie, 'setOAuthToken');
 
@@ -19,7 +19,7 @@ describe('storeUser', (): void => {
       (FirebaseAuth.prototype.getRedirectResult as jest.Mock).mockResolvedValue(
         mockCurrentUser
       );
-      await storeUser(mockStore);
+      await handleSignIn(mockStore);
     }
   );
 

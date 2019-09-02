@@ -1,15 +1,15 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { ToSignInPage } from '@web/pages/Auth/ToSignInPage';
-import * as StoreUser from '@web/pages/Auth/storeUser';
+import * as HandleSignIn from '@web/pages/Auth/handleSignIn';
 import { mockStoreFactory, TestStoreProvider } from '@web/testing/mockStore';
 
 describe('<ToSignInPage />', (): void => {
-  let storeUserSpy: jest.SpyInstance;
+  let handleSignInSpy: jest.SpyInstance;
 
   beforeEach((): void => {
-    storeUserSpy = jest
-      .spyOn(StoreUser, 'storeUser')
+    handleSignInSpy = jest
+      .spyOn(HandleSignIn, 'handleSignIn')
       .mockResolvedValue(undefined);
     mount(
       <TestStoreProvider stores={mockStoreFactory()}>
@@ -22,7 +22,7 @@ describe('<ToSignInPage />', (): void => {
     jest.clearAllMocks();
   });
 
-  it('calls storeUser', (): void => {
-    expect(storeUserSpy).toHaveBeenCalled();
+  it('calls handleSignIn', (): void => {
+    expect(handleSignInSpy).toHaveBeenCalled();
   });
 });

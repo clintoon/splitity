@@ -3,7 +3,7 @@ import { firebaseApp } from '@web/lib/firebase/firebase';
 import { StoreType } from '@web/stores/storeProvider';
 import { setOAuthToken } from '@web/lib/cookie/authCookie';
 
-const storeUser = async (store: StoreType): Promise<void> => {
+const handleSignIn = async (store: StoreType): Promise<void> => {
   const auth = new FirebaseAuth(firebaseApp);
   const result = await auth.getRedirectResult();
   if (result) {
@@ -12,4 +12,4 @@ const storeUser = async (store: StoreType): Promise<void> => {
   }
 };
 
-export { storeUser };
+export { handleSignIn };
