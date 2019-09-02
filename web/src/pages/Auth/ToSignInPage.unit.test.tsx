@@ -3,6 +3,7 @@ import { mount } from 'enzyme';
 import { ToSignInPage } from '@web/pages/Auth/ToSignInPage';
 import * as HandleSignIn from '@web/pages/Auth/handleSignIn';
 import { mockStoreFactory, TestStoreProvider } from '@web/testing/mockStore';
+import { MemoryRouter } from 'react-router';
 
 describe('<ToSignInPage />', (): void => {
   let handleSignInSpy: jest.SpyInstance;
@@ -12,9 +13,11 @@ describe('<ToSignInPage />', (): void => {
       .spyOn(HandleSignIn, 'handleSignIn')
       .mockResolvedValue(undefined);
     mount(
-      <TestStoreProvider stores={mockStoreFactory()}>
-        <ToSignInPage />
-      </TestStoreProvider>
+      <MemoryRouter>
+        <TestStoreProvider stores={mockStoreFactory()}>
+          <ToSignInPage />
+        </TestStoreProvider>
+      </MemoryRouter>
     );
   });
 
