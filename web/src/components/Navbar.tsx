@@ -12,7 +12,7 @@ import { observer } from 'mobx-react-lite';
 const renderNotAuthenticatedNavbar = (history: History): JSX.Element => {
   const handleSignIn = async (): Promise<void> => {
     const auth = new FirebaseAuth(firebaseApp);
-    history.push(AuthRoutePath.ToSignIn);
+    // history.push(AuthRoutePath.ToSignIn);
     auth.redirectSignInWithGithub();
   };
 

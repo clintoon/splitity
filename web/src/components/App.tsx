@@ -12,6 +12,7 @@ import { StoreType } from '@web/stores/storeProvider';
 import { History } from 'history';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { RoutePath, GithubRoutePath } from '@web/constants/routes';
+import { handleSignIn } from '@web/pages/Auth/handleSignIn';
 
 const useSyncUserStore = (store: StoreType): void => {
   useEffect((): (() => void) => {
@@ -60,10 +61,15 @@ const useUpdateNotAuthenticated = (
   }, []);
 };
 
-const WrappedApp = ({ history }: RouteComponentProps): JSX.Element => {
+const WrappedApp = ({ history }: RouteComponentProps): JSX.Element | null => {
   const store = useStore();
   useSyncUserStore(store);
   useUpdateNotAuthenticated(store, history);
+  const fetchingRedirectResult = handleSignIn(store, history);
+  console.log('app', fetchingRedirectResult);
+  if (fetchingRedirectResult) {
+    return null;
+  }
 
   return (
     <React.Fragment>

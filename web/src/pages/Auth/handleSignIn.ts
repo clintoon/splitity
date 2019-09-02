@@ -4,20 +4,28 @@ import { StoreType } from '@web/stores/storeProvider';
 import { setOAuthToken } from '@web/lib/cookie/authCookie';
 import { History } from 'history';
 import { GithubRoutePath } from '@web/constants/routes';
+import { useEffect, useState } from 'react';
 
-const handleSignIn = async (
-  store: StoreType,
-  history: History
-): Promise<void> => {
-  const auth = new FirebaseAuth(firebaseApp);
-  const result = await auth.getRedirectResult();
-  if (result) {
-    setOAuthToken(result.oAuthToken);
-    store.auth.signInUser(result);
-    // So that we remove the to sign in route from history
-    history.goBack();
-    history.replace(GithubRoutePath.AppRoot);
-  }
+const handleSignIn = (store: StoreType, history: History): boolean => {
+  const [fetchResult, setFetchResult] = useState(false);
+
+  useEffect((): void => {
+    const getRedirectResult = async (): Promise<void> => {
+      const auth = new FirebaseAuth(firebaseApp);
+      setFetchResult(true);
+      const result = await auth.getRedirectResult();
+      if (result) {
+        setOAuthToken(result.oAuthToken);
+        store.auth.signInUser(result);
+        history.push(GithubRoutePath.AppRoot);
+      }
+      setFetchResult(false);
+    };
+
+    getRedirectResult();
+  }, []);
+
+  return fetchResult;
 };
 
 export { handleSignIn };
