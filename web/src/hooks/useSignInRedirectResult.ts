@@ -6,9 +6,12 @@ import { History } from 'history';
 import { GithubRoutePath } from '@web/constants/routes';
 import { useEffect, useState } from 'react';
 
-const handleSignIn = (store: StoreType, history: History): boolean => {
+const useSignInRedirectResult = (
+  store: StoreType,
+  history: History
+): boolean => {
   // Initially set as fetching, and set as done when getRedirectResult is done
-  const [fetchResult, setFetchResult] = useState(true);
+  const [fetchingResult, setFetchingResult] = useState(true);
 
   useEffect((): void => {
     const getRedirectResult = async (): Promise<void> => {
@@ -19,13 +22,13 @@ const handleSignIn = (store: StoreType, history: History): boolean => {
         store.auth.signInUser(result);
         history.push(GithubRoutePath.AppRoot);
       }
-      setFetchResult(false);
+      setFetchingResult(false);
     };
 
     getRedirectResult();
   }, []);
 
-  return fetchResult;
+  return fetchingResult;
 };
 
-export { handleSignIn };
+export { useSignInRedirectResult };
