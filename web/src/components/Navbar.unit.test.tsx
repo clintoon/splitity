@@ -83,15 +83,17 @@ describe('<Navbar />', (): void => {
       expect(logoutButton.text()).toBe('Logout');
     });
 
-    describe('signIn onClick', (): void => {
-      beforeEach((): void => {
-        const rightItems = wrapper.find(DesignNavbar).props()
-          .rightItems as JSX.Element[];
+    describe('sign out onClick', (): void => {
+      beforeEach(
+        async (): Promise<void> => {
+          const rightItems = wrapper.find(DesignNavbar).props()
+            .rightItems as JSX.Element[];
 
-        const logoutButton = shallow(rightItems[0]);
-        logoutButton.prop('onClick')();
-        wrapper.update();
-      });
+          const logoutButton = shallow(rightItems[0]);
+          await logoutButton.prop('onClick')();
+          wrapper.update();
+        }
+      );
 
       it('calls auth signOut', (): void => {
         expect(FirebaseAuth.prototype.signOut).toHaveBeenCalled();
