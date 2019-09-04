@@ -1,21 +1,34 @@
-import { handleSignIn } from '@web/pages/Auth/handleSignIn';
+import { useSignInRedirectResult } from '@web/hooks/useSignInRedirectResult';
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import { mockStoreFactory } from '@web/testing/mockStore';
 import { StoreType } from '@web/stores/storeProvider';
 import { currentUserFactory } from '@web/testing/mockCurrentUser';
 import * as authCookie from '@web/lib/cookie/authCookie';
 import { History, createMemoryHistory } from 'history';
-import {
-  GithubRoutePath,
-  RoutePath,
-  AuthRoutePath,
-} from '@web/constants/routes';
+import { GithubRoutePath, RoutePath } from '@web/constants/routes';
+import React from 'react';
+import { ReactWrapper, mount } from 'enzyme';
+import { act } from 'react-dom/test-utils';
 
 jest.mock('@web/lib/firebase/auth');
 
-const mockCurrentUser = currentUserFactory();
+interface TestComponentProps {
+  stores: StoreType;
+  history: History;
+}
 
-describe('handleSignIn', (): void => {
+const TestComponent = ({
+  stores,
+  history,
+}: TestComponentProps): JSX.Element => {
+  const isFetching = useSignInRedirectResult(stores, history);
+  return <div>{isFetching ? 'fetching' : 'fetched'}</div>;
+};
+
+// TODO: test that the initial state if isFetching is true
+describe('useSignInRedirect', (): void => {
+  let wrapper: ReactWrapper;
+  const mockCurrentUser = currentUserFactory();
   let mockStore: StoreType;
   const setOAuthTokenSpy = jest.spyOn(authCookie, 'setOAuthToken');
   let history: History;
@@ -28,12 +41,19 @@ describe('handleSignIn', (): void => {
     beforeEach(
       async (): Promise<void> => {
         history = createMemoryHistory({
-          initialEntries: [AuthRoutePath.ToSignIn],
+          initialEntries: [RoutePath.Root],
         });
         mockStore = mockStoreFactory();
         (FirebaseAuth.prototype
           .getRedirectResult as jest.Mock).mockResolvedValue(mockCurrentUser);
-        await handleSignIn(mockStore, history);
+
+        await act(
+          async (): Promise<void> => {
+            wrapper = mount(
+              <TestComponent history={history} stores={mockStore} />
+            );
+          }
+        );
       }
     );
 
@@ -52,23 +72,33 @@ describe('handleSignIn', (): void => {
     it('redirects to github app route', (): void => {
       expect(history.location.pathname).toBe(GithubRoutePath.AppRoot);
     });
+
+    it('fetchingResult is false when hook is completed', (): void => {
+      expect(wrapper.find('div').text()).toBe('fetched');
+    });
   });
 
   describe('on failure', (): void => {
     beforeEach(
       async (): Promise<void> => {
         history = createMemoryHistory({
-          initialEntries: [AuthRoutePath.ToSignIn],
+          initialEntries: [RoutePath.Root],
         });
         mockStore = mockStoreFactory();
         (FirebaseAuth.prototype
           .getRedirectResult as jest.Mock).mockResolvedValue(null);
-        await handleSignIn(mockStore, history);
+        await act(
+          async (): Promise<void> => {
+            wrapper = mount(
+              <TestComponent history={history} stores={mockStore} />
+            );
+          }
+        );
       }
     );
 
     it('does not redirect anywhere', (): void => {
-      expect(history.location.pathname).toBe(AuthRoutePath.ToSignIn);
+      expect(history.location.pathname).toBe(RoutePath.Root);
     });
 
     it('not set cookie', (): void => {
@@ -77,6 +107,10 @@ describe('handleSignIn', (): void => {
 
     it('does not update store', (): void => {
       expect(mockStore.auth.getCurrentUser()).toBe(null);
+    });
+
+    it('fetchingResult is false when hook is completed', (): void => {
+      expect(wrapper.find('div').text()).toBe('fetched');
     });
   });
 });

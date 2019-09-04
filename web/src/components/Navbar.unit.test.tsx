@@ -3,11 +3,7 @@ import { shallow, mount, ReactWrapper } from 'enzyme';
 import { Navbar as DesignNavbar } from '@web/design/components/Navbar/Navbar';
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import { TestStoreProvider, mockStoreFactory } from '@web/testing/mockStore';
-import {
-  RoutePath,
-  AuthRoutePath,
-  GithubRoutePath,
-} from '@web/constants/routes';
+import { RoutePath, GithubRoutePath } from '@web/constants/routes';
 import { MemoryRouter } from 'react-router';
 import { Navbar, NavbarForTest } from '@web/components/Navbar';
 import { currentUserFactory } from '@web/testing/mockCurrentUser';
@@ -56,12 +52,6 @@ describe('<Navbar />', (): void => {
           FirebaseAuth.prototype.redirectSignInWithGithub
         ).toHaveBeenCalled();
       });
-
-      it('redirects to homepage', (): void => {
-        expect(wrapper.find(NavbarForTest).prop('location').pathname).toBe(
-          AuthRoutePath.ToSignIn
-        );
-      });
     });
   });
 
@@ -93,15 +83,17 @@ describe('<Navbar />', (): void => {
       expect(logoutButton.text()).toBe('Logout');
     });
 
-    describe('signIn onClick', (): void => {
-      beforeEach((): void => {
-        const rightItems = wrapper.find(DesignNavbar).props()
-          .rightItems as JSX.Element[];
+    describe('sign out onClick', (): void => {
+      beforeEach(
+        async (): Promise<void> => {
+          const rightItems = wrapper.find(DesignNavbar).props()
+            .rightItems as JSX.Element[];
 
-        const logoutButton = shallow(rightItems[0]);
-        logoutButton.prop('onClick')();
-        wrapper.update();
-      });
+          const logoutButton = shallow(rightItems[0]);
+          await logoutButton.prop('onClick')();
+          wrapper.update();
+        }
+      );
 
       it('calls auth signOut', (): void => {
         expect(FirebaseAuth.prototype.signOut).toHaveBeenCalled();
