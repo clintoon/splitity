@@ -54,7 +54,7 @@
     "enzyme-to-json": "^3.4.0",
     "eslint-plugin-react": "^7.14.2",
     "jest": "^24.9.0",
-    "jest-image-snapshot": "^2.10.0",
+    "jest-image-snapshot": "^2.11.0",
     "stylelint": "^10.1.0",
     "stylelint-config-recommended": "^2.2.0",
     "stylelint-config-styled-components": "^0.1.1",
