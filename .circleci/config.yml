@@ -21,7 +21,7 @@ jobs:
             - web/node_modules
       - run:
           name: Run jest unit tests and collect codecov coverage reports
-          command: yarn jest --collectCoverage=true
+          command: yarn jest --collectCoverage=true --ci
           working_directory: web
       - store_artifacts:
           path: web/coverage
