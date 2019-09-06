@@ -6,4 +6,6 @@ module.exports = {
   moduleNameMapper: {
     '^@web(.*)$': '<rootDir>/src$1',
   },
+  clearMocks: true,
+  restoreMocks: true,
 };

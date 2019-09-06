@@ -1,6 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Color } from '@web/design/styles/color';
+import { logError } from '@web/lib/logger';
+
+const NAVBAR_RIGHT_ITEMS = 'navbar-right-items';
+const NAVBAR_LEFT_ITEMS = 'navbar-left-items';
 
 export interface NavbarProps {
   leftItems?: JSX.Element[];
@@ -43,7 +47,7 @@ const renderItems = (items?: JSX.Element[]): JSX.Element[] | null => {
   return items.map(
     (item): JSX.Element => {
       if (item.key === null) {
-        console.error('Error: key not passed to <Navbar /> items');
+        logError('Error: key not passed to <Navbar /> items');
       }
 
       return (
@@ -57,11 +61,15 @@ const Navbar = ({ leftItems, rightItems }: NavbarProps): JSX.Element => {
   return (
     <NavbarBox>
       <Content>
-        <ItemGroup>{renderItems(leftItems)}</ItemGroup>
-        <ItemGroup>{renderItems(rightItems)}</ItemGroup>
+        <ItemGroup data-testid={NAVBAR_LEFT_ITEMS}>
+          {renderItems(leftItems)}
+        </ItemGroup>
+        <ItemGroup data-testid={NAVBAR_RIGHT_ITEMS}>
+          {renderItems(rightItems)}
+        </ItemGroup>
       </Content>
     </NavbarBox>
   );
 };
 
-export { Navbar, renderItems as renderItemsForTest };
+export { Navbar, NAVBAR_RIGHT_ITEMS, NAVBAR_LEFT_ITEMS };
