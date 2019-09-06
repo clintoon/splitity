@@ -1,61 +1,126 @@
 import React from 'react';
 import { shallow, ShallowWrapper } from 'enzyme';
-import { Hero } from '@web/design/components/Hero/Hero';
+import {
+  Hero,
+  HERO_TITLE_TESTID,
+  HERO_SUBTITLE_TESTID,
+} from '@web/design/components/Hero/Hero';
 import { Color } from '@web/design/styles/color';
 import { Text } from '@web/design/components/Text/Text';
-import { Button } from '@web/design/components/Button/Button';
+import { Button, BUTTON_TESTID } from '@web/design/components/Button/Button';
+import { RenderResult, render, fireEvent } from '@testing-library/react';
+
+const HERO_TITLE = 'hero title';
+const HERO_SUBTITLE = 'hero subtitle';
+const HERO_BUTTON_LABEL = 'hero label';
+
+interface RenderHeroOptions {
+  backgroundColor: Color;
+  buttonLabel?: string;
+}
+
+interface RenderHeroResult {
+  renderResult: RenderResult;
+  onButtonClickMock: jest.Mock;
+}
+
+const renderHero = (options: RenderHeroOptions): RenderHeroResult => {
+  const { backgroundColor, buttonLabel } = options;
+
+  const onButtonClickMock = jest.fn();
+  const button = buttonLabel
+    ? { label: buttonLabel, onClick: onButtonClickMock }
+    : undefined;
+
+  const renderResult = render(
+    <Hero
+      title={HERO_TITLE}
+      subtitle={HERO_SUBTITLE}
+      backgroundColor={backgroundColor}
+      button={button}
+    />
+  );
+
+  return {
+    renderResult,
+    onButtonClickMock,
+  };
+};
 
 describe('<Hero/>', (): void => {
-  let wrapper: ShallowWrapper;
-  const title = 'title';
-  const subtitle = 'subtitle';
-
-  beforeEach((): void => {
-    wrapper = shallow(
-      <Hero
-        title={title}
-        subtitle={subtitle}
-        backgroundColor={Color.LightOrange}
-      />
-    );
-
-    jest.clearAllMocks();
-  });
-
-  it('renders the title', (): void => {
-    const titleWrapper = wrapper.find(Text).at(0);
-    expect(titleWrapper.prop('children')).toBe(title);
-  });
-
-  it('renders the subtitle', (): void => {
-    const subtitleWrapper = wrapper.find(Text).at(1);
-    expect(subtitleWrapper.prop('children')).toBe(subtitle);
-  });
-
-  it('sets the correct background color', (): void => {
-    expect(wrapper).toHaveStyleRule('background-color', Color.LightOrange);
-  });
-
-  it("doesn't display button if button prop is undefined", (): void => {
-    expect(wrapper.find(Button).exists()).toBe(false);
-  });
-
-  describe('button', (): void => {
-    let onClickMock = jest.fn();
-    const buttonLabel = 'buttonLabel';
-
-    beforeEach((): void => {
-      wrapper.setProps({
-        button: { label: buttonLabel, onClick: onClickMock },
+  describe('no button', (): void => {
+    it('renders title', (): void => {
+      const { renderResult } = renderHero({
+        backgroundColor: Color.Orange,
       });
+      expect(renderResult.getByTestId(HERO_TITLE_TESTID)).toHaveTextContent(
+        HERO_TITLE
+      );
     });
 
-    it('has the correct button label', (): void => {
-      expect(wrapper.find(Button).prop('children')).toBe(buttonLabel);
+    it('renders subtitle', (): void => {
+      const { renderResult } = renderHero({
+        backgroundColor: Color.Orange,
+      });
+      expect(renderResult.getByTestId(HERO_SUBTITLE_TESTID)).toHaveTextContent(
+        HERO_SUBTITLE
+      );
     });
 
-    it('we pass the onClick correctly', (): void => {
-      expect(wrapper.find(Button).prop('onClick')).toBe(onClickMock);
+    it('does not render button', (): void => {
+      const { renderResult } = renderHero({
+        backgroundColor: Color.Orange,
+      });
+      expect(renderResult.container).not.toContainHTML('button');
+    });
+  });
+
+  describe('with button', (): void => {
+    it('renders title', (): void => {
+      const { renderResult } = renderHero({
+        backgroundColor: Color.Orange,
+        buttonLabel: HERO_BUTTON_LABEL,
+      });
+      expect(renderResult.getByTestId(HERO_TITLE_TESTID)).toHaveTextContent(
+        HERO_TITLE
+      );
+    });
+
+    it('renders subtitle', (): void => {
+      const { renderResult } = renderHero({
+        backgroundColor: Color.Orange,
+        buttonLabel: HERO_BUTTON_LABEL,
+      });
+      expect(renderResult.getByTestId(HERO_SUBTITLE_TESTID)).toHaveTextContent(
+        HERO_SUBTITLE
+      );
+    });
+
+    it('does renders button', (): void => {
+      const { renderResult } = renderHero({
+        backgroundColor: Color.Orange,
+        buttonLabel: HERO_BUTTON_LABEL,
+      });
+      expect(renderResult.container).toContainHTML('button');
+    });
+
+    it('does renders correct button label', (): void => {
+      const { renderResult } = renderHero({
+        backgroundColor: Color.Orange,
+        buttonLabel: HERO_BUTTON_LABEL,
+      });
+      expect(renderResult.getByTestId(BUTTON_TESTID)).toHaveTextContent(
+        HERO_BUTTON_LABEL
+      );
+    });
+
+    it("calls button's onClick when is pressed", (): void => {
+      const { renderResult, onButtonClickMock } = renderHero({
+        backgroundColor: Color.Orange,
+        buttonLabel: HERO_BUTTON_LABEL,
+      });
+      fireEvent.click(renderResult.getByTestId(BUTTON_TESTID));
+      expect(onButtonClickMock).toHaveBeenCalled();
     });
   });
 });
