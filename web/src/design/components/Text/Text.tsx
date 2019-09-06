@@ -69,6 +69,8 @@ const textStyleMapping = {
   },
 };
 
+const TEXT_TEST_ID = 'text';
+
 const applyTextCSSProperties = (props: TextBaseProps): CSSProp => {
   const { styleOf, margin, textAlign } = props;
   return css`
