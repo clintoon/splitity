@@ -12,6 +12,9 @@ import {
   ButtonStyle,
 } from '@web/design/components/Button/Button';
 
+const HERO_TITLE_TESTID = 'hero-title';
+const HERO_SUBTITLE_TESTID = 'hero-subtitle';
+
 export interface HeroProps {
   title: string;
   subtitle: string;
@@ -55,21 +58,25 @@ const Hero = ({
   return (
     <HeroWrapper backgroundColor={backgroundColor}>
       <ContentWrapper>
-        <Text
-          as={TextAs.H1}
-          styleOf={TextStyle.Title1}
-          textAlign={TextAlign.Center}
-        >
-          {title}
-        </Text>
-        <Text
-          as={TextAs.H3}
-          styleOf={TextStyle.Title3}
-          textAlign={TextAlign.Center}
-          margin="0 0 20px 0"
-        >
-          {subtitle}
-        </Text>
+        <div data-testid={HERO_TITLE_TESTID}>
+          <Text
+            as={TextAs.H1}
+            styleOf={TextStyle.Title1}
+            textAlign={TextAlign.Center}
+          >
+            {title}
+          </Text>
+        </div>
+        <div data-testid={HERO_SUBTITLE_TESTID}>
+          <Text
+            as={TextAs.H3}
+            styleOf={TextStyle.Title3}
+            textAlign={TextAlign.Center}
+            margin="0 0 20px 0"
+          >
+            {subtitle}
+          </Text>
+        </div>
         {button && (
           <ButtonWrapper>
             <Button
@@ -86,4 +93,4 @@ const Hero = ({
   );
 };
 
-export { Hero };
+export { Hero, HERO_TITLE_TESTID, HERO_SUBTITLE_TESTID };

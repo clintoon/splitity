@@ -4,6 +4,8 @@ import { Color } from '@web/design/styles/color';
 import { noop } from 'lodash';
 import { fontFamily } from '@web/design/styles/font';
 
+const BUTTON_TESTID = 'button';
+
 export enum ButtonSize {
   Small = 's',
   Medium = 'm',
@@ -65,7 +67,11 @@ const ButtonBase = styled('button')<ButtonBaseProps>`
 
 const Button = (props: ButtonProps): JSX.Element => {
   const { children } = props;
-  return <ButtonBase {...props}>{children}</ButtonBase>;
+  return (
+    <ButtonBase data-testid={BUTTON_TESTID} {...props}>
+      {children}
+    </ButtonBase>
+  );
 };
 
 Button.defaultProps = {
@@ -73,4 +79,4 @@ Button.defaultProps = {
   onClick: noop,
 };
 
-export { Button, ButtonBase as ButtonBaseForTest };
+export { Button, ButtonBase as ButtonBaseForTest, BUTTON_TESTID };

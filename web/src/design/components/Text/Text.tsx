@@ -2,6 +2,8 @@ import React from 'react';
 import styled, { CSSProp, css } from 'styled-components';
 import { fontFamily } from '@web/design/styles/font';
 
+const TEXT_TESTID = 'text';
+
 export enum TextStyle {
   Title1 = 'title1',
   Title2 = 'title2',
@@ -167,4 +169,4 @@ Text.defaultProps = {
   margin: '0',
 };
 
-export { Text, TEXT_TEST_ID };
+export { Text, TEXT_TESTID };

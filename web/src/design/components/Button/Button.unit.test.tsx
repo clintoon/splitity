@@ -1,6 +1,10 @@
 import React from 'react';
 import { render, fireEvent, RenderResult } from '@testing-library/react';
-import { Button, ButtonStyle } from '@web/design/components/Button/Button';
+import {
+  Button,
+  ButtonStyle,
+  BUTTON_TESTID,
+} from '@web/design/components/Button/Button';
 
 const BUTTON_LABEL = 'label';
 
@@ -29,7 +33,9 @@ const renderButton = ({ styleOf }: RenderButton): RenderButtonResult => {
 describe('<Button/>', (): void => {
   it('renders the button label', (): void => {
     const { renderResult } = renderButton({ styleOf: ButtonStyle.Primary });
-    expect(renderResult.getByRole('button')).toHaveTextContent(BUTTON_LABEL);
+    expect(renderResult.getByTestId(BUTTON_TESTID)).toHaveTextContent(
+      BUTTON_LABEL
+    );
   });
 
   it('calls onClick prop when button is clicked', (): void => {
@@ -37,7 +43,7 @@ describe('<Button/>', (): void => {
       styleOf: ButtonStyle.Primary,
     });
 
-    fireEvent.click(renderResult.getByRole('button'));
+    fireEvent.click(renderResult.getByTestId(BUTTON_TESTID));
 
     expect(onClickMock).toHaveBeenCalled();
   });
