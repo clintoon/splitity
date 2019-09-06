@@ -67,6 +67,8 @@ const textStyleMapping = {
   },
 };
 
+const TEXT_TEST_ID = 'text';
+
 const applyTextCSSProperties = (props: TextBaseProps): CSSProp => {
   const { styleOf, margin, textAlign } = props;
   return css`
@@ -148,7 +150,12 @@ const Text = ({
 }: TextProps): JSX.Element => {
   const BaseComponent = textTagTypeToComponentMap[as];
   return (
-    <BaseComponent styleOf={styleOf} margin={margin} textAlign={textAlign}>
+    <BaseComponent
+      data-testid="text"
+      styleOf={styleOf}
+      margin={margin}
+      textAlign={textAlign}
+    >
       {children}
     </BaseComponent>
   );
@@ -160,4 +167,4 @@ Text.defaultProps = {
   margin: '0',
 };
 
-export { Text };
+export { Text, TEXT_TEST_ID };

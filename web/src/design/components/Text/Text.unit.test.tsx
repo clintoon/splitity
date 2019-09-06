@@ -1,75 +1,12 @@
 import React from 'react';
-import { mount } from 'enzyme';
-import {
-  Text,
-  TextAs,
-  TextStyle,
-  TextProps,
-  TextAlign,
-} from '@web/design/components/Text/Text';
+import { render } from '@testing-library/react';
+import { Text, TEXT_TEST_ID } from '@web/design/components/Text/Text';
 
-type OptionalTextProps = Omit<Partial<TextProps>, 'children'>;
-type TestProp = 'styleOf' | 'as' | 'textAlign' | 'margin';
+const TEXT_CHILD = 'I am some words';
 
 describe('<Text/>', (): void => {
-  const testStyleOfTextSnapshots = (
-    testName: string,
-    testProp: TestProp,
-    props: OptionalTextProps[]
-  ): void => {
-    props.forEach((prop): void => {
-      it(`${testName} ${prop[testProp]}`, (): void => {
-        const wrapper = mount(<Text {...prop}>example</Text>);
-        expect(wrapper.getDOMNode()).toMatchSnapshot();
-      });
-    });
-  };
-
-  it('has correct default html tag and css properties', (): void => {
-    const wrapper = mount(<Text>example</Text>);
-    expect(wrapper.getDOMNode()).toMatchSnapshot();
-  });
-
-  describe('styleOf prop', (): void => {
-    testStyleOfTextSnapshots(
-      'has correct CSS properties for',
-      'styleOf',
-      Object.values(TextStyle).map(
-        (propValue): OptionalTextProps => {
-          return { styleOf: propValue };
-        }
-      )
-    );
-  });
-
-  describe('as prop', (): void => {
-    testStyleOfTextSnapshots(
-      'has correct html tag for',
-      'as',
-      Object.values(TextAs).map(
-        (propValue): OptionalTextProps => {
-          return { as: propValue };
-        }
-      )
-    );
-  });
-
-  describe('textAlign prop', (): void => {
-    testStyleOfTextSnapshots(
-      'has correct CSS properties for',
-      'textAlign',
-      Object.values(TextAlign).map(
-        (propValue): OptionalTextProps => {
-          return { textAlign: propValue };
-        }
-      )
-    );
-  });
-
-  describe('margin prop', (): void => {
-    it('has correct CSS properties when set', (): void => {
-      const wrapper = mount(<Text margin="1 1 1 1">example</Text>);
-      expect(wrapper.getDOMNode()).toMatchSnapshot();
-    });
+  it('displays text', (): void => {
+    const { getByTestId } = render(<Text>{TEXT_CHILD}</Text>);
+    expect(getByTestId(TEXT_TEST_ID)).toHaveTextContent(TEXT_CHILD);
   });
 });
