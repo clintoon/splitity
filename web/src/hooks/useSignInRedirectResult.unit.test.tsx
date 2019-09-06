@@ -30,7 +30,7 @@ describe('useSignInRedirect', (): void => {
   let wrapper: ReactWrapper;
   const mockCurrentUser = currentUserFactory();
   let mockStore: StoreType;
-  const setOAuthTokenSpy = jest.spyOn(authCookie, 'setOAuthToken');
+  let setOAuthTokenSpy: jest.SpyInstance;
   let history: History;
 
   afterEach((): void => {
@@ -40,6 +40,7 @@ describe('useSignInRedirect', (): void => {
   describe('on success', (): void => {
     beforeEach(
       async (): Promise<void> => {
+        setOAuthTokenSpy = jest.spyOn(authCookie, 'setOAuthToken');
         history = createMemoryHistory({
           initialEntries: [RoutePath.Root],
         });
@@ -81,6 +82,8 @@ describe('useSignInRedirect', (): void => {
   describe('on failure', (): void => {
     beforeEach(
       async (): Promise<void> => {
+        setOAuthTokenSpy = jest.spyOn(authCookie, 'setOAuthToken');
+
         history = createMemoryHistory({
           initialEntries: [RoutePath.Root],
         });
