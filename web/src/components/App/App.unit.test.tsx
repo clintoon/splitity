@@ -1,15 +1,14 @@
 import React from 'react';
 import { mount, ReactWrapper } from 'enzyme';
-import { App } from '@web/components/App';
+import { App } from '@web/components/App/App';
 import { GlobalStyle } from '@web/design/styles/GlobalStyle';
-import { PageContent } from '@web/components/PageContent';
+import { PageContent } from '@web/components/App/PageContent';
 import { StoreType } from '@web/stores/storeProvider';
 import { mockStoreFactory, TestStoreProvider } from '@web/testing/mockStore';
 import { MemoryRouter } from 'react-router';
-import * as UseNotAuthRedirect from '@web/hooks/useNotAuthRedirect';
-import * as UseSignInRedirectResult from '@web/hooks/useSignInRedirectResult';
-import * as UseSyncUserStore from '@web/hooks/useSyncUserStore';
-import { noop } from '@babel/types';
+import * as UseNotAuthRedirect from '@web/components/App/hooks/useNotAuthRedirect';
+import * as UseSignInRedirectResult from '@web/components/App/hooks/useSignInRedirectResult';
+import * as UseSyncUserStore from '@web/components/App/hooks/useSyncUserStore';
 
 jest.mock('@web/lib/firebase/auth');
 

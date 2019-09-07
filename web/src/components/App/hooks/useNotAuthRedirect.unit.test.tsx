@@ -1,15 +1,15 @@
 import React from 'react';
 import { mount, ReactWrapper } from 'enzyme';
+import { mock, when, instance } from 'ts-mockito';
+import { User, Unsubscribe } from 'firebase';
+import { History, createMemoryHistory } from 'history';
 
 import { StoreType } from '@web/stores/storeProvider';
 import { FirebaseAuth } from '@web/lib/firebase/auth';
-import { mock, when, instance } from 'ts-mockito';
-import { User, Unsubscribe } from 'firebase';
 import { mockStoreFactory } from '@web/testing/mockStore';
 import { currentUserFactory } from '@web/testing/mockCurrentUser';
 import { RoutePath } from '@web/constants/routes';
-import { useNotAuthRedirect } from './useNotAuthRedirect';
-import { History, createMemoryHistory } from 'history';
+import { useNotAuthRedirect } from '@web/components/App/hooks/useNotAuthRedirect';
 
 jest.mock('@web/lib/firebase/auth');
 

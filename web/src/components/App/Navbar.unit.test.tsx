@@ -5,7 +5,7 @@ import { FirebaseAuth } from '@web/lib/firebase/auth';
 import { TestStoreProvider, mockStoreFactory } from '@web/testing/mockStore';
 import { RoutePath, GithubRoutePath } from '@web/constants/routes';
 import { MemoryRouter } from 'react-router';
-import { Navbar, NavbarForTest } from '@web/components/Navbar';
+import { Navbar, NavbarForTest } from '@web/components/App/Navbar';
 import { currentUserFactory } from '@web/testing/mockCurrentUser';
 
 jest.mock('@web/lib/firebase/auth');

@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
+import { History } from 'history';
+import { User } from 'firebase';
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import { firebaseApp } from '@web/lib/firebase/firebase';
-import { User } from 'firebase';
 import { clearAuthCookie } from '@web/lib/cookie/authCookie';
 import { StoreType } from '@web/stores/storeProvider';
-import { History } from 'history';
 import { RoutePath } from '@web/constants/routes';
 
 const useNotAuthRedirect = (store: StoreType, history: History): void => {

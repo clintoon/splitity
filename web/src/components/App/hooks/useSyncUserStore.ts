@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
+import { User } from 'firebase';
+
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import { firebaseApp } from '@web/lib/firebase/firebase';
-import { User } from 'firebase';
 import { transformFirebaseUser } from '@web/lib/firebase/helpers/auth';
 import { getOAuthToken, clearAuthCookie } from '@web/lib/cookie/authCookie';
 import { StoreType } from '@web/stores/storeProvider';

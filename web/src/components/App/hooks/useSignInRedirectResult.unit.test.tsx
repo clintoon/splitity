@@ -1,14 +1,15 @@
-import { useSignInRedirectResult } from '@web/hooks/useSignInRedirectResult';
+import React from 'react';
+import { act } from 'react-dom/test-utils';
+import { ReactWrapper, mount } from 'enzyme';
+import { History, createMemoryHistory } from 'history';
+
+import { useSignInRedirectResult } from '@web/components/App/hooks/useSignInRedirectResult';
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import { mockStoreFactory } from '@web/testing/mockStore';
 import { StoreType } from '@web/stores/storeProvider';
 import { currentUserFactory } from '@web/testing/mockCurrentUser';
 import * as authCookie from '@web/lib/cookie/authCookie';
-import { History, createMemoryHistory } from 'history';
 import { GithubRoutePath, RoutePath } from '@web/constants/routes';
-import React from 'react';
-import { ReactWrapper, mount } from 'enzyme';
-import { act } from 'react-dom/test-utils';
 
 jest.mock('@web/lib/firebase/auth');
 

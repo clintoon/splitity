@@ -1,18 +1,14 @@
 import React from 'react';
 import { mount, ReactWrapper } from 'enzyme';
-import { App, AppForTest } from '@web/components/App';
-import { GlobalStyle } from '@web/design/styles/GlobalStyle';
-import { PageContent } from '@web/components/PageContent';
+import { mock, when, instance } from 'ts-mockito';
+import { User, Unsubscribe } from 'firebase';
+
 import { StoreType } from '@web/stores/storeProvider';
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import * as authCookie from '@web/lib/cookie/authCookie';
-import { mock, when, instance } from 'ts-mockito';
-import { User, Unsubscribe } from 'firebase';
-import { mockStoreFactory, TestStoreProvider } from '@web/testing/mockStore';
+import { mockStoreFactory } from '@web/testing/mockStore';
 import { currentUserFactory } from '@web/testing/mockCurrentUser';
-import { MemoryRouter } from 'react-router';
-import { RoutePath } from '@web/constants/routes';
-import { useSyncUserStore } from './useSyncUserStore';
+import { useSyncUserStore } from '@web/components/App/hooks/useSyncUserStore';
 
 jest.mock('@web/lib/firebase/auth');
 

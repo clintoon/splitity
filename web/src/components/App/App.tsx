@@ -1,11 +1,11 @@
 import React from 'react';
 import { GlobalStyle } from '@web/design/styles/GlobalStyle';
-import { PageContent } from '@web/components/PageContent';
+import { PageContent } from '@web/components/App/PageContent';
 import { useStore } from '@web/stores/useStore';
 import { withRouter, RouteComponentProps } from 'react-router';
-import { useSignInRedirectResult } from '@web/hooks/useSignInRedirectResult';
-import { useSyncUserStore } from '@web/hooks/useSyncUserStore';
-import { useNotAuthRedirect } from '@web/hooks/useNotAuthRedirect';
+import { useSignInRedirectResult } from '@web/components/App/hooks/useSignInRedirectResult';
+import { useSyncUserStore } from '@web/components/App/hooks/useSyncUserStore';
+import { useNotAuthRedirect } from '@web/components/App/hooks/useNotAuthRedirect';
 
 const WrappedApp = ({ history }: RouteComponentProps): JSX.Element => {
   const store = useStore();
