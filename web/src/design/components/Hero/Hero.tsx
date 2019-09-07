@@ -12,6 +12,7 @@ import {
   ButtonStyle,
 } from '@web/design/components/Button/Button';
 
+const HERO_TESTID = 'hero';
 const HERO_TITLE_TESTID = 'hero-title';
 const HERO_SUBTITLE_TESTID = 'hero-subtitle';
 
@@ -56,7 +57,7 @@ const Hero = ({
   button,
 }: HeroProps): JSX.Element => {
   return (
-    <HeroWrapper backgroundColor={backgroundColor}>
+    <HeroWrapper data-testid={HERO_TESTID} backgroundColor={backgroundColor}>
       <ContentWrapper>
         <div data-testid={HERO_TITLE_TESTID}>
           <Text
@@ -93,4 +94,4 @@ const Hero = ({
   );
 };
 
-export { Hero, HERO_TITLE_TESTID, HERO_SUBTITLE_TESTID };
+export { Hero, HERO_TITLE_TESTID, HERO_SUBTITLE_TESTID, HERO_TESTID };

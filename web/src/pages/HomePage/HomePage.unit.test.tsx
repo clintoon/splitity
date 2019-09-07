@@ -1,16 +1,11 @@
 import React from 'react';
-import { shallow, ShallowWrapper } from 'enzyme';
 import { HomePage } from '@web/pages/HomePage/HomePage';
-import { Hero } from '@web/design/components/Hero/Hero';
+import { HERO_TESTID } from '@web/design/components/Hero/Hero';
+import { render } from '@testing-library/react';
 
-describe('<HomePage />', (): void => {
-  let wrapper: ShallowWrapper;
-
-  beforeEach((): void => {
-    wrapper = shallow(<HomePage />);
-  });
-
-  it('renders <Hero />', (): void => {
-    expect(wrapper.find(Hero).exists()).toBe(true);
+describe('<HomePage/>', (): void => {
+  it('renders <Hero/>', (): void => {
+    const { queryByTestId } = render(<HomePage />);
+    expect(queryByTestId(HERO_TESTID)).not.toBe(null);
   });
 });

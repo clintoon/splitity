@@ -1,13 +1,11 @@
 import React from 'react';
-import { shallow, ShallowWrapper } from 'enzyme';
 import {
   Hero,
   HERO_TITLE_TESTID,
   HERO_SUBTITLE_TESTID,
 } from '@web/design/components/Hero/Hero';
 import { Color } from '@web/design/styles/color';
-import { Text } from '@web/design/components/Text/Text';
-import { Button, BUTTON_TESTID } from '@web/design/components/Button/Button';
+import { BUTTON_TESTID } from '@web/design/components/Button/Button';
 import { RenderResult, render, fireEvent } from '@testing-library/react';
 
 const HERO_TITLE = 'hero title';
@@ -101,7 +99,9 @@ describe('<Hero/>', (): void => {
         backgroundColor: Color.Orange,
         buttonLabel: HERO_BUTTON_LABEL,
       });
-      expect(renderResult.container).toContainHTML('button');
+      expect(renderResult.container).toContainElement(
+        renderResult.getByTestId(BUTTON_TESTID)
+      );
     });
 
     it('does renders correct button label', (): void => {
