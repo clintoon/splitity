@@ -244,6 +244,51 @@ describe('<App/>', (): void => {
         expect(history.location.pathname).toBe(testRoute);
       });
     });
+
+    it('should not redirect to root route when authenticated in /gh', async (): Promise<
+      void
+    > => {
+      const testRoute = '/gh';
+      const { history } = renderApp({
+        initialRoute: testRoute,
+        isAuthenticated: true,
+        backFromAuthRedirect: false,
+        initialStoreAuthenticated: false,
+      });
+      await wait((): void => {
+        expect(history.location.pathname).toBe(testRoute);
+      });
+    });
+
+    it('should not redirect to root route when authenticated in /gh/route', async (): Promise<
+      void
+    > => {
+      const testRoute = '/gh/route';
+      const { history } = renderApp({
+        initialRoute: testRoute,
+        isAuthenticated: true,
+        backFromAuthRedirect: false,
+        initialStoreAuthenticated: false,
+      });
+      await wait((): void => {
+        expect(history.location.pathname).toBe(testRoute);
+      });
+    });
+
+    it('should not redirect to root route when authenticated in /abc123', async (): Promise<
+      void
+    > => {
+      const testRoute = '/abc123';
+      const { history } = renderApp({
+        initialRoute: testRoute,
+        isAuthenticated: true,
+        backFromAuthRedirect: false,
+        initialStoreAuthenticated: false,
+      });
+      await wait((): void => {
+        expect(history.location.pathname).toBe(testRoute);
+      });
+    });
   });
 
   describe('navbar', (): void => {
