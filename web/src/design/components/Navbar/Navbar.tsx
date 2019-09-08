@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import { Color } from '@web/design/styles/color';
 import { logError } from '@web/lib/logger';
 
-const NAVBAR_RIGHT_ITEMS = 'navbar-right-items';
-const NAVBAR_LEFT_ITEMS = 'navbar-left-items';
+const NAVBAR_TESTID = 'navbar';
+const NAVBAR_RIGHT_ITEMS_TESTID = 'navbar-right-items';
+const NAVBAR_LEFT_ITEMS_TESTID = 'navbar-left-items';
 
 export interface NavbarProps {
   leftItems?: JSX.Element[];
@@ -59,12 +60,12 @@ const renderItems = (items?: JSX.Element[]): JSX.Element[] | null => {
 
 const Navbar = ({ leftItems, rightItems }: NavbarProps): JSX.Element => {
   return (
-    <NavbarBox>
+    <NavbarBox data-testid={NAVBAR_TESTID}>
       <Content>
-        <ItemGroup data-testid={NAVBAR_LEFT_ITEMS}>
+        <ItemGroup data-testid={NAVBAR_LEFT_ITEMS_TESTID}>
           {renderItems(leftItems)}
         </ItemGroup>
-        <ItemGroup data-testid={NAVBAR_RIGHT_ITEMS}>
+        <ItemGroup data-testid={NAVBAR_RIGHT_ITEMS_TESTID}>
           {renderItems(rightItems)}
         </ItemGroup>
       </Content>
@@ -72,4 +73,9 @@ const Navbar = ({ leftItems, rightItems }: NavbarProps): JSX.Element => {
   );
 };
 
-export { Navbar, NAVBAR_RIGHT_ITEMS, NAVBAR_LEFT_ITEMS };
+export {
+  Navbar,
+  NAVBAR_RIGHT_ITEMS_TESTID,
+  NAVBAR_LEFT_ITEMS_TESTID,
+  NAVBAR_TESTID,
+};

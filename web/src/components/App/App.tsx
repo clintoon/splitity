@@ -7,6 +7,8 @@ import { useSignInRedirectResult } from '@web/components/App/hooks/useSignInRedi
 import { useSyncUserStore } from '@web/components/App/hooks/useSyncUserStore';
 import { useNotAuthRedirect } from '@web/components/App/hooks/useNotAuthRedirect';
 
+const APP_LOADING = 'app-loading';
+
 const WrappedApp = ({ history }: RouteComponentProps): JSX.Element => {
   const store = useStore();
 
@@ -15,7 +17,7 @@ const WrappedApp = ({ history }: RouteComponentProps): JSX.Element => {
 
   const fetchingRedirectResult = useSignInRedirectResult(store, history);
   if (fetchingRedirectResult) {
-    return <div>loading...</div>;
+    return <div data-testid={APP_LOADING}>loading...</div>;
   }
 
   return (
@@ -28,4 +30,4 @@ const WrappedApp = ({ history }: RouteComponentProps): JSX.Element => {
 
 const App = withRouter(WrappedApp);
 
-export { App, WrappedApp as AppForTest };
+export { App, WrappedApp as AppForTest, APP_LOADING };

@@ -9,6 +9,9 @@ import { RoutePath } from '@web/constants/routes';
 import { useStore } from '@web/stores/useStore';
 import { observer } from 'mobx-react-lite';
 
+const NAVBAR_SIGNIN_TESTID = 'navbar-signin';
+const NAVBAR_SIGN_OUT_TESTID = 'navbar-signout';
+
 const renderNotAuthenticatedNavbar = (): JSX.Element => {
   const handleSignIn = async (): Promise<void> => {
     const auth = new FirebaseAuth(firebaseApp);
@@ -18,13 +21,11 @@ const renderNotAuthenticatedNavbar = (): JSX.Element => {
   return (
     <DesignNavbar
       rightItems={[
-        <Button
-          key="login"
-          styleOf={ButtonStyle.Primary}
-          onClick={handleSignIn}
-        >
-          Login
-        </Button>,
+        <div data-testid={NAVBAR_SIGNIN_TESTID} key="login">
+          <Button styleOf={ButtonStyle.Primary} onClick={handleSignIn}>
+            Login
+          </Button>
+        </div>,
       ]}
     />
   );
@@ -42,13 +43,11 @@ const renderAuthenticatedNavbar = (history: History): JSX.Element => {
   return (
     <DesignNavbar
       rightItems={[
-        <Button
-          key="logout"
-          styleOf={ButtonStyle.Primary}
-          onClick={handleSignOut}
-        >
-          Logout
-        </Button>,
+        <div data-testid={NAVBAR_SIGN_OUT_TESTID} key="logout">
+          <Button styleOf={ButtonStyle.Primary} onClick={handleSignOut}>
+            Logout
+          </Button>
+        </div>,
       ]}
     />
   );
@@ -67,4 +66,9 @@ const WrappedNavbar = observer(
 
 const Navbar = withRouter(WrappedNavbar);
 
-export { Navbar, WrappedNavbar as NavbarForTest };
+export {
+  Navbar,
+  WrappedNavbar as NavbarForTest,
+  NAVBAR_SIGNIN_TESTID,
+  NAVBAR_SIGN_OUT_TESTID,
+};

@@ -1,8 +1,8 @@
 import React from 'react';
 import {
   Navbar,
-  NAVBAR_RIGHT_ITEMS,
-  NAVBAR_LEFT_ITEMS,
+  NAVBAR_RIGHT_ITEMS_TESTID,
+  NAVBAR_LEFT_ITEMS_TESTID,
 } from '@web/design/components/Navbar/Navbar';
 import { render, RenderResult } from '@testing-library/react';
 import { logError } from '@web/lib/logger';
@@ -58,11 +58,11 @@ describe('<Navbar/>', (): void => {
     it('renders right items in the right container', (): void => {
       const { getByTestId } = renderMultipleTestItemsNavbar();
 
-      expect(getByTestId(NAVBAR_RIGHT_ITEMS)).toContainElement(
+      expect(getByTestId(NAVBAR_RIGHT_ITEMS_TESTID)).toContainElement(
         getByTestId(RIGHT_ITEM1_LABEL)
       );
 
-      expect(getByTestId(NAVBAR_RIGHT_ITEMS)).toContainElement(
+      expect(getByTestId(NAVBAR_RIGHT_ITEMS_TESTID)).toContainElement(
         getByTestId(RIGHT_ITEM2_LABEL)
       );
     });
@@ -70,11 +70,11 @@ describe('<Navbar/>', (): void => {
     it('renders right items in the left container', (): void => {
       const { getByTestId } = renderMultipleTestItemsNavbar();
 
-      expect(getByTestId(NAVBAR_LEFT_ITEMS)).toContainElement(
+      expect(getByTestId(NAVBAR_LEFT_ITEMS_TESTID)).toContainElement(
         getByTestId(LEFT_ITEM1_LABEL)
       );
 
-      expect(getByTestId(NAVBAR_LEFT_ITEMS)).toContainElement(
+      expect(getByTestId(NAVBAR_LEFT_ITEMS_TESTID)).toContainElement(
         getByTestId(LEFT_ITEM2_LABEL)
       );
     });
