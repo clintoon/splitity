@@ -1,10 +1,11 @@
+import { useEffect, useState } from 'react';
+import { History } from 'history';
+
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import { firebaseApp } from '@web/lib/firebase/firebase';
 import { StoreType } from '@web/stores/storeProvider';
 import { setOAuthToken } from '@web/lib/cookie/authCookie';
-import { History } from 'history';
 import { GithubRoutePath } from '@web/constants/routes';
-import { useEffect, useState } from 'react';
 
 const useSignInRedirectResult = (
   store: StoreType,
