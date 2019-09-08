@@ -13,7 +13,7 @@ const WrappedApp = ({ history }: RouteComponentProps): JSX.Element => {
   const store = useStore();
 
   useSyncUserStore(store);
-  useNotAuthRedirect(store, history);
+  useNotAuthRedirect(history);
 
   const fetchingRedirectResult = useSignInRedirectResult(store, history);
   if (fetchingRedirectResult) {
