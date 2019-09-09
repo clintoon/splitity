@@ -7,7 +7,7 @@ export interface StoreType {
 }
 
 export interface StoreProviderProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const storeContext = React.createContext<StoreType | null>(null);
