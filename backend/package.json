@@ -1,5 +1,5 @@
 {
-  "name": "split-my-prs-backend",
+  "name": "@split-my-prs/backend",
   "version": "1.0.0",
   "main": "src/app.js",
   "repository": "git@github.com:clintoon/split-my-prs.git",
