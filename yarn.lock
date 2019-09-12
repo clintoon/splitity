@@ -10877,10 +10877,10 @@ nodegit-promise@~4.0.0:
   dependencies:
     asap "~2.0.3"
 
-nodegit@^0.25.1:
-  version "0.25.1"
-  resolved "https://registry.yarnpkg.com/nodegit/-/nodegit-0.25.1.tgz#70b9d89e62cbc1153237a10a196e3228a669895b"
-  integrity sha512-j2kEd4jTraimRPKDX31DsLcfY9fWpcYG8zT0tiLVtN5jMm9fDFgn3WOQ+Nk+3NcBqxr4p5N5pZqNrCS0nGdTbg==
+nodegit@^0.26.0:
+  version "0.26.0"
+  resolved "https://registry.yarnpkg.com/nodegit/-/nodegit-0.26.0.tgz#b8f6aa45605293228d52e802f4e013842cb82830"
+  integrity sha512-NG8VWnmVn0wVJE6cpgK1LF3SDUbN4G/ZIDkNp4K9Iise4QPnFBM2j/weJm41bCLNnqgQfvy2taf9TMbVlSoyMA==
   dependencies:
     fs-extra "^7.0.0"
     json5 "^2.1.0"
