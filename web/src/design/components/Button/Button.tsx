@@ -41,9 +41,11 @@ const buttonSizeMap = {
 const buttonStyleOfMap = {
   primary: {
     backgroundColor: Color.Orange,
+    fontColor: Color.Black,
   },
   secondary: {
     backgroundColor: Color.LightGray,
+    fontColor: Color.Orange,
   },
 };
 
@@ -51,6 +53,8 @@ const ButtonBase = styled('button')<ButtonBaseProps>`
   ${fontFamily};
   border-radius: 4px;
   font-size: 14px;
+  cursor: pointer;
+  border: none;
 
   ${({ size }): CSSProp => {
     return css`
@@ -61,6 +65,7 @@ const ButtonBase = styled('button')<ButtonBaseProps>`
   ${({ styleOf }): CSSProp => {
     return css`
       background-color: ${buttonStyleOfMap[styleOf].backgroundColor};
+      color: ${buttonStyleOfMap[styleOf].fontColor};
     `;
   }}
 `;
