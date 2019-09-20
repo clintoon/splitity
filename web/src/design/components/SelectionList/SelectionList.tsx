@@ -2,7 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { Color } from '@web/design/styles/color';
 import { Text, TextStyle } from '@web/design/components/Text/Text';
-import { Button, ButtonStyle, ButtonSize } from '../Button/Button';
+import { Button, ButtonStyle } from '../Button/Button';
+import { noop } from 'lodash';
+
+const ITEM_TESTID = 'selection-list-item';
+const LOAD_MORE_SECTION_TESTID = 'selection-list-load-more-section';
 
 interface Item {
   key: string | number;
@@ -13,7 +17,8 @@ interface Item {
 interface SelectionListProps {
   heading: string;
   items: Item[];
-  onLoadMoreClick?: () => void;
+  showLoadMore: boolean;
+  onLoadMoreClick: () => void;
 }
 
 const Container = styled.div`
@@ -53,13 +58,14 @@ const Item = styled.div`
 const SelectionList = ({
   heading,
   items,
+  showLoadMore,
   onLoadMoreClick,
 }: SelectionListProps): JSX.Element => {
   const renderItems = (): JSX.Element[] => {
     return items.map(
       (val): JSX.Element => {
         return (
-          <Item key={val.key} onClick={val.onClick}>
+          <Item key={val.key} onClick={val.onClick} data-testid={ITEM_TESTID}>
             <TextWrapper>
               <Text styleOf={TextStyle.Title5}>{val.text}</Text>
             </TextWrapper>
@@ -87,9 +93,11 @@ const SelectionList = ({
       {headContent}
       <Items>
         {renderItems()}
-        {onLoadMoreClick && (
-          <LoadMoreSection>
-            <Button styleOf={ButtonStyle.Secondary}>Load more</Button>
+        {showLoadMore && (
+          <LoadMoreSection data-testid={LOAD_MORE_SECTION_TESTID}>
+            <Button styleOf={ButtonStyle.Secondary} onClick={onLoadMoreClick}>
+              Load more
+            </Button>
           </LoadMoreSection>
         )}
       </Items>
@@ -97,4 +105,9 @@ const SelectionList = ({
   );
 };
 
-export { SelectionList };
+SelectionList.defaultProps = {
+  showLoadMore: false,
+  onLoadMoreClick: noop,
+};
+
+export { SelectionList, ITEM_TESTID, LOAD_MORE_SECTION_TESTID };

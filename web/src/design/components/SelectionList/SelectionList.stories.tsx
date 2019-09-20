@@ -2,11 +2,13 @@ import { SelectionList } from '@web/design/components/SelectionList/SelectionLis
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import { noop } from 'lodash';
+import { boolean } from '@storybook/addon-knobs';
 
 storiesOf('Selection List', module).add(
   'Documentation',
   (): JSX.Element => (
     <SelectionList
+      showLoadMore={boolean('showLoadMore', false)}
       onLoadMoreClick={noop}
       heading="heading"
       items={[
