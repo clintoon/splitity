@@ -8,16 +8,12 @@ import { History } from 'history';
 import { RoutePath } from '@web/constants/routes';
 import { useStore } from '@web/stores/useStore';
 import { observer } from 'mobx-react-lite';
+import { handleSignIn } from '@web/lib/eventHandlers/auth';
 
 const NAVBAR_SIGNIN_TESTID = 'navbar-signin';
 const NAVBAR_SIGN_OUT_TESTID = 'navbar-signout';
 
 const renderNotAuthenticatedNavbar = (): JSX.Element => {
-  const handleSignIn = async (): Promise<void> => {
-    const auth = new FirebaseAuth(firebaseApp);
-    auth.redirectSignInWithGithub();
-  };
-
   return (
     <DesignNavbar
       rightItems={[
