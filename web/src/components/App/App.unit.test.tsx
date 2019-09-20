@@ -23,9 +23,11 @@ import { clearAuthCookie, setOAuthToken } from '@web/lib/cookie/authCookie';
 import { NAVBAR_TESTID } from '@web/design/components/Navbar/Navbar';
 import { NAVBAR_SIGNIN_TESTID, NAVBAR_SIGN_OUT_TESTID } from './Navbar';
 import { BUTTON_TESTID } from '@web/design/components/Button/Button';
+import { handleSignIn } from '@web/lib/eventHandlers/auth';
 
 jest.mock('@web/lib/firebase/auth');
 jest.mock('@web/lib/cookie/authCookie');
+jest.mock('@web/lib/eventHandlers/auth');
 
 const AUTH_TOKEN_COOKIE = 'auth-token-cookie';
 const EMAIL = 'clinton@gmail.com';
@@ -352,9 +354,7 @@ describe('<App/>', (): void => {
 
           fireEvent.click(signInButton);
 
-          expect(
-            FirebaseAuth.prototype.redirectSignInWithGithub
-          ).toHaveBeenCalled();
+          expect(handleSignIn).toHaveBeenCalled();
         });
       });
     });
