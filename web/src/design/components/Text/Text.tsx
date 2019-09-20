@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { CSSProp, css } from 'styled-components';
 import { fontFamily } from '@web/design/styles/font';
+import { Color } from '@web/design/styles/color';
 
 const TEXT_TESTID = 'text';
 
@@ -37,12 +38,14 @@ export interface TextProps {
   children: string;
   margin: string;
   textAlign?: TextAlign;
+  color: Color;
 }
 
 interface TextBaseProps {
   styleOf: TextStyle;
   margin: string;
   textAlign?: TextAlign;
+  color: Color;
 }
 
 const textStyleMapping = {
@@ -69,10 +72,8 @@ const textStyleMapping = {
   },
 };
 
-const TEXT_TEST_ID = 'text';
-
 const applyTextCSSProperties = (props: TextBaseProps): CSSProp => {
-  const { styleOf, margin, textAlign } = props;
+  const { styleOf, margin, textAlign, color } = props;
   return css`
     ${fontFamily};
     font-size: ${textStyleMapping[styleOf].fontSize};
@@ -81,6 +82,7 @@ const applyTextCSSProperties = (props: TextBaseProps): CSSProp => {
       css`
         text-align: ${textAlign};
       `}
+    color: ${color};
   `;
 };
 
@@ -148,6 +150,7 @@ const Text = ({
   as,
   margin,
   textAlign,
+  color,
   children,
 }: TextProps): JSX.Element => {
   const BaseComponent = textTagTypeToComponentMap[as];
@@ -157,6 +160,7 @@ const Text = ({
       styleOf={styleOf}
       margin={margin}
       textAlign={textAlign}
+      color={color}
     >
       {children}
     </BaseComponent>
@@ -167,6 +171,7 @@ Text.defaultProps = {
   as: TextAs.Div,
   styleOf: TextStyle.Body,
   margin: '0',
+  color: Color.Black,
 };
 
 export { Text, TEXT_TESTID };

@@ -64,6 +64,6 @@
   },
   "scripts": {
     "start": "webpack-dev-server --mode development",
-    "storybook": "start-storybook --config-dir storybook"
+    "storybook": "start-storybook --config-dir storybook --port 9009"
   }
 }

@@ -7,6 +7,7 @@ import {
   TextAs,
   TextAlign,
 } from '@web/design/components/Text/Text';
+import { Color } from '@web/design/styles/color';
 
 const TEXT_CHILD = 'I am some words';
 
@@ -15,6 +16,7 @@ interface RenderTextOptions {
   as?: TextAs;
   margin?: string;
   textAlign?: TextAlign;
+  color?: Color;
 }
 
 const renderText = (options: RenderTextOptions): RenderResult => {
@@ -167,6 +169,13 @@ describe('<Text/>', (): void => {
 
       it('displays text when text align is left', (): void => {
         const { getByTestId } = renderText({ textAlign: TextAlign.Left });
+        expect(getByTestId(TEXT_TESTID)).toHaveTextContent(TEXT_CHILD);
+      });
+    });
+
+    describe('color', (): void => {
+      it('displays text when you pass in color prop', (): void => {
+        const { getByTestId } = renderText({ color: Color.Orange });
         expect(getByTestId(TEXT_TESTID)).toHaveTextContent(TEXT_CHILD);
       });
     });
