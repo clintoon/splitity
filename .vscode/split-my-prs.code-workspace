@@ -1,13 +1,13 @@
 {
   "folders": [
     {
-      "path": "/Users/clintonfeng/workspace/split-my-prs"
+      "path": "../web"
     },
     {
-      "path": "/Users/clintonfeng/workspace/split-my-prs/web"
+      "path": "../backend"
     },
     {
-      "path": "/Users/clintonfeng/workspace/split-my-prs/backend"
+      "path": "../"
     }
   ],
   "settings": {
