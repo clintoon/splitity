@@ -28,6 +28,7 @@ import { handleSignIn } from '@web/lib/eventHandlers/auth';
 jest.mock('@web/lib/firebase/auth');
 jest.mock('@web/lib/cookie/authCookie');
 jest.mock('@web/lib/eventHandlers/auth');
+jest.mock('@web/lib/github/github');
 
 const AUTH_TOKEN_COOKIE = 'auth-token-cookie';
 const EMAIL = 'clinton@gmail.com';
@@ -89,7 +90,10 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
   );
 
   if (backFromAuthRedirect) {
-    getRedirectResultSpy.mockResolvedValue(currentUserFactory());
+    getRedirectResultSpy.mockResolvedValue({
+      currentUser: currentUserFactory(),
+      oAuthToken: AUTH_TOKEN_COOKIE,
+    });
   } else {
     getRedirectResultSpy.mockResolvedValue(null);
   }

@@ -26,15 +26,6 @@ describe('auth', (): void => {
       ).toBeNull();
     });
 
-    it('returns undefined when result.user.credentials is undefined', (): void => {
-      expect(
-        transformRedirectResult({
-          credential: null,
-          user: instance(userMock),
-        })
-      ).toBeNull();
-    });
-
     it('return correct values when input is correct', (): void => {
       expect(
         transformRedirectResult({
@@ -45,7 +36,6 @@ describe('auth', (): void => {
         Object {
           "email": "email",
           "emailVerified": true,
-          "oAuthToken": "oauthAccessToken",
           "userId": "uid",
         }
       `);
@@ -57,19 +47,16 @@ describe('auth', (): void => {
     when(userMock.email).thenReturn('email');
     when(userMock.emailVerified).thenReturn(true);
     when(userMock.uid).thenReturn('uid');
-    const oAuthTokenMock = 'authToken';
 
     it('returns the correct output', (): void => {
       expect(
         transformFirebaseUser({
-          oAuthToken: oAuthTokenMock,
           user: instance(userMock),
         })
       ).toMatchInlineSnapshot(`
         Object {
           "email": "email",
           "emailVerified": true,
-          "oAuthToken": "authToken",
           "userId": "uid",
         }
       `);

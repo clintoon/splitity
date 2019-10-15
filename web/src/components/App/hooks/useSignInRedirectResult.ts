@@ -20,7 +20,7 @@ const useSignInRedirectResult = (
       const result = await auth.getRedirectResult();
       if (result) {
         setOAuthToken(result.oAuthToken);
-        store.auth.signInUser(result);
+        store.auth.signInUser(result.currentUser);
         history.push(GithubRoutePath.AppRoot);
       }
       setFetchingResult(false);

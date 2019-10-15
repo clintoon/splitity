@@ -16,7 +16,7 @@ const useSyncUserStore = (store: StoreType): void => {
         if (!oAuthToken) {
           throw Error('Error: logged in but cannot find oAuthToken');
         }
-        const currentUser = transformFirebaseUser({ oAuthToken, user });
+        const currentUser = transformFirebaseUser({ user });
         store.auth.signInUser(currentUser);
       } else {
         store.auth.signOutUser();
