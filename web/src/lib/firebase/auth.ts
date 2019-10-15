@@ -33,7 +33,9 @@ class FirebaseAuth {
     const currentUser = transformRedirectResult(result);
 
     if (!result.credential || !currentUser) {
-      logError('Error: firebaseAuth.getRedirectResult() result malformed');
+      // This occurs when you reload the page when you are already logged in
+      // as firebaseAuth.getRedirectResult() returns user as null.
+      // firebase.onAuthStateChanged handles this case.
       return null;
     }
 

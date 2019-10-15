@@ -24,24 +24,23 @@ class GithubAPI {
 
   public async getCurrentUserRepos(
     options?: GetCurrentUserReposOptions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<Repository[] | null> {
     const resp = await this.graphqlWithAuth(
       `query CurrentUserRepos($first: Int = 10) {
-      viewer {
-        repositories(first:$first) {
-          nodes {
-            name
+        viewer {
+          repositories(first:$first) {
+            nodes {
+              name
+            }
           }
         }
-      }
-    }`,
+      }`,
       {
         first: options && options.first,
       }
     );
 
-    return resp && resp.viewer.repositories.nodes;
+    return resp && (resp.viewer.repositories.nodes as Repository[]);
   }
 }
 
