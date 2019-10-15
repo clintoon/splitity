@@ -11,8 +11,11 @@ const useSyncUserStore = (store: StoreType): void => {
   useEffect((): (() => void) => {
     const auth = new FirebaseAuth(firebaseApp);
     const unsubscribe = auth.onAuthStateChanged((user: User | null): void => {
+      const oAuthToken = getOAuthToken();
+      if (!oAuthToken) {
+        throw Error('Error: logged in but cannot find oAuthToken');
+      }
       if (user) {
-        const oAuthToken = getOAuthToken();
         const currentUser = transformFirebaseUser({ oAuthToken, user });
         store.auth.signInUser(currentUser);
       } else {

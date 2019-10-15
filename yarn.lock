@@ -2252,6 +2252,14 @@
     universal-user-agent "^3.0.0"
     url-template "^2.0.8"
 
+"@octokit/graphql@^4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@octokit/graphql/-/graphql-4.2.1.tgz#4bb73008b208516e66534e8d2c32f914c88efdc9"
+  integrity sha512-T3yeUFS6URtWo1PlfN3zl/6nR+JBWDr1YLPT5cs7rjPqVi6WvOnZmUfb4k6+gn5AEw4r6u4FAiUWnKFVMtXzvA==
+  dependencies:
+    "@octokit/request" "^5.0.0"
+    universal-user-agent "^4.0.0"
+
 "@octokit/plugin-enterprise-rest@^3.6.1":
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/@octokit/plugin-enterprise-rest/-/plugin-enterprise-rest-3.6.2.tgz#74de25bef21e0182b4fa03a8678cd00a4e67e561"

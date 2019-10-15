@@ -6,10 +6,10 @@ const setOAuthToken = (oAuthToken: string): void => {
   Cookies.set(CookieName.Auth, { oAuthToken });
 };
 
-const getOAuthToken = (): string => {
+const getOAuthToken = (): string | undefined => {
   const oAuthToken = Cookies.getJSON(CookieName.Auth).oAuthToken;
   if (!oAuthToken) {
-    throw Error('Trying to obtain oAuthToken cookie when it is unset');
+    return undefined;
   }
   return oAuthToken;
 };
