@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { SelectionList } from '@web/design/components/SelectionList/SelectionList';
-import { GithubAPI } from '@web/lib/github/github';
+import { GithubAPI, PullRequestState } from '@web/lib/github/github';
 
 const Container = styled.div`
   display: flex;
@@ -13,7 +13,9 @@ const GithubDashboardPage = (): JSX.Element => {
   useEffect((): void => {
     const effect = async (): Promise<void> => {
       const githubAPI = new GithubAPI();
-      const resp = await githubAPI.getCurrentUserRepos();
+      const resp = await githubAPI.getCurrentUserPullRequests({
+        states: [PullRequestState.Open],
+      });
       console.log(resp);
     };
     effect();
@@ -21,7 +23,7 @@ const GithubDashboardPage = (): JSX.Element => {
 
   return (
     <Container>
-      <SelectionList heading="Repositories" items={[]} />
+      <SelectionList heading="Your pull requests" items={[]} />
     </Container>
   );
 };
