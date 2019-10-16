@@ -16,6 +16,7 @@ interface GetCurrentUserReposOptions {
 
 interface PullRequest {
   title: string;
+  number: number;
   repository: {
     url: string;
     nameWithOwner: string;
@@ -47,8 +48,6 @@ class GithubAPI {
   public async getCurrentUserPullRequests(
     options?: GetCurrentUserReposOptions
   ): Promise<CurrentUserPullRequestsResult | null> {
-    // TODO(clinton): currently this only gets public repos. Make it so that it gets all
-    // repos you have access to
     const resp = await this.graphqlWithAuth(
       `query CurrentUserRepos($first: Int = 10, $cursor: String = null, $states: [PullRequestState!]) {
         viewer { 
@@ -59,6 +58,7 @@ class GithubAPI {
             }
             nodes {
               title,
+              number,
               repository {
                 url,
                 nameWithOwner
