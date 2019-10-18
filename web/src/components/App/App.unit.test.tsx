@@ -28,6 +28,7 @@ import { handleSignIn } from '@web/lib/eventHandlers/auth';
 jest.mock('@web/lib/firebase/auth');
 jest.mock('@web/lib/cookie/authCookie');
 jest.mock('@web/lib/eventHandlers/auth');
+jest.mock('@web/lib/github/github');
 
 const AUTH_TOKEN_COOKIE = 'auth-token-cookie';
 const EMAIL = 'clinton@gmail.com';
@@ -43,6 +44,7 @@ interface RenderAppOptions {
   initialStoreAuthenticated: boolean;
   isAuthenticated: boolean;
   backFromAuthRedirect: boolean;
+  authCookieToken?: string | null;
 }
 
 interface RenderAppResult {
@@ -57,6 +59,7 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
     initialRoute,
     backFromAuthRedirect,
     initialStoreAuthenticated,
+    authCookieToken,
   } = options;
 
   const onAuthStateChangedSpy = jest.spyOn(
@@ -67,7 +70,10 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
   const getOAuthTokenSpy = jest.spyOn(AuthCookie, 'getOAuthToken');
 
   if (isAuthenticated) {
-    getOAuthTokenSpy.mockReturnValue(AUTH_TOKEN_COOKIE);
+    // If we pass in null, then the authToken is not set.
+    getOAuthTokenSpy.mockReturnValue(
+      authCookieToken === null ? undefined : AUTH_TOKEN_COOKIE
+    );
     onAuthStateChangedSpy.mockImplementation(
       (callback: (user: User) => void): Unsubscribe => {
         callback(instance(userMock));
@@ -89,7 +95,10 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
   );
 
   if (backFromAuthRedirect) {
-    getRedirectResultSpy.mockResolvedValue(currentUserFactory());
+    getRedirectResultSpy.mockResolvedValue({
+      currentUser: currentUserFactory(),
+      oAuthToken: AUTH_TOKEN_COOKIE,
+    });
   } else {
     getRedirectResultSpy.mockResolvedValue(null);
   }
@@ -168,6 +177,28 @@ describe('<App/>', (): void => {
         expect(stores.auth.getCurrentUser()).toBe(null);
         expect(clearAuthCookie).toHaveBeenCalled();
       });
+    });
+
+    it('throw error when user is logged in but authCookie is not set', async (): Promise<
+      void
+    > => {
+      // Mocking logError to not dump error to console
+      const consoleErrSpy = jest.spyOn(console, 'error');
+      consoleErrSpy.mockImplementation((): void => {});
+
+      expect((): void => {
+        renderApp({
+          initialRoute: RoutePath.Root,
+          isAuthenticated: true,
+          backFromAuthRedirect: false,
+          initialStoreAuthenticated: false,
+          authCookieToken: null,
+        });
+      }).toThrowErrorMatchingInlineSnapshot(
+        `"Error: logged in but cannot find oAuthToken"`
+      );
+
+      consoleErrSpy.mockRestore();
     });
   });
 

@@ -2,6 +2,17 @@ import { app, auth } from 'firebase';
 import { transformRedirectResult } from '@web/lib/firebase/helpers/auth';
 import { CurrentUser } from '@web/stores/authStore';
 import { User, Unsubscribe } from 'firebase';
+import { logError } from '@web/lib/logger';
+
+interface RedirectResult {
+  currentUser: CurrentUser;
+  oAuthToken: string;
+}
+
+interface AuthCredentialJSON {
+  oauthAccessToken: string;
+  providerId: string;
+}
 
 class FirebaseAuth {
   private firebaseAuth: auth.Auth;
@@ -16,9 +27,22 @@ class FirebaseAuth {
     return this.firebaseAuth.signInWithRedirect(provider);
   }
 
-  public async getRedirectResult(): Promise<CurrentUser | null> {
+  public async getRedirectResult(): Promise<RedirectResult | null> {
     const result = await this.firebaseAuth.getRedirectResult();
-    return transformRedirectResult(result);
+
+    const currentUser = transformRedirectResult(result);
+
+    if (!result.credential || !currentUser) {
+      // This occurs when you reload the page when you are already logged in
+      // as firebaseAuth.getRedirectResult() returns user as null.
+      // firebase.onAuthStateChanged handles this case.
+      return null;
+    }
+
+    const oAuthToken = (result.credential.toJSON() as AuthCredentialJSON)
+      .oauthAccessToken;
+
+    return { currentUser, oAuthToken };
   }
 
   public onAuthStateChanged(

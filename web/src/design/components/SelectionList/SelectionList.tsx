@@ -25,6 +25,7 @@ const Container = styled.div`
   border: 1px solid ${Color.DarkGray};
   border-radius: 6px;
   max-width: 500px;
+  flex-basis: 500px;
 `;
 
 const Head = styled.div`
