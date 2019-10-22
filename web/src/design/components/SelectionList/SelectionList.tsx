@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Color } from '@web/design/styles/color';
 import { Text, TextStyle } from '@web/design/components/Text/Text';
 import { Button, ButtonStyle } from '../Button/Button';
-import { noop } from 'lodash';
+import { noop, isEmpty } from 'lodash';
 
 const ITEM_TESTID = 'selection-list-item';
 const LOAD_MORE_SECTION_TESTID = 'selection-list-load-more-section';
@@ -19,6 +19,7 @@ interface SelectionListProps {
   items: Item[];
   showLoadMore: boolean;
   onLoadMoreClick: () => void;
+  emptyBody?: JSX.Element;
 }
 
 const Container = styled.div`
@@ -26,6 +27,8 @@ const Container = styled.div`
   border-radius: 6px;
   max-width: 500px;
   flex-basis: 500px;
+  min-height: 200px;
+  background-color: ${Color.White};
 `;
 
 const Head = styled.div`
@@ -61,6 +64,7 @@ const SelectionList = ({
   items,
   showLoadMore,
   onLoadMoreClick,
+  emptyBody,
 }: SelectionListProps): JSX.Element => {
   const renderItems = (): JSX.Element[] => {
     return items.map(
@@ -76,9 +80,8 @@ const SelectionList = ({
     );
   };
 
-  let headContent: JSX.Element | undefined = undefined;
-  if (heading) {
-    headContent = (
+  const renderHead = (): JSX.Element => {
+    return (
       <Head>
         <TextWrapper>
           <Text styleOf={TextStyle.Title5} color={Color.DarkGray}>
@@ -87,11 +90,13 @@ const SelectionList = ({
         </TextWrapper>
       </Head>
     );
-  }
+  };
 
-  return (
-    <Container>
-      {headContent}
+  const renderBody = (): JSX.Element => {
+    if (isEmpty(items) && emptyBody) {
+      return emptyBody;
+    }
+    return (
       <Items>
         {renderItems()}
         {showLoadMore && (
@@ -102,6 +107,13 @@ const SelectionList = ({
           </LoadMoreSection>
         )}
       </Items>
+    );
+  };
+
+  return (
+    <Container>
+      {renderHead()}
+      {renderBody()}
     </Container>
   );
 };

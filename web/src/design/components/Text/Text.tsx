@@ -35,7 +35,7 @@ export enum TextAlign {
 export interface TextProps {
   styleOf: TextStyle;
   as: TextAs;
-  children: string;
+  children: React.ReactNode | string;
   margin: string;
   textAlign?: TextAlign;
   color: Color;
