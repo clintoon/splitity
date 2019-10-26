@@ -6,14 +6,14 @@ import {
   within,
 } from '@testing-library/react';
 import {
-  SelectionList,
+  PullRequestList,
   ITEM_TESTID,
   LOAD_MORE_SECTION_TESTID,
-} from '@web/design/components/SelectionList/SelectionList';
-import { BUTTON_TESTID } from '../Button/Button';
+} from '@web/design/components/PullRequestList/PullRequestList';
+import { BUTTON_TESTID } from '@web/design/components/Button/Button';
 
 const HEADING = 'heading';
-const SELECTION_TEXT = 'selection text';
+const ITEM_TEXT = 'item text';
 
 interface RenderSelectionList {
   renderResult: RenderResult;
@@ -31,14 +31,14 @@ const renderSelectionList = (
   const onLoadMoreClickMock = jest.fn();
   const onSelectionClickMock = jest.fn();
   const renderResult = render(
-    <SelectionList
+    <PullRequestList
       showLoadMore={options.showLoadMore}
       onLoadMoreClick={onLoadMoreClickMock}
       heading={HEADING}
       items={[
         {
           key: '1',
-          text: SELECTION_TEXT,
+          text: ITEM_TEXT,
           onClick: onSelectionClickMock,
         },
       ]}
@@ -47,10 +47,10 @@ const renderSelectionList = (
   return { onLoadMoreClickMock, onSelectionClickMock, renderResult };
 };
 
-describe('<SelectionList/>', (): void => {
-  it('displays selection button label', (): void => {
+describe('<PullRequestList/>', (): void => {
+  it('displays item label', (): void => {
     const { renderResult } = renderSelectionList({ showLoadMore: false });
-    expect(renderResult.container).toHaveTextContent(SELECTION_TEXT);
+    expect(renderResult.container).toHaveTextContent(ITEM_TEXT);
   });
 
   it('displays heading text', (): void => {
@@ -58,7 +58,7 @@ describe('<SelectionList/>', (): void => {
     expect(renderResult.container).toHaveTextContent(HEADING);
   });
 
-  it('calls onClick when selection button is pressed', (): void => {
+  it('calls onClick when item is pressed', (): void => {
     const { renderResult, onSelectionClickMock } = renderSelectionList({
       showLoadMore: false,
     });

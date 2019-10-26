@@ -1,4 +1,4 @@
-import { SelectionList } from '@web/design/components/SelectionList/SelectionList';
+import { PullRequestList } from '@web/design/components/PullRequestList/PullRequestList';
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import { noop } from 'lodash';
@@ -7,7 +7,7 @@ import { boolean } from '@storybook/addon-knobs';
 storiesOf('Selection List', module).add(
   'Documentation',
   (): JSX.Element => (
-    <SelectionList
+    <PullRequestList
       showLoadMore={boolean('showLoadMore', false)}
       onLoadMoreClick={noop}
       heading="heading"

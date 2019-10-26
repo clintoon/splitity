@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { SelectionList } from '@web/design/components/SelectionList/SelectionList';
+import { PullRequestList } from '@web/design/components/PullRequestList/PullRequestList';
 import { GithubAPI, PullRequestState } from '@web/lib/github/github';
 import { Text } from '@web/design/components/Text/Text';
 import {
@@ -33,7 +33,7 @@ const GithubDashboardPage = (): JSX.Element => {
 
   return (
     <Container>
-      <SelectionList
+      <PullRequestList
         heading="Your pull requests"
         emptyBody={
           <EmptyBodyContainer>

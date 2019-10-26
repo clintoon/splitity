@@ -5,8 +5,8 @@ import { Text, TextStyle } from '@web/design/components/Text/Text';
 import { Button, ButtonStyle } from '../Button/Button';
 import { noop, isEmpty } from 'lodash';
 
-const ITEM_TESTID = 'selection-list-item';
-const LOAD_MORE_SECTION_TESTID = 'selection-list-load-more-section';
+const ITEM_TESTID = 'pull-request-item';
+const LOAD_MORE_SECTION_TESTID = 'pull-request-list-load-more-section';
 
 interface Item {
   key: string | number;
@@ -14,7 +14,7 @@ interface Item {
   onClick: () => void;
 }
 
-interface SelectionListProps {
+interface PullRequestListProps {
   heading: string;
   items: Item[];
   showLoadMore: boolean;
@@ -59,13 +59,13 @@ const Item = styled.div`
   }
 `;
 
-const SelectionList = ({
+const PullRequestList = ({
   heading,
   items,
   showLoadMore,
   onLoadMoreClick,
   emptyBody,
-}: SelectionListProps): JSX.Element => {
+}: PullRequestListProps): JSX.Element => {
   const renderItems = (): JSX.Element[] => {
     return items.map(
       (val): JSX.Element => {
@@ -118,9 +118,9 @@ const SelectionList = ({
   );
 };
 
-SelectionList.defaultProps = {
+PullRequestList.defaultProps = {
   showLoadMore: false,
   onLoadMoreClick: noop,
 };
 
-export { SelectionList, ITEM_TESTID, LOAD_MORE_SECTION_TESTID };
+export { PullRequestList, ITEM_TESTID, LOAD_MORE_SECTION_TESTID };
