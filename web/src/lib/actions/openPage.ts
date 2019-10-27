@@ -1,6 +1,6 @@
 const onAddReposClick = (): void => {
-  // TODO(clinton): open specific installation
-  window.open('https://github.com/settings/installations/');
+  // TODO(clinton): open configuration page
+  window.open('https://github.com/apps/split-my-prs-dev');
 };
 
 export { onAddReposClick };

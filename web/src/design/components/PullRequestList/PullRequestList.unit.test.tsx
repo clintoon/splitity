@@ -13,7 +13,8 @@ import {
 import { BUTTON_TESTID } from '@web/design/components/Button/Button';
 
 const HEADING = 'heading';
-const ITEM_TEXT = 'item text';
+const ITEM_TITLE_TEXT = 'item title text';
+const ITEM_REPO_TEXT = 'item repo text';
 
 interface RenderSelectionList {
   renderResult: RenderResult;
@@ -38,7 +39,8 @@ const renderSelectionList = (
       items={[
         {
           key: '1',
-          text: ITEM_TEXT,
+          title: ITEM_TITLE_TEXT,
+          repo: ITEM_REPO_TEXT,
           onClick: onSelectionClickMock,
         },
       ]}
@@ -50,7 +52,7 @@ const renderSelectionList = (
 describe('<PullRequestList/>', (): void => {
   it('displays item label', (): void => {
     const { renderResult } = renderSelectionList({ showLoadMore: false });
-    expect(renderResult.container).toHaveTextContent(ITEM_TEXT);
+    expect(renderResult.container).toHaveTextContent(ITEM_TITLE_TEXT);
   });
 
   it('displays heading text', (): void => {

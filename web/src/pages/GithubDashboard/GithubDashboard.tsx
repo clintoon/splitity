@@ -1,7 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { PullRequestList } from '@web/design/components/PullRequestList/PullRequestList';
-import { GithubAPI, PullRequestState } from '@web/lib/github/github';
+import {
+  PullRequestList,
+  PullRequestItem,
+} from '@web/design/components/PullRequestList/PullRequestList';
+import {
+  GithubAPI,
+  PullRequestState,
+  PullRequest,
+} from '@web/lib/github/github';
 import { Text } from '@web/design/components/Text/Text';
 import {
   Button,
@@ -9,6 +16,7 @@ import {
   ButtonSize,
 } from '@web/design/components/Button/Button';
 import { onAddReposClick } from '@web/lib/actions/openPage';
+import { noop } from 'lodash';
 
 const Container = styled.div`
   display: flex;
@@ -21,16 +29,20 @@ const EmptyBodyContainer = styled.div`
 `;
 
 const GithubDashboardPage = (): JSX.Element => {
+  const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
+
   useEffect((): void => {
     const effect = async (): Promise<void> => {
       const githubAPI = new GithubAPI();
-      const resp = await githubAPI.getCurrentUserPullRequests({
+      const prData = await githubAPI.getCurrentUserPullRequests({
         states: [PullRequestState.Open],
       });
-      console.log(resp);
+      if (prData !== null) {
+        setPullRequests([...pullRequests, ...prData.nodes]);
+      }
     };
     effect();
-  });
+  }, []);
 
   return (
     <Container>
@@ -50,7 +62,16 @@ const GithubDashboardPage = (): JSX.Element => {
             </Text>
           </EmptyBodyContainer>
         }
-        items={[]}
+        items={pullRequests.map(
+          (val): PullRequestItem => {
+            return {
+              key: val.number,
+              title: val.title,
+              repo: val.repository.nameWithOwner,
+              onClick: noop,
+            };
+          }
+        )}
       />
     </Container>
   );

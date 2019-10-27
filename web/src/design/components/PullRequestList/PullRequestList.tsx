@@ -8,15 +8,16 @@ import { noop, isEmpty } from 'lodash';
 const ITEM_TESTID = 'pull-request-item';
 const LOAD_MORE_SECTION_TESTID = 'pull-request-list-load-more-section';
 
-interface Item {
+export interface PullRequestItem {
   key: string | number;
-  text: string;
+  title: string;
+  repo: string;
   onClick: () => void;
 }
 
 interface PullRequestListProps {
   heading: string;
-  items: Item[];
+  items: PullRequestItem[];
   showLoadMore: boolean;
   onLoadMoreClick: () => void;
   emptyBody?: JSX.Element;
@@ -72,7 +73,8 @@ const PullRequestList = ({
         return (
           <Item key={val.key} onClick={val.onClick} data-testid={ITEM_TESTID}>
             <TextWrapper>
-              <Text styleOf={TextStyle.Title5}>{val.text}</Text>
+              <Text styleOf={TextStyle.Title5}>{val.title}</Text>
+              <Text>{val.repo}</Text>
             </TextWrapper>
           </Item>
         );

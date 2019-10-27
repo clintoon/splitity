@@ -14,7 +14,7 @@ interface GetCurrentUserReposOptions {
   states?: PullRequestState[];
 }
 
-interface PullRequest {
+export interface PullRequest {
   title: string;
   number: number;
   repository: {
@@ -30,7 +30,7 @@ interface PageInfo {
 
 interface CurrentUserPullRequestsResult {
   pageInfo: PageInfo;
-  nodes: PullRequest;
+  nodes: PullRequest[];
 }
 
 class GithubAPI {
