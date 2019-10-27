@@ -50,9 +50,14 @@ const renderSelectionList = (
 };
 
 describe('<PullRequestList/>', (): void => {
-  it('displays item label', (): void => {
+  it('displays item title label', (): void => {
     const { renderResult } = renderSelectionList({ showLoadMore: false });
     expect(renderResult.container).toHaveTextContent(ITEM_TITLE_TEXT);
+  });
+
+  it('displays item repo text', (): void => {
+    const { renderResult } = renderSelectionList({ showLoadMore: false });
+    expect(renderResult.container).toHaveTextContent(ITEM_REPO_TEXT);
   });
 
   it('displays heading text', (): void => {

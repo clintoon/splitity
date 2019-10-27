@@ -37,7 +37,7 @@ const GithubDashboardPage = (): JSX.Element => {
       const prData = await githubAPI.getCurrentUserPullRequests({
         states: [PullRequestState.Open],
       });
-      if (prData !== null) {
+      if (prData) {
         setPullRequests([...pullRequests, ...prData.nodes]);
       }
     };

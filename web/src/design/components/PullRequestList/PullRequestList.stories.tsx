@@ -14,17 +14,20 @@ storiesOf('Selection List', module).add(
       items={[
         {
           key: '1',
-          text: 'Hello 1',
+          title: 'Hello 1',
+          repo: 'repo1',
           onClick: noop,
         },
         {
           key: '2',
-          text: 'Hello 2',
+          title: 'Hello 2',
+          repo: 'repo2',
           onClick: noop,
         },
         {
           key: '3',
-          text: 'Hello 3',
+          title: 'Hello 3',
+          repo: 'repo3',
           onClick: noop,
         },
       ]}
