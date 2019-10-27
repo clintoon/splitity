@@ -8,6 +8,7 @@ import {
   ButtonStyle,
   ButtonSize,
 } from '@web/design/components/Button/Button';
+import { onAddReposClick } from '@web/lib/actions/openPage';
 
 const Container = styled.div`
   display: flex;
@@ -39,7 +40,11 @@ const GithubDashboardPage = (): JSX.Element => {
           <EmptyBodyContainer>
             <Text>
               Add your repos to have your PRs listed{' '}
-              <Button styleOf={ButtonStyle.Primary} size={ButtonSize.Small}>
+              <Button
+                styleOf={ButtonStyle.Primary}
+                size={ButtonSize.Small}
+                onClick={onAddReposClick}
+              >
                 Click me
               </Button>
             </Text>
