@@ -30,7 +30,7 @@ const EmptyBodyContainer = styled.div`
 `;
 
 const GithubDashboardPage = (): JSX.Element => {
-  // const [pageInfo, setPageInfo] = useState<PullRequestPageInfo>();
+  const [pageInfo, setPageInfo] = useState<PullRequestPageInfo>();
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
 
   useEffect((): void => {
@@ -40,11 +40,26 @@ const GithubDashboardPage = (): JSX.Element => {
         states: [PullRequestState.Open],
       });
       if (prData) {
+        setPageInfo(prData.pageInfo);
         setPullRequests([...pullRequests, ...prData.nodes]);
       }
     };
     effect();
   }, []);
+
+  const loadMoreHandler = async () => {
+    if (pageInfo && pageInfo.hasNextPage) {
+      const githubAPI = new GithubAPI();
+      const prData = await githubAPI.getCurrentUserPullRequests({
+        states: [PullRequestState.Open],
+        cursor: pageInfo.endCursor || undefined,
+      });
+      if (prData) {
+        setPageInfo(prData.pageInfo);
+        setPullRequests([...pullRequests, ...prData.nodes]);
+      }
+    }
+  };
 
   return (
     <Container>
@@ -74,6 +89,8 @@ const GithubDashboardPage = (): JSX.Element => {
             };
           }
         )}
+        showLoadMore={pageInfo && pageInfo.hasNextPage}
+        onLoadMoreClick={loadMoreHandler}
       />
     </Container>
   );

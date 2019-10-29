@@ -49,7 +49,7 @@ class GithubAPI {
     options?: GetCurrentUserReposOptions
   ): Promise<CurrentUserPullRequestsResult | null> {
     const resp = await this.graphqlWithAuth(
-      `query CurrentUserRepos($first: Int = 10, $cursor: String = null, $states: [PullRequestState!]) {
+      `query CurrentUserRepos($first: Int = 5, $cursor: String = null, $states: [PullRequestState!]) {
         viewer { 
           pullRequests(first: $first, after: $cursor, states: $states) {
             pageInfo {
