@@ -23,13 +23,13 @@ export interface PullRequest {
   };
 }
 
-interface PageInfo {
+export interface PullRequestPageInfo {
   hasNextPage: boolean;
   endCursor: string | null;
 }
 
 interface CurrentUserPullRequestsResult {
-  pageInfo: PageInfo;
+  pageInfo: PullRequestPageInfo;
   nodes: PullRequest[];
 }
 

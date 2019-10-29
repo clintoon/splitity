@@ -8,6 +8,7 @@ import {
   GithubAPI,
   PullRequestState,
   PullRequest,
+  PullRequestPageInfo,
 } from '@web/lib/github/github';
 import { Text } from '@web/design/components/Text/Text';
 import {
@@ -29,6 +30,7 @@ const EmptyBodyContainer = styled.div`
 `;
 
 const GithubDashboardPage = (): JSX.Element => {
+  // const [pageInfo, setPageInfo] = useState<PullRequestPageInfo>();
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
 
   useEffect((): void => {
