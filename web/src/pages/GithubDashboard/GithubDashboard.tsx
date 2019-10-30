@@ -29,6 +29,8 @@ const EmptyBodyContainer = styled.div`
   margin: 8px;
 `;
 
+const EMPTY_BODY_TESTID = 'empty body testid';
+
 const GithubDashboardPage = (): JSX.Element => {
   const [pageInfo, setPageInfo] = useState<PullRequestPageInfo>();
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
@@ -47,7 +49,7 @@ const GithubDashboardPage = (): JSX.Element => {
     effect();
   }, []);
 
-  const loadMoreHandler = async () => {
+  const loadMoreHandler = async (): Promise<void> => {
     if (pageInfo && pageInfo.hasNextPage) {
       const githubAPI = new GithubAPI();
       const prData = await githubAPI.getCurrentUserPullRequests({
@@ -66,7 +68,7 @@ const GithubDashboardPage = (): JSX.Element => {
       <PullRequestList
         heading="Your pull requests"
         emptyBody={
-          <EmptyBodyContainer>
+          <EmptyBodyContainer data-testid={EMPTY_BODY_TESTID}>
             <Text>
               Add your repos to have your PRs listed{' '}
               <Button
@@ -96,4 +98,4 @@ const GithubDashboardPage = (): JSX.Element => {
   );
 };
 
-export { GithubDashboardPage };
+export { GithubDashboardPage, EMPTY_BODY_TESTID };
