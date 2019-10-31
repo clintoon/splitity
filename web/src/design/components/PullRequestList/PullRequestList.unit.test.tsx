@@ -16,19 +16,19 @@ const HEADING = 'heading';
 const ITEM_TITLE_TEXT = 'item title text';
 const ITEM_REPO_TEXT = 'item repo text';
 
-interface RenderSelectionList {
+interface RenderPullRequestList {
   renderResult: RenderResult;
   onLoadMoreClickMock: jest.Mock;
   onSelectionClickMock: jest.Mock;
 }
 
-interface RenderSelectionListOptions {
+interface RenderPullRequestListOptions {
   showLoadMore: boolean;
 }
 
-const renderSelectionList = (
-  options: RenderSelectionListOptions
-): RenderSelectionList => {
+const renderPullRequestList = (
+  options: RenderPullRequestListOptions
+): RenderPullRequestList => {
   const onLoadMoreClickMock = jest.fn();
   const onSelectionClickMock = jest.fn();
   const renderResult = render(
@@ -51,22 +51,22 @@ const renderSelectionList = (
 
 describe('<PullRequestList/>', (): void => {
   it('displays item title label', (): void => {
-    const { renderResult } = renderSelectionList({ showLoadMore: false });
+    const { renderResult } = renderPullRequestList({ showLoadMore: false });
     expect(renderResult.container).toHaveTextContent(ITEM_TITLE_TEXT);
   });
 
   it('displays item repo text', (): void => {
-    const { renderResult } = renderSelectionList({ showLoadMore: false });
+    const { renderResult } = renderPullRequestList({ showLoadMore: false });
     expect(renderResult.container).toHaveTextContent(ITEM_REPO_TEXT);
   });
 
   it('displays heading text', (): void => {
-    const { renderResult } = renderSelectionList({ showLoadMore: false });
+    const { renderResult } = renderPullRequestList({ showLoadMore: false });
     expect(renderResult.container).toHaveTextContent(HEADING);
   });
 
   it('calls onClick when item is pressed', (): void => {
-    const { renderResult, onSelectionClickMock } = renderSelectionList({
+    const { renderResult, onSelectionClickMock } = renderPullRequestList({
       showLoadMore: false,
     });
     fireEvent.click(renderResult.getByTestId(ITEM_TESTID));
@@ -74,17 +74,17 @@ describe('<PullRequestList/>', (): void => {
   });
 
   it('displays loadMore when the showLoadMore prop is true', (): void => {
-    const { renderResult } = renderSelectionList({ showLoadMore: true });
+    const { renderResult } = renderPullRequestList({ showLoadMore: true });
     expect(renderResult.container).toHaveTextContent('Load more');
   });
 
   it('does not displays loadMore when the showLoadMore prop is false', (): void => {
-    const { renderResult } = renderSelectionList({ showLoadMore: false });
+    const { renderResult } = renderPullRequestList({ showLoadMore: false });
     expect(renderResult.container).not.toHaveTextContent('Load more');
   });
 
   it('calls loadMore onClick when loadMore is pressed', (): void => {
-    const { renderResult, onLoadMoreClickMock } = renderSelectionList({
+    const { renderResult, onLoadMoreClickMock } = renderPullRequestList({
       showLoadMore: true,
     });
 
