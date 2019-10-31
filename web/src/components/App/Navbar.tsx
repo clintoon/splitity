@@ -9,9 +9,11 @@ import { RoutePath } from '@web/constants/routes';
 import { useStore } from '@web/stores/useStore';
 import { observer } from 'mobx-react-lite';
 import { handleSignIn } from '@web/lib/eventHandlers/auth';
+import { onAddReposClick } from '@web/lib/actions/openPage';
 
 const NAVBAR_SIGNIN_TESTID = 'navbar-signin';
 const NAVBAR_SIGN_OUT_TESTID = 'navbar-signout';
+const NAVBAR_ADD_REPOS_TESTID = 'navbar-add-repos';
 
 const renderNotAuthenticatedNavbar = (): JSX.Element => {
   return (
@@ -38,6 +40,13 @@ const renderAuthenticatedNavbar = (history: History): JSX.Element => {
 
   return (
     <DesignNavbar
+      leftItems={[
+        <div data-test-id={NAVBAR_ADD_REPOS_TESTID} key="add-repos">
+          <Button styleOf={ButtonStyle.Primary} onClick={onAddReposClick}>
+            Add repos
+          </Button>
+        </div>,
+      ]}
       rightItems={[
         <div data-testid={NAVBAR_SIGN_OUT_TESTID} key="logout">
           <Button styleOf={ButtonStyle.Primary} onClick={handleSignOut}>

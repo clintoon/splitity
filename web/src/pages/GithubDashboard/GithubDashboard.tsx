@@ -1,7 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { SelectionList } from '@web/design/components/SelectionList/SelectionList';
-import { GithubAPI, PullRequestState } from '@web/lib/github/github';
+import {
+  PullRequestList,
+  PullRequestItem,
+} from '@web/design/components/PullRequestList/PullRequestList';
+import {
+  GithubAPI,
+  PullRequestState,
+  PullRequest,
+  PullRequestPageInfo,
+} from '@web/lib/github/github';
+import { Text } from '@web/design/components/Text/Text';
+import {
+  Button,
+  ButtonStyle,
+  ButtonSize,
+} from '@web/design/components/Button/Button';
+import { onAddReposClick } from '@web/lib/actions/openPage';
+import { noop } from 'lodash';
 
 const Container = styled.div`
   display: flex;
@@ -9,23 +25,77 @@ const Container = styled.div`
   justify-content: center;
 `;
 
+const EmptyBodyContainer = styled.div`
+  margin: 8px;
+`;
+
+const EMPTY_BODY_TESTID = 'empty body testid';
+
 const GithubDashboardPage = (): JSX.Element => {
+  const [pageInfo, setPageInfo] = useState<PullRequestPageInfo>();
+  const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
+
   useEffect((): void => {
     const effect = async (): Promise<void> => {
       const githubAPI = new GithubAPI();
-      const resp = await githubAPI.getCurrentUserPullRequests({
+      const prData = await githubAPI.getCurrentUserPullRequests({
         states: [PullRequestState.Open],
       });
-      console.log(resp);
+      if (prData) {
+        setPageInfo(prData.pageInfo);
+        setPullRequests([...pullRequests, ...prData.nodes]);
+      }
     };
     effect();
-  });
+  }, []);
+
+  const loadMoreHandler = async (): Promise<void> => {
+    if (pageInfo && pageInfo.hasNextPage) {
+      const githubAPI = new GithubAPI();
+      const prData = await githubAPI.getCurrentUserPullRequests({
+        states: [PullRequestState.Open],
+        cursor: pageInfo.endCursor || undefined,
+      });
+      if (prData) {
+        setPageInfo(prData.pageInfo);
+        setPullRequests([...pullRequests, ...prData.nodes]);
+      }
+    }
+  };
 
   return (
     <Container>
-      <SelectionList heading="Your pull requests" items={[]} />
+      <PullRequestList
+        heading="Your pull requests"
+        emptyBody={
+          <EmptyBodyContainer data-testid={EMPTY_BODY_TESTID}>
+            <Text>
+              Add your repos to have your PRs listed{' '}
+              <Button
+                styleOf={ButtonStyle.Primary}
+                size={ButtonSize.Small}
+                onClick={onAddReposClick}
+              >
+                Click me
+              </Button>
+            </Text>
+          </EmptyBodyContainer>
+        }
+        items={pullRequests.map(
+          (val): PullRequestItem => {
+            return {
+              key: val.number,
+              title: val.title,
+              repo: val.repository.nameWithOwner,
+              onClick: noop,
+            };
+          }
+        )}
+        showLoadMore={pageInfo && pageInfo.hasNextPage}
+        onLoadMoreClick={loadMoreHandler}
+      />
     </Container>
   );
 };
 
-export { GithubDashboardPage };
+export { GithubDashboardPage, EMPTY_BODY_TESTID };

@@ -3,22 +3,24 @@ import styled from 'styled-components';
 import { Color } from '@web/design/styles/color';
 import { Text, TextStyle } from '@web/design/components/Text/Text';
 import { Button, ButtonStyle } from '../Button/Button';
-import { noop } from 'lodash';
+import { noop, isEmpty } from 'lodash';
 
-const ITEM_TESTID = 'selection-list-item';
-const LOAD_MORE_SECTION_TESTID = 'selection-list-load-more-section';
+const ITEM_TESTID = 'pull-request-item';
+const LOAD_MORE_SECTION_TESTID = 'pull-request-list-load-more-section';
 
-interface Item {
+export interface PullRequestItem {
   key: string | number;
-  text: string;
+  title: string;
+  repo: string;
   onClick: () => void;
 }
 
-interface SelectionListProps {
+interface PullRequestListProps {
   heading: string;
-  items: Item[];
+  items: PullRequestItem[];
   showLoadMore: boolean;
   onLoadMoreClick: () => void;
+  emptyBody?: JSX.Element;
 }
 
 const Container = styled.div`
@@ -26,6 +28,8 @@ const Container = styled.div`
   border-radius: 6px;
   max-width: 500px;
   flex-basis: 500px;
+  min-height: 200px;
+  background-color: ${Color.White};
 `;
 
 const Head = styled.div`
@@ -56,19 +60,21 @@ const Item = styled.div`
   }
 `;
 
-const SelectionList = ({
+const PullRequestList = ({
   heading,
   items,
   showLoadMore,
   onLoadMoreClick,
-}: SelectionListProps): JSX.Element => {
+  emptyBody,
+}: PullRequestListProps): JSX.Element => {
   const renderItems = (): JSX.Element[] => {
     return items.map(
       (val): JSX.Element => {
         return (
           <Item key={val.key} onClick={val.onClick} data-testid={ITEM_TESTID}>
             <TextWrapper>
-              <Text styleOf={TextStyle.Title5}>{val.text}</Text>
+              <Text styleOf={TextStyle.Title5}>{val.title}</Text>
+              <Text>{val.repo}</Text>
             </TextWrapper>
           </Item>
         );
@@ -76,9 +82,8 @@ const SelectionList = ({
     );
   };
 
-  let headContent: JSX.Element | undefined = undefined;
-  if (heading) {
-    headContent = (
+  const renderHead = (): JSX.Element => {
+    return (
       <Head>
         <TextWrapper>
           <Text styleOf={TextStyle.Title5} color={Color.DarkGray}>
@@ -87,11 +92,13 @@ const SelectionList = ({
         </TextWrapper>
       </Head>
     );
-  }
+  };
 
-  return (
-    <Container>
-      {headContent}
+  const renderBody = (): JSX.Element => {
+    if (isEmpty(items) && emptyBody) {
+      return emptyBody;
+    }
+    return (
       <Items>
         {renderItems()}
         {showLoadMore && (
@@ -102,13 +109,20 @@ const SelectionList = ({
           </LoadMoreSection>
         )}
       </Items>
+    );
+  };
+
+  return (
+    <Container>
+      {renderHead()}
+      {renderBody()}
     </Container>
   );
 };
 
-SelectionList.defaultProps = {
+PullRequestList.defaultProps = {
   showLoadMore: false,
   onLoadMoreClick: noop,
 };
 
-export { SelectionList, ITEM_TESTID, LOAD_MORE_SECTION_TESTID };
+export { PullRequestList, ITEM_TESTID, LOAD_MORE_SECTION_TESTID };
