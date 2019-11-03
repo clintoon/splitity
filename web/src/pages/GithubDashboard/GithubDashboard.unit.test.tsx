@@ -182,4 +182,34 @@ describe('GithubDashboard', (): void => {
       ).not.toBe(null);
     });
   });
+
+  it('redirects to split prs route when item is pressed', async (): Promise<
+    void
+  > => {
+    const title = 'title1';
+    const nameWithOwner = 'clintoon/repo1';
+    const number = 1;
+
+    mockGithubAPI({
+      loadMore: false,
+      pullRequests: [
+        {
+          title,
+          number,
+          repository: {
+            url: 'https://github.com/clintoon/repo1',
+            nameWithOwner,
+          },
+        },
+      ],
+    });
+
+    const { renderResult, history } = renderGithubDashboardPage();
+
+    await wait((): void => {
+      const itemContainer = renderResult.getByTestId(ITEM_TESTID);
+      fireEvent.click(itemContainer);
+      expect(history.location.pathname).toBe(`/gh/${nameWithOwner}/${number}`);
+    });
+  });
 });
