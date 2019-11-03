@@ -18,6 +18,9 @@ import {
 import { BUTTON_TESTID } from '@web/design/components/Button/Button';
 import * as openPage from '@web/lib/actions/openPage';
 import { noop } from 'lodash';
+import { Router } from 'react-router';
+import { GithubRoutePath } from '@web/constants/routes';
+import { createMemoryHistory, History } from 'history';
 
 jest.mock('@web/lib/github/github');
 
@@ -25,6 +28,7 @@ const END_CURSOR = 'end cursor';
 
 interface RenderGithubDashboardPage {
   renderResult: RenderResult;
+  history: History;
 }
 
 interface MockGithubAPIOptions {
@@ -51,8 +55,17 @@ const mockGithubAPI = (options: MockGithubAPIOptions): void => {
 };
 
 const renderGithubDashboardPage = (): RenderGithubDashboardPage => {
-  const renderResult = render(<GithubDashboardPage />);
-  return { renderResult };
+  const history = createMemoryHistory({
+    initialEntries: [GithubRoutePath.AppRoot],
+  });
+
+  const renderResult = render(
+    <Router history={history}>
+      <GithubDashboardPage />
+    </Router>
+  );
+
+  return { renderResult, history };
 };
 
 describe('GithubDashboard', (): void => {
