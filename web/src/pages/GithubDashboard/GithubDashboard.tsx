@@ -17,7 +17,10 @@ import {
   ButtonSize,
 } from '@web/design/components/Button/Button';
 import { onAddReposClick } from '@web/lib/actions/openPage';
-import { noop } from 'lodash';
+import { History } from 'history';
+import { GithubRoutePath } from '@web/constants/routes';
+import { withRouter } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 
 const Container = styled.div`
   display: flex;
@@ -31,7 +34,17 @@ const EmptyBodyContainer = styled.div`
 
 const EMPTY_BODY_TESTID = 'empty body testid';
 
-const GithubDashboardPage = (): JSX.Element => {
+const redirectSplitPR = (
+  history: History,
+  repoNameWithOwner: string,
+  prNumber: number
+): void => {
+  history.push(`${GithubRoutePath.AppRoot}/${repoNameWithOwner}/${prNumber}`);
+};
+
+const WrappedGithubDashboardPage = ({
+  history,
+}: RouteComponentProps): JSX.Element => {
   const [pageInfo, setPageInfo] = useState<PullRequestPageInfo>();
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
 
@@ -87,7 +100,13 @@ const GithubDashboardPage = (): JSX.Element => {
               key: val.number,
               title: val.title,
               repo: val.repository.nameWithOwner,
-              onClick: noop,
+              onClick: (): void => {
+                redirectSplitPR(
+                  history,
+                  val.repository.nameWithOwner,
+                  val.number
+                );
+              },
             };
           }
         )}
@@ -97,5 +116,7 @@ const GithubDashboardPage = (): JSX.Element => {
     </Container>
   );
 };
+
+const GithubDashboardPage = withRouter(WrappedGithubDashboardPage);
 
 export { GithubDashboardPage, EMPTY_BODY_TESTID };
