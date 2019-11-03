@@ -18,6 +18,9 @@ import {
 import { BUTTON_TESTID } from '@web/design/components/Button/Button';
 import * as openPage from '@web/lib/actions/openPage';
 import { noop } from 'lodash';
+import { Router } from 'react-router';
+import { GithubRoutePath } from '@web/constants/routes';
+import { createMemoryHistory, History } from 'history';
 
 jest.mock('@web/lib/github/github');
 
@@ -25,6 +28,7 @@ const END_CURSOR = 'end cursor';
 
 interface RenderGithubDashboardPage {
   renderResult: RenderResult;
+  history: History;
 }
 
 interface MockGithubAPIOptions {
@@ -51,8 +55,17 @@ const mockGithubAPI = (options: MockGithubAPIOptions): void => {
 };
 
 const renderGithubDashboardPage = (): RenderGithubDashboardPage => {
-  const renderResult = render(<GithubDashboardPage />);
-  return { renderResult };
+  const history = createMemoryHistory({
+    initialEntries: [GithubRoutePath.AppRoot],
+  });
+
+  const renderResult = render(
+    <Router history={history}>
+      <GithubDashboardPage />
+    </Router>
+  );
+
+  return { renderResult, history };
 };
 
 describe('GithubDashboard', (): void => {
@@ -167,6 +180,36 @@ describe('GithubDashboard', (): void => {
       expect(
         within(renderResult.container).queryByText(nameWithOwner2)
       ).not.toBe(null);
+    });
+  });
+
+  it('redirects to split prs route when item is pressed', async (): Promise<
+    void
+  > => {
+    const title = 'title1';
+    const nameWithOwner = 'clintoon/repo1';
+    const number = 1;
+
+    mockGithubAPI({
+      loadMore: false,
+      pullRequests: [
+        {
+          title,
+          number,
+          repository: {
+            url: 'https://github.com/clintoon/repo1',
+            nameWithOwner,
+          },
+        },
+      ],
+    });
+
+    const { renderResult, history } = renderGithubDashboardPage();
+
+    await wait((): void => {
+      const itemContainer = renderResult.getByTestId(ITEM_TESTID);
+      fireEvent.click(itemContainer);
+      expect(history.location.pathname).toBe(`/gh/${nameWithOwner}/${number}`);
     });
   });
 });
