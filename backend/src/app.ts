@@ -1,12 +1,34 @@
-import express, { Application } from 'express';
+import { ApolloServer, gql } from 'apollo-server';
 
-// Create a new express application instance
-const app: Application = express();
+interface CurrentUser {
+  hasInstalledGithubApp: boolean;
+}
 
-app.get('/', (req, res): void => {
-  res.send('Hello World!');
-});
+const typeDefs = gql`
+  type CurrentUser {
+    hasInstalledGithubApp: Boolean
+  }
 
-app.listen(3000, (): void => {
-  console.log('Listening on port 3000');
-});
+  type Query {
+    currentUser: CurrentUser
+  }
+`;
+
+const resolvers = {
+  Query: {
+    currentUser: (): CurrentUser => {
+      return {
+        hasInstalledGithubApp: true,
+      };
+    },
+  },
+};
+
+const server = new ApolloServer({ typeDefs, resolvers });
+
+const main = async (): Promise<void> => {
+  const { url } = await server.listen();
+  console.log(`🚀  Server ready at ${url}`);
+};
+
+main();
