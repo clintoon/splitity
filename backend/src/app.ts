@@ -24,9 +24,8 @@ const resolvers = {
   },
 };
 
-const server = new ApolloServer({ typeDefs, resolvers });
-
 const main = async (): Promise<void> => {
+  const server = new ApolloServer({ typeDefs, resolvers });
   const { url } = await server.listen();
   console.log(`🚀  Server ready at ${url}`);
 };
