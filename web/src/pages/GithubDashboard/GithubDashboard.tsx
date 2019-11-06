@@ -5,12 +5,6 @@ import {
   PullRequestList,
   PullRequestItem,
 } from '@web/design/components/PullRequestList/PullRequestList';
-// import {
-//   GithubAPI,
-//   PullRequestState,
-//   PullRequest,
-//   PullRequestPageInfo,
-// } from '@web/lib/github/github';
 import { Text } from '@web/design/components/Text/Text';
 import {
   Button,
