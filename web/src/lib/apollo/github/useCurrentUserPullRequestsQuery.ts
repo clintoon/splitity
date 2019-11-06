@@ -1,7 +1,6 @@
 import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
 import { githubClient } from './githubClient';
-import undefined = require('firebase/empty-import');
 import { noop } from 'lodash';
 
 export enum PullRequestState {
