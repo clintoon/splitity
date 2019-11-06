@@ -8,7 +8,7 @@ export enum PullRequestState {
   Merged = 'MERGED',
 }
 
-interface GetCurrentUserReposOptions {
+interface GetCurrentUserPullRequestsOptions {
   first?: number;
   cursor?: string;
   states?: PullRequestState[];
@@ -46,7 +46,7 @@ class GithubAPI {
   }
 
   public async getCurrentUserPullRequests(
-    options?: GetCurrentUserReposOptions
+    options?: GetCurrentUserPullRequestsOptions
   ): Promise<CurrentUserPullRequestsResult | null> {
     const resp = await this.graphqlWithAuth(
       `query CurrentUserRepos($first: Int = 5, $cursor: String = null, $states: [PullRequestState!]) {

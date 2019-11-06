@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React from 'react';
 import styled from 'styled-components';
 import {
   PullRequestList,
   PullRequestItem,
 } from '@web/design/components/PullRequestList/PullRequestList';
-import {
-  GithubAPI,
-  PullRequestState,
-  PullRequest,
-  PullRequestPageInfo,
-} from '@web/lib/github/github';
+// import {
+//   GithubAPI,
+//   PullRequestState,
+//   PullRequest,
+//   PullRequestPageInfo,
+// } from '@web/lib/github/github';
 import { Text } from '@web/design/components/Text/Text';
 import {
   Button,
@@ -21,6 +22,10 @@ import { History } from 'history';
 import { GithubRoutePath } from '@web/constants/routes';
 import { withRouter } from 'react-router';
 import { RouteComponentProps } from 'react-router';
+import { useQuery } from '@apollo/react-hooks';
+import { CURRENT_USER_PULL_REQUESTS_QUERY } from '@web/lib/apollo/github/currentUserPullRequestsQuery';
+import { PullRequestState } from '@web/lib/github/github';
+import { githubClient } from '@web/lib/apollo/github/githubClient';
 
 const Container = styled.div`
   display: flex;
@@ -45,36 +50,15 @@ const redirectSplitPR = (
 const WrappedGithubDashboardPage = ({
   history,
 }: RouteComponentProps): JSX.Element => {
-  const [pageInfo, setPageInfo] = useState<PullRequestPageInfo>();
-  const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
+  const { data, fetchMore } = useQuery(CURRENT_USER_PULL_REQUESTS_QUERY, {
+    variables: {
+      states: [PullRequestState.Open],
+    },
+    client: githubClient,
+  });
 
-  useEffect((): void => {
-    const effect = async (): Promise<void> => {
-      const githubAPI = new GithubAPI();
-      const prData = await githubAPI.getCurrentUserPullRequests({
-        states: [PullRequestState.Open],
-      });
-      if (prData) {
-        setPageInfo(prData.pageInfo);
-        setPullRequests([...pullRequests, ...prData.nodes]);
-      }
-    };
-    effect();
-  }, []);
-
-  const loadMoreHandler = async (): Promise<void> => {
-    if (pageInfo && pageInfo.hasNextPage) {
-      const githubAPI = new GithubAPI();
-      const prData = await githubAPI.getCurrentUserPullRequests({
-        states: [PullRequestState.Open],
-        cursor: pageInfo.endCursor || undefined,
-      });
-      if (prData) {
-        setPageInfo(prData.pageInfo);
-        setPullRequests([...pullRequests, ...prData.nodes]);
-      }
-    }
-  };
+  const pageInfo = data && data.viewer.pullRequests.pageInfo;
+  const pullRequests = data ? data.viewer.pullRequests.nodes : [];
 
   return (
     <Container>
@@ -95,7 +79,7 @@ const WrappedGithubDashboardPage = ({
           </EmptyBodyContainer>
         }
         items={pullRequests.map(
-          (val): PullRequestItem => {
+          (val: any): PullRequestItem => {
             return {
               key: val.number,
               title: val.title,
@@ -111,7 +95,33 @@ const WrappedGithubDashboardPage = ({
           }
         )}
         showLoadMore={pageInfo && pageInfo.hasNextPage}
-        onLoadMoreClick={loadMoreHandler}
+        onLoadMoreClick={(): void => {
+          fetchMore({
+            variables: {
+              cursor: data.viewer.pullRequests.pageInfo.endCursor,
+            },
+            updateQuery: (prev, { fetchMoreResult }): any => {
+              if (!fetchMoreResult) {
+                return prev;
+              }
+
+              const nextPageInfo = (fetchMoreResult as any).viewer.pullRequests
+                .pageInfo;
+              const prevNodes = (prev as any).viewer.pullRequests.nodes;
+              const nextNodes = (fetchMoreResult as any).viewer.pullRequests
+                .nodes;
+
+              return {
+                viewer: {
+                  pullRequests: {
+                    pageInfo: nextPageInfo,
+                    nodes: [...prevNodes, ...nextNodes],
+                  },
+                },
+              };
+            },
+          });
+        }}
       />
     </Container>
   );
