@@ -6,6 +6,9 @@ import { withRouter, RouteComponentProps } from 'react-router';
 import { useSignInRedirectResult } from '@web/components/App/hooks/useSignInRedirectResult';
 import { useSyncUserStore } from '@web/components/App/hooks/useSyncUserStore';
 import { useNotAuthRedirect } from '@web/components/App/hooks/useNotAuthRedirect';
+import { ApolloProvider } from '@apollo/react-hooks';
+import { backendClient } from '@web/lib/apollo/backend/backendClient';
+import { githubClient } from '@web/lib/apollo/github/githubClient';
 
 const APP_LOADING = 'app-loading';
 
@@ -21,10 +24,12 @@ const WrappedApp = ({ history }: RouteComponentProps): JSX.Element => {
   }
 
   return (
-    <React.Fragment>
-      <GlobalStyle />
-      <PageContent />
-    </React.Fragment>
+    <ApolloProvider client={githubClient}>
+      <ApolloProvider client={backendClient}>
+        <GlobalStyle />
+        <PageContent />
+      </ApolloProvider>
+    </ApolloProvider>
   );
 };
 
