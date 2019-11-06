@@ -105,15 +105,17 @@ const useCurrentUserPullRequestsQuery = (): UseCurrentUserPullRequestsQueryResul
           return prev;
         }
 
-        const nextPageInfo = fetchMoreResult.viewer.pullRequests.pageInfo;
+        const prevPageInfo = prev.viewer.pullRequests.pageInfo;
+        const pageInfo = fetchMoreResult.viewer.pullRequests.pageInfo;
         const prevNodes = prev.viewer.pullRequests.nodes;
-        const nextNodes = fetchMoreResult.viewer.pullRequests.nodes;
-
+        const nodes = fetchMoreResult.viewer.pullRequests.nodes;
         return {
           viewer: {
+            ...prev.viewer,
             pullRequests: {
-              pageInfo: nextPageInfo,
-              nodes: [...prevNodes, ...nextNodes],
+              ...prev.viewer.pullRequests,
+              pageInfo: { ...prevPageInfo, ...pageInfo },
+              nodes: [...prevNodes, ...nodes],
             },
           },
         };
