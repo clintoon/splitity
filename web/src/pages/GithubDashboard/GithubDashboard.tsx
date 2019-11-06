@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import styled from 'styled-components';
 import {
@@ -16,10 +15,7 @@ import { History } from 'history';
 import { GithubRoutePath } from '@web/constants/routes';
 import { withRouter } from 'react-router';
 import { RouteComponentProps } from 'react-router';
-import { useQuery } from '@apollo/react-hooks';
-import { CURRENT_USER_PULL_REQUESTS_QUERY } from '@web/lib/apollo/github/currentUserPullRequestsQuery';
-import { PullRequestState } from '@web/lib/github/github';
-import { githubClient } from '@web/lib/apollo/github/githubClient';
+import { useCurrentUserPullRequestsQuery } from '@web/lib/apollo/github/useCurrentUserPullRequestsQuery';
 
 const Container = styled.div`
   display: flex;
@@ -44,15 +40,11 @@ const redirectSplitPR = (
 const WrappedGithubDashboardPage = ({
   history,
 }: RouteComponentProps): JSX.Element => {
-  const { data, fetchMore } = useQuery(CURRENT_USER_PULL_REQUESTS_QUERY, {
-    variables: {
-      states: [PullRequestState.Open],
-    },
-    client: githubClient,
-  });
-
-  const pageInfo = data && data.viewer.pullRequests.pageInfo;
-  const pullRequests = data ? data.viewer.pullRequests.nodes : [];
+  const {
+    pullRequests,
+    loadMore,
+    hasNextPage,
+  } = useCurrentUserPullRequestsQuery();
 
   return (
     <Container>
@@ -72,50 +64,28 @@ const WrappedGithubDashboardPage = ({
             </Text>
           </EmptyBodyContainer>
         }
-        items={pullRequests.map(
-          (val: any): PullRequestItem => {
-            return {
-              key: val.number,
-              title: val.title,
-              repo: val.repository.nameWithOwner,
-              onClick: (): void => {
-                redirectSplitPR(
-                  history,
-                  val.repository.nameWithOwner,
-                  val.number
-                );
-              },
-            };
-          }
-        )}
-        showLoadMore={pageInfo && pageInfo.hasNextPage}
-        onLoadMoreClick={(): void => {
-          fetchMore({
-            variables: {
-              cursor: data.viewer.pullRequests.pageInfo.endCursor,
-            },
-            updateQuery: (prev, { fetchMoreResult }): any => {
-              if (!fetchMoreResult) {
-                return prev;
-              }
-
-              const nextPageInfo = (fetchMoreResult as any).viewer.pullRequests
-                .pageInfo;
-              const prevNodes = (prev as any).viewer.pullRequests.nodes;
-              const nextNodes = (fetchMoreResult as any).viewer.pullRequests
-                .nodes;
-
-              return {
-                viewer: {
-                  pullRequests: {
-                    pageInfo: nextPageInfo,
-                    nodes: [...prevNodes, ...nextNodes],
-                  },
-                },
-              };
-            },
-          });
-        }}
+        items={
+          pullRequests
+            ? pullRequests.map(
+                (val): PullRequestItem => {
+                  return {
+                    key: val.number,
+                    title: val.title,
+                    repo: val.repository.nameWithOwner,
+                    onClick: (): void => {
+                      redirectSplitPR(
+                        history,
+                        val.repository.nameWithOwner,
+                        val.number
+                      );
+                    },
+                  };
+                }
+              )
+            : []
+        }
+        showLoadMore={hasNextPage}
+        onLoadMoreClick={loadMore}
       />
     </Container>
   );
