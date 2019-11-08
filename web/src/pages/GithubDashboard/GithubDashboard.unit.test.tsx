@@ -26,8 +26,6 @@ import {
 } from '@web/lib/apollo/github/useCurrentUserPullRequestsQuery';
 import { MockedProvider, MockedResponse } from '@apollo/react-testing';
 
-jest.mock('@web/lib/github/github');
-
 interface RenderGithubDashboardPage {
   renderResult: RenderResult;
   history: History;

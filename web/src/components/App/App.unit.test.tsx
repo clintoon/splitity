@@ -29,7 +29,6 @@ import { MockedProvider } from '@apollo/react-testing';
 jest.mock('@web/lib/firebase/auth');
 jest.mock('@web/lib/cookie/authCookie');
 jest.mock('@web/lib/eventHandlers/auth');
-jest.mock('@web/lib/github/github');
 
 const AUTH_TOKEN_COOKIE = 'auth-token-cookie';
 const EMAIL = 'clinton@gmail.com';
