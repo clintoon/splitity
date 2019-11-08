@@ -1,6 +1,5 @@
 import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
-import { githubClient } from './githubClient';
 import { noop } from 'lodash';
 
 export enum PullRequestState {
@@ -78,7 +77,6 @@ const useCurrentUserPullRequestsQuery = (): UseCurrentUserPullRequestsQueryResul
       cursor: null,
       states: [PullRequestState.Open],
     },
-    client: githubClient,
   });
 
   if (!data) {
