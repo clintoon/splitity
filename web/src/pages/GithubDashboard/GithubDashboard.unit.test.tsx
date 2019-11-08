@@ -22,32 +22,27 @@ import { GithubRoutePath } from '@web/constants/routes';
 import { createMemoryHistory, History } from 'history';
 import {
   CURRENT_USER_PULL_REQUESTS_QUERY,
-  PullRequest,
-  PullRequestState,
+  OpenPullRequestsState,
 } from '@web/lib/apollo/github/useCurrentUserPullRequestsQuery';
 import { MockedProvider, MockedResponse } from '@apollo/react-testing';
 
 jest.mock('@web/lib/github/github');
-
-// const END_CURSOR = 'end cursor';
 
 interface RenderGithubDashboardPage {
   renderResult: RenderResult;
   history: History;
 }
 
-interface MockGithubAPIOptions {
-  loadMore: boolean;
-  pullRequests: PullRequest[];
-}
+const END_CURSOR = 'end cursor';
 
 const emptyPagePullRequestMock: readonly MockedResponse[] = [
   {
     request: {
       query: CURRENT_USER_PULL_REQUESTS_QUERY,
       variables: {
+        first: 5,
         cursor: null,
-        states: [PullRequestState.Open],
+        states: OpenPullRequestsState,
       },
     },
     result: {
@@ -71,8 +66,9 @@ const displayAllPRsNoLoadMorePullRequestMock: readonly MockedResponse[] = [
     request: {
       query: CURRENT_USER_PULL_REQUESTS_QUERY,
       variables: {
+        first: 5,
         cursor: null,
-        states: [PullRequestState.Open],
+        states: OpenPullRequestsState,
       },
     },
     result: {
@@ -90,6 +86,73 @@ const displayAllPRsNoLoadMorePullRequestMock: readonly MockedResponse[] = [
                 repository: {
                   url: 'https://github.com/clintoon/repo1',
                   nameWithOwner: 'clintoon/repo1',
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+];
+
+const displaysLoadMoreButtonPullRequestMock: readonly MockedResponse[] = [
+  {
+    request: {
+      query: CURRENT_USER_PULL_REQUESTS_QUERY,
+      variables: {
+        first: 5,
+        cursor: null,
+        states: OpenPullRequestsState,
+      },
+    },
+    result: {
+      data: {
+        viewer: {
+          pullRequests: {
+            pageInfo: {
+              hasNextPage: true,
+              endCursor: END_CURSOR,
+            },
+            nodes: [
+              {
+                title: 'title1',
+                number: 1,
+                repository: {
+                  url: 'https://github.com/clintoon/repo1',
+                  nameWithOwner: 'clintoon/repo1',
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    request: {
+      query: CURRENT_USER_PULL_REQUESTS_QUERY,
+      variables: {
+        first: 5,
+        cursor: END_CURSOR,
+        states: OpenPullRequestsState,
+      },
+    },
+    result: {
+      data: {
+        viewer: {
+          pullRequests: {
+            pageInfo: {
+              hasNextPage: false,
+              endCursor: null,
+            },
+            nodes: [
+              {
+                title: 'title2',
+                number: 2,
+                repository: {
+                  url: 'https://github.com/clintoon/repo2',
+                  nameWithOwner: 'clintoon/repo2',
                 },
               },
             ],
@@ -175,85 +238,46 @@ describe('GithubDashboard', (): void => {
     });
   });
 
-  // it('loads more PRs when load more button is clicked', async (): Promise<
-  //   void
-  // > => {
-  //   mockGithubAPI({
-  //     loadMore: true,
-  //     pullRequests: [
-  //       {
-  //         title: 'title1',
-  //         number: 1,
-  //         repository: {
-  //           url: 'https://github.com/clintoon/repo1',
-  //           nameWithOwner: 'clintoon/repo1',
-  //         },
-  //       },
-  //     ],
-  //   });
+  it('loads more PRs when load more button is clicked', async (): Promise<
+    void
+  > => {
+    const { renderResult } = renderGithubDashboardPage({
+      mocks: displaysLoadMoreButtonPullRequestMock,
+    });
 
-  //   const { renderResult } = renderGithubDashboardPage();
+    const title2 = 'title2';
+    const nameWithOwner2 = 'clintoon/repo2';
 
-  //   const title2 = 'title2';
-  //   const nameWithOwner2 = 'clintoon/repo2';
+    await wait((): void => {
+      const loadMoreButtonContainer = within(
+        renderResult.getByTestId(LOAD_MORE_SECTION_TESTID)
+      ).getByTestId(BUTTON_TESTID);
 
-  //   await wait((): void => {
-  //     const loadMoreButtonContainer = within(
-  //       renderResult.getByTestId(LOAD_MORE_SECTION_TESTID)
-  //     ).getByTestId(BUTTON_TESTID);
+      fireEvent.click(loadMoreButtonContainer);
+    });
 
-  //     mockGithubAPI({
-  //       loadMore: true,
-  //       pullRequests: [
-  //         {
-  //           title: title2,
-  //           number: 2,
-  //           repository: {
-  //             url: 'https://github.com/clintoon/repo2',
-  //             nameWithOwner: nameWithOwner2,
-  //           },
-  //         },
-  //       ],
-  //     });
+    await wait((): void => {
+      expect(within(renderResult.container).queryByText(title2)).not.toBe(null);
+      expect(
+        within(renderResult.container).queryByText(nameWithOwner2)
+      ).not.toBe(null);
+    });
+  });
 
-  //     fireEvent.click(loadMoreButtonContainer);
-  //   });
+  it('redirects to split prs route when item is pressed', async (): Promise<
+    void
+  > => {
+    const nameWithOwner = 'clintoon/repo1';
+    const number = 1;
 
-  //   await wait((): void => {
-  //     expect(within(renderResult.container).queryByText(title2)).not.toBe(null);
-  //     expect(
-  //       within(renderResult.container).queryByText(nameWithOwner2)
-  //     ).not.toBe(null);
-  //   });
-  // });
+    const { renderResult, history } = renderGithubDashboardPage({
+      mocks: displayAllPRsNoLoadMorePullRequestMock,
+    });
 
-  // it('redirects to split prs route when item is pressed', async (): Promise<
-  //   void
-  // > => {
-  //   const title = 'title1';
-  //   const nameWithOwner = 'clintoon/repo1';
-  //   const number = 1;
-
-  //   mockGithubAPI({
-  //     loadMore: false,
-  //     pullRequests: [
-  //       {
-  //         title,
-  //         number,
-  //         repository: {
-  //           url: 'https://github.com/clintoon/repo1',
-  //           nameWithOwner,
-  //         },
-  //       },
-  //     ],
-  //   });
-
-  //   const { renderResult, history } = renderGithubDashboardPage();
-
-  //   await wait((): void => {
-  //     const itemContainer = renderResult.getByTestId(ITEM_TESTID);
-  //     fireEvent.click(itemContainer);
-  //     expect(history.location.pathname).toBe(`/gh/${nameWithOwner}/${number}`);
-  //   });
-  // });
+    await wait((): void => {
+      const itemContainer = renderResult.getByTestId(ITEM_TESTID);
+      fireEvent.click(itemContainer);
+      expect(history.location.pathname).toBe(`/gh/${nameWithOwner}/${number}`);
+    });
+  });
 });

@@ -34,7 +34,7 @@ export interface CurrentUserPullRequestsQueryData {
 export interface CurrentUserPullRequestsQueryVars {
   first?: number;
   cursor: string | null;
-  states: PullRequestState[];
+  states: readonly PullRequestState[];
 }
 
 export interface UseCurrentUserPullRequestsQueryResult {
@@ -68,6 +68,10 @@ const CURRENT_USER_PULL_REQUESTS_QUERY = gql`
   }
 `;
 
+const OpenPullRequestsState: readonly PullRequestState[] = [
+  PullRequestState.Open,
+];
+
 const useCurrentUserPullRequestsQuery = (): UseCurrentUserPullRequestsQueryResult => {
   const { data, fetchMore } = useQuery<
     CurrentUserPullRequestsQueryData,
@@ -75,7 +79,7 @@ const useCurrentUserPullRequestsQuery = (): UseCurrentUserPullRequestsQueryResul
   >(CURRENT_USER_PULL_REQUESTS_QUERY, {
     variables: {
       cursor: null,
-      states: [PullRequestState.Open],
+      states: OpenPullRequestsState,
     },
   });
 
@@ -128,4 +132,8 @@ const useCurrentUserPullRequestsQuery = (): UseCurrentUserPullRequestsQueryResul
   };
 };
 
-export { CURRENT_USER_PULL_REQUESTS_QUERY, useCurrentUserPullRequestsQuery };
+export {
+  CURRENT_USER_PULL_REQUESTS_QUERY,
+  useCurrentUserPullRequestsQuery,
+  OpenPullRequestsState,
+};
