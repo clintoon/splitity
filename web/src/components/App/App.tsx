@@ -21,10 +21,10 @@ const WrappedApp = ({ history }: RouteComponentProps): JSX.Element => {
   }
 
   return (
-    <>
+    <React.Fragment>
       <GlobalStyle />
       <PageContent />
-    </>
+    </React.Fragment>
   );
 };
 

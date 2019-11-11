@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {
   PullRequestList,
   PullRequestItem,
 } from '@web/design/components/PullRequestList/PullRequestList';
+import {
+  GithubAPI,
+  PullRequestState,
+  PullRequest,
+  PullRequestPageInfo,
+} from '@web/lib/github/github';
 import { Text } from '@web/design/components/Text/Text';
 import {
   Button,
@@ -15,7 +21,6 @@ import { History } from 'history';
 import { GithubRoutePath } from '@web/constants/routes';
 import { withRouter } from 'react-router';
 import { RouteComponentProps } from 'react-router';
-import { useCurrentUserPullRequestsQuery } from '@web/lib/apollo/github/useCurrentUserPullRequestsQuery';
 
 const Container = styled.div`
   display: flex;
@@ -40,11 +45,36 @@ const redirectSplitPR = (
 const WrappedGithubDashboardPage = ({
   history,
 }: RouteComponentProps): JSX.Element => {
-  const {
-    pullRequests,
-    loadMore,
-    hasNextPage,
-  } = useCurrentUserPullRequestsQuery();
+  const [pageInfo, setPageInfo] = useState<PullRequestPageInfo>();
+  const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
+
+  useEffect((): void => {
+    const effect = async (): Promise<void> => {
+      const githubAPI = new GithubAPI();
+      const prData = await githubAPI.getCurrentUserPullRequests({
+        states: [PullRequestState.Open],
+      });
+      if (prData) {
+        setPageInfo(prData.pageInfo);
+        setPullRequests([...pullRequests, ...prData.nodes]);
+      }
+    };
+    effect();
+  }, []);
+
+  const loadMoreHandler = async (): Promise<void> => {
+    if (pageInfo && pageInfo.hasNextPage) {
+      const githubAPI = new GithubAPI();
+      const prData = await githubAPI.getCurrentUserPullRequests({
+        states: [PullRequestState.Open],
+        cursor: pageInfo.endCursor || undefined,
+      });
+      if (prData) {
+        setPageInfo(prData.pageInfo);
+        setPullRequests([...pullRequests, ...prData.nodes]);
+      }
+    }
+  };
 
   return (
     <Container>
@@ -64,28 +94,24 @@ const WrappedGithubDashboardPage = ({
             </Text>
           </EmptyBodyContainer>
         }
-        items={
-          pullRequests
-            ? pullRequests.map(
-                (val): PullRequestItem => {
-                  return {
-                    key: val.number,
-                    title: val.title,
-                    repo: val.repository.nameWithOwner,
-                    onClick: (): void => {
-                      redirectSplitPR(
-                        history,
-                        val.repository.nameWithOwner,
-                        val.number
-                      );
-                    },
-                  };
-                }
-              )
-            : []
-        }
-        showLoadMore={hasNextPage}
-        onLoadMoreClick={loadMore}
+        items={pullRequests.map(
+          (val): PullRequestItem => {
+            return {
+              key: val.number,
+              title: val.title,
+              repo: val.repository.nameWithOwner,
+              onClick: (): void => {
+                redirectSplitPR(
+                  history,
+                  val.repository.nameWithOwner,
+                  val.number
+                );
+              },
+            };
+          }
+        )}
+        showLoadMore={pageInfo && pageInfo.hasNextPage}
+        onLoadMoreClick={loadMoreHandler}
       />
     </Container>
   );
