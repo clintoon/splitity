@@ -24,11 +24,11 @@ import { NAVBAR_TESTID } from '@web/design/components/Navbar/Navbar';
 import { NAVBAR_SIGNIN_TESTID, NAVBAR_SIGN_OUT_TESTID } from './Navbar';
 import { BUTTON_TESTID } from '@web/design/components/Button/Button';
 import { handleSignIn } from '@web/lib/eventHandlers/auth';
-import { MockedProvider } from '@apollo/react-testing';
 
 jest.mock('@web/lib/firebase/auth');
 jest.mock('@web/lib/cookie/authCookie');
 jest.mock('@web/lib/eventHandlers/auth');
+jest.mock('@web/lib/github/github');
 
 const AUTH_TOKEN_COOKIE = 'auth-token-cookie';
 const EMAIL = 'clinton@gmail.com';
@@ -113,13 +113,11 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
   const history = createMemoryHistory({ initialEntries: [initialRoute] });
 
   const renderResult = render(
-    <MockedProvider>
-      <Router history={history}>
-        <TestStoreProvider stores={stores}>
-          <App />
-        </TestStoreProvider>
-      </Router>
-    </MockedProvider>
+    <Router history={history}>
+      <TestStoreProvider stores={stores}>
+        <App />
+      </TestStoreProvider>
+    </Router>
   );
 
   return {
