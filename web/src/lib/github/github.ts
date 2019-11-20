@@ -1,6 +1,7 @@
 import { graphql } from '@octokit/graphql';
 import { getOAuthToken } from '@web/lib/cookie/authCookie';
 import { graphql as Graphql } from '@octokit/graphql/dist-types/types';
+import Octokit from '@octokit/rest';
 
 export enum PullRequestState {
   Open = 'OPEN',
@@ -35,14 +36,19 @@ interface CurrentUserPullRequestsResult {
 
 class GithubAPI {
   private graphqlWithAuth: Graphql;
+  private restWithAuth: Octokit;
 
   public constructor() {
     const oAuthToken = getOAuthToken();
+    const auth = `token ${oAuthToken}`;
+
     this.graphqlWithAuth = graphql.defaults({
       headers: {
-        authorization: `token ${oAuthToken}`,
+        authorization: auth,
       },
     });
+
+    this.restWithAuth = new Octokit({ auth });
   }
 
   public async getCurrentUserPullRequests(
@@ -75,6 +81,16 @@ class GithubAPI {
     );
 
     return resp && (resp.viewer.pullRequests as CurrentUserPullRequestsResult);
+  }
+
+  public async getAppInstallationId(): Promise<number | null> {
+    // TODO(clinton): handle the case of multiple installations
+    const installations = await this.restWithAuth.apps.listInstallationsForAuthenticatedUser();
+    if (installations.data.total_count === 0) {
+      return null;
+    }
+
+    return installations.data.installations[0].app_id;
   }
 }
 

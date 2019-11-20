@@ -51,6 +51,7 @@ const WrappedGithubDashboardPage = ({
   useEffect((): void => {
     const effect = async (): Promise<void> => {
       const githubAPI = new GithubAPI();
+
       const prData = await githubAPI.getCurrentUserPullRequests({
         states: [PullRequestState.Open],
       });
