@@ -5,6 +5,7 @@ const currentUserFactory = (): CurrentUser => {
     email: 'clintonfeng@gmail.com',
     emailVerified: false,
     userId: 'abc123',
+    githubInstallationId: null,
   };
 };
 
