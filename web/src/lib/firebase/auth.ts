@@ -52,9 +52,14 @@ class FirebaseAuth {
   public onAuthStateChanged(
     onChange: (user: User | null) => void
   ): Unsubscribe {
-    return this.firebaseAuth.onAuthStateChanged((user: User | null): void => {
-      onChange(user);
-    });
+    return this.firebaseAuth.onAuthStateChanged(
+      (user: User | null): Promise<void> => {
+        return new Promise((resolve): void => {
+          onChange(user);
+          resolve();
+        });
+      }
+    );
   }
 
   public async signOut(): Promise<void> {
