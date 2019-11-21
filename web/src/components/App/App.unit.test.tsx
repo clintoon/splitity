@@ -203,17 +203,18 @@ describe('<App/>', (): void => {
       const consoleErrSpy = jest.spyOn(console, 'error');
       consoleErrSpy.mockImplementation((): void => {});
 
-      expect((): void => {
-        wait((): void => {
-          renderApp({
-            initialRoute: RoutePath.Root,
-            isAuthenticated: true,
-            backFromAuthRedirect: false,
-            initialStoreAuthenticated: false,
-            authCookieToken: null,
-          });
+      const toThrow = async (): Promise<void> => {
+        renderApp({
+          initialRoute: RoutePath.Root,
+          isAuthenticated: true,
+          backFromAuthRedirect: false,
+          initialStoreAuthenticated: false,
+          authCookieToken: null,
         });
-      }).toThrowErrorMatchingInlineSnapshot(
+        await wait();
+      };
+
+      await expect(toThrow()).rejects.toThrowErrorMatchingInlineSnapshot(
         `"Error: logged in but cannot find oAuthToken"`
       );
 
