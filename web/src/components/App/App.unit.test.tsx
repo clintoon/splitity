@@ -14,7 +14,6 @@ import { Router } from 'react-router';
 import { App, APP_LOADING } from '@web/components/App/App';
 import { StoreType } from '@web/stores/storeProvider';
 import { mockStoreFactory, TestStoreProvider } from '@web/testing/mockStore';
-import { currentUserFactory } from '@web/testing/mockCurrentUser';
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import * as AuthCookie from '@web/lib/cookie/authCookie';
 import { RoutePath, GithubRoutePath } from '@web/constants/routes';
