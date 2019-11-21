@@ -7,9 +7,9 @@ import {
   RenderResult,
 } from '@testing-library/react';
 import {
-  GithubDashboardPage,
+  PullRequestSelection,
   EMPTY_BODY_TESTID,
-} from '@web/pages/GithubDashboard/GithubDashboard';
+} from '@web/pages/GithubDashboard/PullRequestSelection';
 import { GithubAPI, PullRequest } from '@web/lib/github/github';
 import {
   ITEM_TESTID,
@@ -26,7 +26,7 @@ jest.mock('@web/lib/github/github');
 
 const END_CURSOR = 'end cursor';
 
-interface RenderGithubDashboardPage {
+interface RenderPullRequestSelection {
   renderResult: RenderResult;
   history: History;
 }
@@ -54,26 +54,26 @@ const mockGithubAPI = (options: MockGithubAPIOptions): void => {
   });
 };
 
-const renderGithubDashboardPage = (): RenderGithubDashboardPage => {
+const renderPullRequestSelection = (): RenderPullRequestSelection => {
   const history = createMemoryHistory({
     initialEntries: [GithubRoutePath.AppRoot],
   });
 
   const renderResult = render(
     <Router history={history}>
-      <GithubDashboardPage />
+      <PullRequestSelection />
     </Router>
   );
 
   return { renderResult, history };
 };
 
-describe('GithubDashboard', (): void => {
+describe('PullRequestSelection', (): void => {
   it('displays empty page content when there are no PRs', async (): Promise<
     void
   > => {
     mockGithubAPI({ loadMore: false, pullRequests: [] });
-    const { renderResult } = renderGithubDashboardPage();
+    const { renderResult } = renderPullRequestSelection();
 
     await wait((): void => {
       expect(renderResult.queryByTestId(EMPTY_BODY_TESTID)).not.toBe(null);
@@ -88,7 +88,7 @@ describe('GithubDashboard', (): void => {
       .mockImplementation(noop);
 
     mockGithubAPI({ loadMore: false, pullRequests: [] });
-    const { renderResult } = renderGithubDashboardPage();
+    const { renderResult } = renderPullRequestSelection();
 
     await wait((): void => {
       const buttonContainer = within(
@@ -121,7 +121,7 @@ describe('GithubDashboard', (): void => {
       ],
     });
 
-    const { renderResult } = renderGithubDashboardPage();
+    const { renderResult } = renderPullRequestSelection();
 
     await wait((): void => {
       const itemContainer = renderResult.getByTestId(ITEM_TESTID);
@@ -148,7 +148,7 @@ describe('GithubDashboard', (): void => {
       ],
     });
 
-    const { renderResult } = renderGithubDashboardPage();
+    const { renderResult } = renderPullRequestSelection();
 
     const title2 = 'title2';
     const nameWithOwner2 = 'clintoon/repo2';
@@ -204,7 +204,7 @@ describe('GithubDashboard', (): void => {
       ],
     });
 
-    const { renderResult, history } = renderGithubDashboardPage();
+    const { renderResult, history } = renderPullRequestSelection();
 
     await wait((): void => {
       const itemContainer = renderResult.getByTestId(ITEM_TESTID);
