@@ -24,6 +24,7 @@ import { NAVBAR_TESTID } from '@web/design/components/Navbar/Navbar';
 import { NAVBAR_SIGNIN_TESTID, NAVBAR_SIGN_OUT_TESTID } from './Navbar';
 import { BUTTON_TESTID } from '@web/design/components/Button/Button';
 import { handleSignIn } from '@web/lib/eventHandlers/auth';
+import { GithubAPI } from '@web/lib/github/github';
 
 jest.mock('@web/lib/firebase/auth');
 jest.mock('@web/lib/cookie/authCookie');
@@ -34,6 +35,7 @@ const AUTH_TOKEN_COOKIE = 'auth-token-cookie';
 const EMAIL = 'clinton@gmail.com';
 const EMAIL_VERIFIED = false;
 const USER_ID = 'abc123';
+const GITHUB_INSTALLATION_ID = 123;
 const userMock = mock<User>();
 when(userMock.email).thenReturn(EMAIL);
 when(userMock.emailVerified).thenReturn(EMAIL_VERIFIED);
@@ -45,6 +47,7 @@ interface RenderAppOptions {
   isAuthenticated: boolean;
   backFromAuthRedirect: boolean;
   authCookieToken?: string | null;
+  githubAppInstalled?: boolean;
 }
 
 interface RenderAppResult {
@@ -52,6 +55,12 @@ interface RenderAppResult {
   stores: StoreType;
   history: MemoryHistory;
 }
+
+const currentUser = {
+  email: EMAIL,
+  emailVerified: EMAIL_VERIFIED,
+  userId: USER_ID,
+};
 
 const renderApp = (options: RenderAppOptions): RenderAppResult => {
   const {
@@ -96,16 +105,24 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
 
   if (backFromAuthRedirect) {
     getRedirectResultSpy.mockResolvedValue({
-      currentUser: currentUserFactory(),
+      currentUser,
       oAuthToken: AUTH_TOKEN_COOKIE,
     });
   } else {
     getRedirectResultSpy.mockResolvedValue(null);
   }
 
+  const githubInstallationId = options.githubAppInstalled
+    ? GITHUB_INSTALLATION_ID
+    : null;
+
+  jest
+    .spyOn(GithubAPI.prototype, 'getAppInstallationId')
+    .mockResolvedValue(githubInstallationId);
+
   const storeOptions = initialStoreAuthenticated
     ? {
-        auth: { currentUser: currentUserFactory() },
+        auth: { currentUser: { ...currentUser, githubInstallationId } },
       }
     : undefined;
   const stores = mockStoreFactory(storeOptions);
@@ -187,12 +204,14 @@ describe('<App/>', (): void => {
       consoleErrSpy.mockImplementation((): void => {});
 
       expect((): void => {
-        renderApp({
-          initialRoute: RoutePath.Root,
-          isAuthenticated: true,
-          backFromAuthRedirect: false,
-          initialStoreAuthenticated: false,
-          authCookieToken: null,
+        wait((): void => {
+          renderApp({
+            initialRoute: RoutePath.Root,
+            isAuthenticated: true,
+            backFromAuthRedirect: false,
+            initialStoreAuthenticated: false,
+            authCookieToken: null,
+          });
         });
       }).toThrowErrorMatchingInlineSnapshot(
         `"Error: logged in but cannot find oAuthToken"`

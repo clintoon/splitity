@@ -11,27 +11,25 @@ import { GithubAPI } from '@web/lib/github/github';
 const useSyncUserStore = (store: StoreType): void => {
   useEffect((): (() => void) => {
     const auth = new FirebaseAuth(firebaseApp);
-    const unsubscribe = auth.onAuthStateChanged(
-      async (user: User | null): Promise<void> => {
-        if (user) {
-          const oAuthToken = getOAuthToken();
-          if (!oAuthToken) {
-            throw Error('Error: logged in but cannot find oAuthToken');
-          }
-
-          // const githubApi = new GithubAPI();
-          // const githubInstallationId = await githubApi.getAppInstallationId();
-          const githubInstallationId = null;
-
-          const currentUser = transformFirebaseUser({ user });
-
-          store.auth.signInUser({ ...currentUser, githubInstallationId });
-        } else {
-          store.auth.signOutUser();
-          clearAuthCookie();
+    const unsubscribe = auth.onAuthStateChanged((user: User | null): void => {
+      if (user) {
+        const oAuthToken = getOAuthToken();
+        if (!oAuthToken) {
+          throw Error('Error: logged in but cannot find oAuthToken');
         }
+
+        // const githubApi = new GithubAPI();
+        // const githubInstallationId = await githubApi.getAppInstallationId();
+        const githubInstallationId = null;
+
+        const currentUser = transformFirebaseUser({ user });
+
+        store.auth.signInUser({ ...currentUser, githubInstallationId });
+      } else {
+        store.auth.signOutUser();
+        clearAuthCookie();
       }
-    );
+    });
 
     return (): void => {
       unsubscribe();
