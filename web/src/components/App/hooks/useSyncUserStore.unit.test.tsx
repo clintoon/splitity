@@ -15,7 +15,9 @@ describe('useSyncUserStore', (): void => {
 
     const stores = mockStoreFactory();
 
-    const { unmount } = renderHook((): void => useSyncUserStore(stores));
+    const { unmount } = renderHook((): void => {
+      useSyncUserStore(stores);
+    });
     unmount();
     expect(unsubscribeMock).toHaveBeenCalled();
   });
