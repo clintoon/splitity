@@ -12,11 +12,11 @@ const APP_LOADING = 'app-loading';
 const WrappedApp = ({ history }: RouteComponentProps): JSX.Element => {
   const store = useStore();
 
-  useSyncUserStore(store);
+  const fetchingUserResult = useSyncUserStore(store);
   useNotAuthRedirect(history);
 
   const fetchingRedirectResult = useSignInRedirectResult(store, history);
-  if (fetchingRedirectResult) {
+  if (fetchingRedirectResult || fetchingUserResult) {
     return <div data-testid={APP_LOADING}>loading...</div>;
   }
 

@@ -5,12 +5,14 @@ export interface CurrentUser {
   email: string;
   emailVerified: boolean;
   userId: string;
+  githubInstallationId: number | null;
 }
 
 const CurrentUserModel = types.model({
   email: types.string,
   emailVerified: types.boolean,
   userId: types.string,
+  githubInstallationId: types.maybeNull(types.number),
 });
 
 const AuthModel = types

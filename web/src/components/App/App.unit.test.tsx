@@ -14,7 +14,6 @@ import { Router } from 'react-router';
 import { App, APP_LOADING } from '@web/components/App/App';
 import { StoreType } from '@web/stores/storeProvider';
 import { mockStoreFactory, TestStoreProvider } from '@web/testing/mockStore';
-import { currentUserFactory } from '@web/testing/mockCurrentUser';
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import * as AuthCookie from '@web/lib/cookie/authCookie';
 import { RoutePath, GithubRoutePath } from '@web/constants/routes';
@@ -24,6 +23,8 @@ import { NAVBAR_TESTID } from '@web/design/components/Navbar/Navbar';
 import { NAVBAR_SIGNIN_TESTID, NAVBAR_SIGN_OUT_TESTID } from './Navbar';
 import { BUTTON_TESTID } from '@web/design/components/Button/Button';
 import { handleSignIn } from '@web/lib/eventHandlers/auth';
+import { GithubAPI } from '@web/lib/github/github';
+import { CurrentUser } from '@web/stores/authStore';
 
 jest.mock('@web/lib/firebase/auth');
 jest.mock('@web/lib/cookie/authCookie');
@@ -34,6 +35,7 @@ const AUTH_TOKEN_COOKIE = 'auth-token-cookie';
 const EMAIL = 'clinton@gmail.com';
 const EMAIL_VERIFIED = false;
 const USER_ID = 'abc123';
+const GITHUB_INSTALLATION_ID = 123;
 const userMock = mock<User>();
 when(userMock.email).thenReturn(EMAIL);
 when(userMock.emailVerified).thenReturn(EMAIL_VERIFIED);
@@ -45,6 +47,7 @@ interface RenderAppOptions {
   isAuthenticated: boolean;
   backFromAuthRedirect: boolean;
   authCookieToken?: string | null;
+  githubAppInstalled?: boolean;
 }
 
 interface RenderAppResult {
@@ -52,6 +55,12 @@ interface RenderAppResult {
   stores: StoreType;
   history: MemoryHistory;
 }
+
+const currentUser = {
+  email: EMAIL,
+  emailVerified: EMAIL_VERIFIED,
+  userId: USER_ID,
+};
 
 const renderApp = (options: RenderAppOptions): RenderAppResult => {
   const {
@@ -96,16 +105,24 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
 
   if (backFromAuthRedirect) {
     getRedirectResultSpy.mockResolvedValue({
-      currentUser: currentUserFactory(),
+      currentUser,
       oAuthToken: AUTH_TOKEN_COOKIE,
     });
   } else {
     getRedirectResultSpy.mockResolvedValue(null);
   }
 
+  const githubInstallationId = options.githubAppInstalled
+    ? GITHUB_INSTALLATION_ID
+    : null;
+
+  jest
+    .spyOn(GithubAPI.prototype, 'getAppInstallationId')
+    .mockResolvedValue(githubInstallationId);
+
   const storeOptions = initialStoreAuthenticated
     ? {
-        auth: { currentUser: currentUserFactory() },
+        auth: { currentUser: { ...currentUser, githubInstallationId } },
       }
     : undefined;
   const stores = mockStoreFactory(storeOptions);
@@ -186,7 +203,7 @@ describe('<App/>', (): void => {
       const consoleErrSpy = jest.spyOn(console, 'error');
       consoleErrSpy.mockImplementation((): void => {});
 
-      expect((): void => {
+      const toThrow = async (): Promise<void> => {
         renderApp({
           initialRoute: RoutePath.Root,
           isAuthenticated: true,
@@ -194,11 +211,48 @@ describe('<App/>', (): void => {
           initialStoreAuthenticated: false,
           authCookieToken: null,
         });
-      }).toThrowErrorMatchingInlineSnapshot(
+        await wait();
+      };
+
+      await expect(toThrow()).rejects.toThrowErrorMatchingInlineSnapshot(
         `"Error: logged in but cannot find oAuthToken"`
       );
 
       consoleErrSpy.mockRestore();
+    });
+
+    it('stores githubInstallationId into store when user installed app', async (): Promise<
+      void
+    > => {
+      const { stores } = renderApp({
+        initialRoute: RoutePath.Root,
+        isAuthenticated: true,
+        initialStoreAuthenticated: false,
+        backFromAuthRedirect: false,
+        githubAppInstalled: true,
+      });
+      await wait((): void => {
+        const currentUser = stores.auth.getCurrentUser();
+        expect((currentUser as CurrentUser).githubInstallationId).toBe(
+          GITHUB_INSTALLATION_ID
+        );
+      });
+    });
+
+    it('githubInstallationId is null when user has not installed github app', async (): Promise<
+      void
+    > => {
+      const { stores } = renderApp({
+        initialRoute: RoutePath.Root,
+        isAuthenticated: true,
+        initialStoreAuthenticated: false,
+        backFromAuthRedirect: false,
+        githubAppInstalled: false,
+      });
+      await wait((): void => {
+        const currentUser = stores.auth.getCurrentUser();
+        expect((currentUser as CurrentUser).githubInstallationId).toBe(null);
+      });
     });
   });
 
@@ -215,6 +269,40 @@ describe('<App/>', (): void => {
       await wait((): void => {
         expect(stores.auth.getCurrentUser()).not.toBe(null);
         expect(setOAuthToken).toHaveBeenCalled();
+      });
+    });
+
+    it('stores githubInstalltionId when user has installed github app', async (): Promise<
+      void
+    > => {
+      const { stores } = renderApp({
+        initialRoute: RoutePath.Root,
+        isAuthenticated: false,
+        backFromAuthRedirect: true,
+        initialStoreAuthenticated: false,
+        githubAppInstalled: true,
+      });
+      await wait((): void => {
+        const currentUser = stores.auth.getCurrentUser();
+        expect((currentUser as CurrentUser).githubInstallationId).toBe(
+          GITHUB_INSTALLATION_ID
+        );
+      });
+    });
+
+    it('githubInstalltionId is null when user has not installed github app', async (): Promise<
+      void
+    > => {
+      const { stores } = renderApp({
+        initialRoute: RoutePath.Root,
+        isAuthenticated: false,
+        backFromAuthRedirect: true,
+        initialStoreAuthenticated: false,
+        githubAppInstalled: false,
+      });
+      await wait((): void => {
+        const currentUser = stores.auth.getCurrentUser();
+        expect((currentUser as CurrentUser).githubInstallationId).toBe(null);
       });
     });
   });

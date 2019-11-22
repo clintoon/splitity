@@ -6,6 +6,7 @@ import { firebaseApp } from '@web/lib/firebase/firebase';
 import { StoreType } from '@web/stores/storeProvider';
 import { setOAuthToken } from '@web/lib/cookie/authCookie';
 import { GithubRoutePath } from '@web/constants/routes';
+import { GithubAPI } from '@web/lib/github/github';
 
 const useSignInRedirectResult = (
   store: StoreType,
@@ -20,7 +21,12 @@ const useSignInRedirectResult = (
       const result = await auth.getRedirectResult();
       if (result) {
         setOAuthToken(result.oAuthToken);
-        store.auth.signInUser(result.currentUser);
+
+        const githubApi = new GithubAPI();
+        const githubInstallationId = await githubApi.getAppInstallationId();
+
+        store.auth.signInUser({ ...result.currentUser, githubInstallationId });
+
         history.push(GithubRoutePath.AppRoot);
       }
       setFetchingResult(false);

@@ -1,5 +1,5 @@
 import { auth } from 'firebase';
-import { CurrentUser } from '@web/stores/authStore';
+import { CurrentUser } from '@web/lib/firebase/auth';
 import { User } from 'firebase';
 
 const transformRedirectResult = (

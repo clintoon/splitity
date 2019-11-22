@@ -1,8 +1,12 @@
 import { app, auth } from 'firebase';
 import { transformRedirectResult } from '@web/lib/firebase/helpers/auth';
-import { CurrentUser } from '@web/stores/authStore';
 import { User, Unsubscribe } from 'firebase';
-import { logError } from '@web/lib/logger';
+
+export interface CurrentUser {
+  email: string;
+  emailVerified: boolean;
+  userId: string;
+}
 
 interface RedirectResult {
   currentUser: CurrentUser;
