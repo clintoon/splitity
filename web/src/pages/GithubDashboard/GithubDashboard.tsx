@@ -1,10 +1,12 @@
 import React from 'react';
 import { PullRequestSelection } from './PullRequestSelection';
 import { InstallAppNotice } from './InstallAppNotice';
+import { useStore } from '@web/stores/useStore';
 
 const GithubDashboard = (): JSX.Element => {
-  // TODO(clinton): Change true to be whether app is installed or not
-  if (true) {
+  const store = useStore();
+  const currentUser = store.auth.getCurrentUser();
+  if (currentUser && currentUser.githubInstallationId) {
     return <PullRequestSelection />;
   }
 

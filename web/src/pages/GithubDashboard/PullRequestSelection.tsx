@@ -19,8 +19,10 @@ import {
 import { onAddReposClick } from '@web/lib/actions/openPage';
 import { History } from 'history';
 import { GithubRoutePath } from '@web/constants/routes';
-import { withRouter } from 'react-router';
-import { RouteComponentProps } from 'react-router';
+import { withRouter, RouteComponentProps } from 'react-router';
+
+const PULL_REQUEST_SELECTION = 'pull request selection';
+const EMPTY_BODY_TESTID = 'empty body testid';
 
 const Container = styled.div`
   display: flex;
@@ -31,8 +33,6 @@ const Container = styled.div`
 const EmptyBodyContainer = styled.div`
   margin: 8px;
 `;
-
-const EMPTY_BODY_TESTID = 'empty body testid';
 
 const redirectSplitPR = (
   history: History,
@@ -78,7 +78,7 @@ const WrappedPullRequestSelection = ({
   };
 
   return (
-    <Container>
+    <Container data-testid={PULL_REQUEST_SELECTION}>
       <PullRequestList
         heading="Your pull requests"
         emptyBody={
@@ -120,4 +120,4 @@ const WrappedPullRequestSelection = ({
 
 const PullRequestSelection = withRouter(WrappedPullRequestSelection);
 
-export { PullRequestSelection, EMPTY_BODY_TESTID };
+export { PullRequestSelection, EMPTY_BODY_TESTID, PULL_REQUEST_SELECTION };
