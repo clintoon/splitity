@@ -1,6 +1,6 @@
 import React from 'react';
-import { PullRequestSelection } from './PullRequestSelection';
-import { InstallAppNotice } from './InstallAppNotice';
+import { PullRequestSelection } from '@web/pages/GithubDashboard/PullRequestSelection';
+import { InstallAppNotice } from '@web/pages/GithubDashboard/InstallAppNotice';
 import { useStore } from '@web/stores/useStore';
 
 const GithubDashboard = (): JSX.Element => {
