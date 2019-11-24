@@ -90,7 +90,7 @@ class GithubAPI {
       return null;
     }
 
-    return installations.data.installations[0].app_id;
+    return installations.data.installations[0].id;
   }
 }
 
