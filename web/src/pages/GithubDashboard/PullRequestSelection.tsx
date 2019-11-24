@@ -20,6 +20,7 @@ import { onAddReposClick } from '@web/lib/actions/openPage';
 import { History } from 'history';
 import { GithubRoutePath } from '@web/constants/routes';
 import { withRouter, RouteComponentProps } from 'react-router';
+import { useStore } from '@web/stores/useStore';
 
 const PULL_REQUEST_SELECTION = 'pull request selection';
 const EMPTY_BODY_TESTID = 'empty body testid';
@@ -45,6 +46,7 @@ const redirectSplitPR = (
 const WrappedPullRequestSelection = ({
   history,
 }: RouteComponentProps): JSX.Element => {
+  const store = useStore();
   const [pageInfo, setPageInfo] = useState<PullRequestPageInfo>();
   const [pullRequests, setPullRequests] = useState<PullRequest[]>([]);
 
@@ -77,6 +79,14 @@ const WrappedPullRequestSelection = ({
     }
   };
 
+  const enhancedOnAddReposClick = (): void => {
+    const githubInstallationId = store.auth.getGithubInstallationId();
+
+    if (githubInstallationId !== null) {
+      onAddReposClick(githubInstallationId);
+    }
+  };
+
   return (
     <Container data-testid={PULL_REQUEST_SELECTION}>
       <PullRequestList
@@ -88,7 +98,7 @@ const WrappedPullRequestSelection = ({
               <Button
                 styleOf={ButtonStyle.Primary}
                 size={ButtonSize.Small}
-                onClick={onAddReposClick}
+                onClick={enhancedOnAddReposClick}
               >
                 Click me
               </Button>

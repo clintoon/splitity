@@ -1,8 +1,9 @@
 import { githubConfig } from '@web/config/github';
 
-const onAddReposClick = (): void => {
-  // TODO(clinton): open configuration page
-  window.open(`https://github.com/apps/${githubConfig.githubAppName}`);
+const onAddReposClick = (githubInstallationId: number): void => {
+  window.open(
+    `https://github.com/settings/installations/${githubInstallationId}`
+  );
 };
 
 const onInstallGithubApp = (): void => {

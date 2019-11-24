@@ -16,10 +16,6 @@ const NAVBAR_SIGNIN_TESTID = 'navbar-signin';
 const NAVBAR_SIGN_OUT_TESTID = 'navbar-signout';
 const NAVBAR_ADD_REPOS_TESTID = 'navbar-add-repos';
 
-const hasInstalledGithubApp = (currentUser: CurrentUser | null): boolean => {
-  return Boolean(currentUser && currentUser.githubInstallationId);
-};
-
 const renderNotAuthenticatedNavbar = (): JSX.Element => {
   return (
     <DesignNavbar
@@ -46,11 +42,15 @@ const renderAuthenticatedNavbar = (history: History): JSX.Element => {
   };
 
   const leftItems = [];
+  const githubIntallationId = store.auth.getGithubInstallationId();
 
-  if (hasInstalledGithubApp(store.auth.getCurrentUser())) {
+  if (githubIntallationId !== null) {
     leftItems.push(
       <div data-testid={NAVBAR_ADD_REPOS_TESTID} key="add-repos">
-        <Button styleOf={ButtonStyle.Primary} onClick={onAddReposClick}>
+        <Button
+          styleOf={ButtonStyle.Primary}
+          onClick={(): void => onAddReposClick(githubIntallationId)}
+        >
           Add repos
         </Button>
       </div>

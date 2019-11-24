@@ -26,6 +26,9 @@ const AuthModel = types
     getCurrentUser: (): CurrentUser | null => {
       return self.currentUser;
     },
+    getGithubInstallationId: (): number | null => {
+      return self.currentUser && self.currentUser.githubInstallationId;
+    },
   }))
   .actions(self => ({
     signInUser: (user: CurrentUser): void => {

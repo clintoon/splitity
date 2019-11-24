@@ -2,7 +2,7 @@ import { omit } from 'lodash';
 import { AuthModel } from '@web/stores/authStore';
 import { currentUserFactory } from '@web/testing/mockCurrentUser';
 
-const mockCurrentUser = currentUserFactory();
+const GITHUB_INSTALLATION_ID = 123;
 
 describe('authStore', (): void => {
   describe('views', (): void => {
@@ -13,6 +13,7 @@ describe('authStore', (): void => {
       });
 
       it('returns false when not logged in', (): void => {
+        const mockCurrentUser = currentUserFactory();
         const authStore = AuthModel.create({ currentUser: mockCurrentUser });
         expect(authStore.isLoggedIn()).toBe(true);
       });
@@ -22,6 +23,7 @@ describe('authStore', (): void => {
   describe('actions', (): void => {
     describe('signInUser', (): void => {
       it('correctly sets currentUser state', (): void => {
+        const mockCurrentUser = currentUserFactory();
         const authStore = AuthModel.create({ currentUser: undefined });
         authStore.signInUser(mockCurrentUser);
         expect(authStore.getCurrentUser()).toEqual(mockCurrentUser);
@@ -30,6 +32,7 @@ describe('authStore', (): void => {
 
     describe('signOutUser', (): void => {
       it('sets currentUser state to null', (): void => {
+        const mockCurrentUser = currentUserFactory();
         const authStore = AuthModel.create({ currentUser: mockCurrentUser });
         authStore.signOutUser();
         expect(authStore.getCurrentUser()).toEqual(null);
@@ -40,6 +43,7 @@ describe('authStore', (): void => {
       const updatedEmailVerified = true;
 
       it('correctly updates currentUser state', (): void => {
+        const mockCurrentUser = currentUserFactory();
         const authStore = AuthModel.create({ currentUser: mockCurrentUser });
         authStore.updateUser({
           emailVerified: updatedEmailVerified,
@@ -58,6 +62,25 @@ describe('authStore', (): void => {
         });
         expect(authStore.getCurrentUser()).toBe(null);
       });
+    });
+  });
+
+  describe('getGithubInstallationId', (): void => {
+    it('returns null when user has not installed github app', (): void => {
+      const mockCurrentUser = currentUserFactory({
+        githubInstallationId: null,
+      });
+      const authStore = AuthModel.create({ currentUser: mockCurrentUser });
+      expect(authStore.getGithubInstallationId()).toBe(null);
+    });
+
+    it('returns githubInstallationId when user has installed github app', (): void => {
+      const mockCurrentUser = currentUserFactory({
+        githubInstallationId: GITHUB_INSTALLATION_ID,
+      });
+
+      const authStore = AuthModel.create({ currentUser: mockCurrentUser });
+      expect(authStore.getGithubInstallationId()).toBe(GITHUB_INSTALLATION_ID);
     });
   });
 });
