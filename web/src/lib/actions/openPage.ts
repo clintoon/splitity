@@ -1,6 +1,12 @@
+import { githubConfig } from '@web/config/github';
+
 const onAddReposClick = (): void => {
   // TODO(clinton): open configuration page
-  window.open('https://github.com/apps/split-my-prs-dev');
+  window.open(`https://github.com/apps/${githubConfig.githubAppName}`);
 };
 
-export { onAddReposClick };
+const onInstallGithubApp = (): void => {
+  window.open(`https://github.com/apps/${githubConfig.githubAppName}`);
+};
+
+export { onAddReposClick, onInstallGithubApp };
