@@ -10,10 +10,15 @@ import { useStore } from '@web/stores/useStore';
 import { observer } from 'mobx-react-lite';
 import { handleSignIn } from '@web/lib/eventHandlers/auth';
 import { onAddReposClick } from '@web/lib/actions/openPage';
+import { CurrentUser } from '@web/stores/authStore';
 
 const NAVBAR_SIGNIN_TESTID = 'navbar-signin';
 const NAVBAR_SIGN_OUT_TESTID = 'navbar-signout';
 const NAVBAR_ADD_REPOS_TESTID = 'navbar-add-repos';
+
+const hasInstalledGithubApp = (currentUser: CurrentUser | null): boolean => {
+  return Boolean(currentUser && currentUser.githubInstallationId);
+};
 
 const renderNotAuthenticatedNavbar = (): JSX.Element => {
   return (
@@ -30,6 +35,8 @@ const renderNotAuthenticatedNavbar = (): JSX.Element => {
 };
 
 const renderAuthenticatedNavbar = (history: History): JSX.Element => {
+  const store = useStore();
+
   const handleSignOut = async (): Promise<void> => {
     const auth = new FirebaseAuth(firebaseApp);
     // This triggers the useUpdateNotAuthenticated hook
@@ -38,15 +45,21 @@ const renderAuthenticatedNavbar = (history: History): JSX.Element => {
     history.push(RoutePath.Root);
   };
 
+  const leftItems = [];
+
+  if (hasInstalledGithubApp(store.auth.getCurrentUser())) {
+    leftItems.push(
+      <div data-testid={NAVBAR_ADD_REPOS_TESTID} key="add-repos">
+        <Button styleOf={ButtonStyle.Primary} onClick={onAddReposClick}>
+          Add repos
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <DesignNavbar
-      leftItems={[
-        <div data-test-id={NAVBAR_ADD_REPOS_TESTID} key="add-repos">
-          <Button styleOf={ButtonStyle.Primary} onClick={onAddReposClick}>
-            Add repos
-          </Button>
-        </div>,
-      ]}
+      leftItems={leftItems}
       rightItems={[
         <div data-testid={NAVBAR_SIGN_OUT_TESTID} key="logout">
           <Button styleOf={ButtonStyle.Primary} onClick={handleSignOut}>
@@ -76,4 +89,5 @@ export {
   WrappedNavbar as NavbarForTest,
   NAVBAR_SIGNIN_TESTID,
   NAVBAR_SIGN_OUT_TESTID,
+  NAVBAR_ADD_REPOS_TESTID,
 };
