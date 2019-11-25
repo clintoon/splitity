@@ -91,7 +91,7 @@ describe('<Navbar/>', (): void => {
 
     fireEvent.click(addReposButton);
 
-    expect(onAddReposClickSpy).toBeCalled();
+    expect(onAddReposClickSpy).toHaveBeenCalledWith(GITHUB_INSTALLATION_ID);
   });
 
   it('does not display the add repos button when user has not installed the github app on the github dashboard', (): void => {

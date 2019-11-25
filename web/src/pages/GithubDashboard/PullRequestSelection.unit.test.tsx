@@ -21,10 +21,13 @@ import { noop } from 'lodash';
 import { Router } from 'react-router';
 import { GithubRoutePath } from '@web/constants/routes';
 import { createMemoryHistory, History } from 'history';
+import { currentUserFactory } from '@web/testing/mockCurrentUser';
+import { mockStoreFactory, TestStoreProvider } from '@web/testing/mockStore';
 
 jest.mock('@web/lib/github/github');
 
 const END_CURSOR = 'end cursor';
+const GITHUB_INSTALLATION_ID = 123;
 
 interface RenderPullRequestSelection {
   renderResult: RenderResult;
@@ -59,10 +62,21 @@ const renderPullRequestSelection = (): RenderPullRequestSelection => {
     initialEntries: [GithubRoutePath.AppRoot],
   });
 
+  const storeOptions = {
+    auth: {
+      currentUser: currentUserFactory({
+        githubInstallationId: GITHUB_INSTALLATION_ID,
+      }),
+    },
+  };
+  const stores = mockStoreFactory(storeOptions);
+
   const renderResult = render(
-    <Router history={history}>
-      <PullRequestSelection />
-    </Router>
+    <TestStoreProvider stores={stores}>
+      <Router history={history}>
+        <PullRequestSelection />
+      </Router>
+    </TestStoreProvider>
   );
 
   return { renderResult, history };
@@ -97,7 +111,7 @@ describe('PullRequestSelection', (): void => {
 
       fireEvent.click(buttonContainer);
 
-      expect(addReposClickSpy).toHaveBeenCalled();
+      expect(addReposClickSpy).toHaveBeenCalledWith(GITHUB_INSTALLATION_ID);
     });
   });
 
