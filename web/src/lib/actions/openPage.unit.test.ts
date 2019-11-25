@@ -1,5 +1,5 @@
 import { onAddReposClick, onInstallGithubApp } from '@web/lib/actions/openPage';
-import { GITHUB_APP_NAME } from '@web/testing/testGlobals';
+import { PROCESS_ENV_GITHUB_APP_NAME } from '@web/testing/testGlobals';
 
 const GITHUB_INSTALLATION_ID = 123;
 
@@ -27,7 +27,7 @@ describe('openPage', (): void => {
       onInstallGithubApp();
 
       expect(windowOpenSpy).toBeCalledWith(
-        `https://github.com/apps/${GITHUB_APP_NAME}`
+        `https://github.com/apps/${PROCESS_ENV_GITHUB_APP_NAME}`
       );
     });
   });

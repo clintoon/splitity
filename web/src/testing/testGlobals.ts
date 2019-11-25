@@ -1,3 +1,3 @@
-const GITHUB_APP_NAME = 'split-my-prs-test';
+const PROCESS_ENV_GITHUB_APP_NAME = 'split-my-prs-test';
 
-export { GITHUB_APP_NAME };
+export { PROCESS_ENV_GITHUB_APP_NAME };
