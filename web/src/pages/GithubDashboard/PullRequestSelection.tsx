@@ -40,7 +40,9 @@ const redirectSplitPR = (
   repoNameWithOwner: string,
   prNumber: number
 ): void => {
-  history.push(`${GithubRoutePath.AppRoot}/${repoNameWithOwner}/${prNumber}`);
+  history.push(
+    `${GithubRoutePath.AppRoot}/${repoNameWithOwner}/pull/${prNumber}`
+  );
 };
 
 const WrappedPullRequestSelection = ({
