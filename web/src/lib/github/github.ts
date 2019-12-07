@@ -3,6 +3,7 @@ import { getOAuthToken } from '@web/lib/cookie/authCookie';
 import { graphql as Graphql } from '@octokit/graphql/dist-types/types';
 import Octokit from '@octokit/rest';
 import axios, { AxiosInstance } from 'axios';
+import parse from 'parse-diff';
 
 export enum PullRequestState {
   Open = 'OPEN',
@@ -147,7 +148,7 @@ class GithubAPI {
     owner,
     repoName,
     pullRequestId,
-  }: GetPullRequestDiff): Promise<void> {
+  }: GetPullRequestDiff): Promise<parse.File[]> {
     const resp = await this.httpWithAuth({
       url: `/repos/${owner}/${repoName}/pulls/${pullRequestId}.diff`,
       headers: {
@@ -155,7 +156,7 @@ class GithubAPI {
       },
     });
 
-    return resp.data;
+    return parse(resp.data);
   }
 }
 
