@@ -12213,6 +12213,11 @@ parse-asn1@^5.0.0:
     pbkdf2 "^3.0.3"
     safe-buffer "^5.1.1"
 
+parse-diff@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/parse-diff/-/parse-diff-0.6.0.tgz#baacd256351b744031e27e445898e0854c3dff5b"
+  integrity sha512-mBWyN71+ZbwTwqWpwxkOIy2qEi5mT3EGMeFGLqAtDqj6t1zlLyIkPkEwROSQ7ZdTuvaebFURAMKEZH9fOg4f1Q==
+
 parse-entities@^1.0.2, parse-entities@^1.1.0, parse-entities@^1.1.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/parse-entities/-/parse-entities-1.2.2.tgz#c31bf0f653b6661354f8973559cb86dd1d5edf50"

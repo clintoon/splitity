@@ -223,7 +223,9 @@ describe('PullRequestSelection', (): void => {
     await wait((): void => {
       const itemContainer = renderResult.getByTestId(ITEM_TESTID);
       fireEvent.click(itemContainer);
-      expect(history.location.pathname).toBe(`/gh/${nameWithOwner}/${number}`);
+      expect(history.location.pathname).toBe(
+        `/gh/${nameWithOwner}/pull/${number}`
+      );
     });
   });
 });
