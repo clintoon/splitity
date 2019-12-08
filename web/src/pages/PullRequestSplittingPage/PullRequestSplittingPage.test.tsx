@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, RenderResult, wait } from '@testing-library/react';
+import { render, RenderResult, wait, within } from '@testing-library/react';
 import { PullRequestSplittingPage } from '@web/pages/PullRequestSplittingPage/PullRequestSplittingPage';
 import { PULL_REQUEST_INFO_TESTID } from '@web/pages/PullRequestSplittingPage/PullRequestInfo';
 import { GithubAPI } from '@web/lib/github/github';
@@ -45,6 +45,29 @@ describe('<PullRequestSplittingPage />', (): void => {
         expect(renderResult.queryByTestId(PULL_REQUEST_INFO_TESTID)).not.toBe(
           null
         );
+      });
+    });
+
+    it('displays the PR title', async (): Promise<void> => {
+      const { renderResult } = renderPullRequestSplittingPage();
+      await wait((): void => {
+        const prInfoContainer = renderResult.getByTestId(
+          PULL_REQUEST_INFO_TESTID
+        );
+
+        expect(within(prInfoContainer).queryByText(TITLE)).not.toBe(null);
+      });
+    });
+
+    it('displays the owner  & repoName', async (): Promise<void> => {
+      const { renderResult } = renderPullRequestSplittingPage();
+      await wait((): void => {
+        const prInfoContainer = renderResult.getByTestId(
+          PULL_REQUEST_INFO_TESTID
+        );
+        expect(
+          within(prInfoContainer).queryByText(`${OWNER}/${REPO_NAME}`)
+        ).not.toBe(null);
       });
     });
   });
