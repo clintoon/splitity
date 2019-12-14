@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import { Color } from '@web/design/styles/color';
 import { Text } from '@web/design/components/Text/Text';
 
+const CARD_HEADER_TESTID = 'card header';
+const CARD_BODY_TESTID = 'card body';
+
 interface CardProps {
   header: string;
   children: JSX.Element;
@@ -31,14 +34,14 @@ const Body = styled.div`
 const Card = ({ header, children }: CardProps): JSX.Element => {
   return (
     <Container>
-      <Header>
+      <Header data-testid={CARD_HEADER_TESTID}>
         <HeaderText>
           <Text>{header}</Text>
         </HeaderText>
       </Header>
-      <Body>{children}</Body>
+      <Body data-testid={CARD_BODY_TESTID}>{children}</Body>
     </Container>
   );
 };
 
-export { Card };
+export { Card, CARD_HEADER_TESTID };
