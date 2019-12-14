@@ -108,7 +108,7 @@ const Line = ({ change }: LineProps): JSX.Element => {
   }
 
   return (
-    <TableRow>
+    <TableRow data-testid={FILE_DIFF_LINE_TESTID}>
       <LineNumbersSection
         backgroundColor={lineNumBackgroundColor}
         leftNumber={leftNum}

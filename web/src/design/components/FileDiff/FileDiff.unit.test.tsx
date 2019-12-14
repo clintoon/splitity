@@ -4,27 +4,33 @@ import {
   FILE_DIFF_CHUNK_SEPARATOR_TESTID,
 } from '@web/design/components/FileDiff/FileDiff';
 import parseDiff from 'parse-diff';
-import { GITHUB_SINGLE_FILE_DIFF } from '@web/testing/fixtures/pullRequestDiff';
+import {
+  GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
+  GITHUB_SINGLE_FILE_SINGLE_CHUNK,
+} from '@web/testing/fixtures/pullRequestDiff';
 import { render, RenderResult, within, wait } from '@testing-library/react';
 import {
   CARD_HEADER_TESTID,
   CARD_BODY_TESTID,
 } from '@web/design/components/Card/Card';
+import { FILE_DIFF_LINE_TESTID } from '@web/design/components/FileDiff/internal/Line';
 
 interface RenderFileDiffResult {
   renderResult: RenderResult;
 }
 
 interface RenderFileDiffOptions {
+  diff: string;
   filenameTo?: string;
   filenameFrom?: string;
 }
 
 const renderFileDiff = ({
+  diff,
   filenameFrom,
   filenameTo,
 }: RenderFileDiffOptions): RenderFileDiffResult => {
-  const fileDiff = parseDiff(GITHUB_SINGLE_FILE_DIFF)[0];
+  const fileDiff = parseDiff(diff)[0];
   const renderResult = render(
     <FileDiff
       filename={{ from: filenameFrom, to: filenameTo }}
@@ -39,6 +45,7 @@ describe('<FileDiff/>', (): void => {
   describe('header', (): void => {
     it('displays the correct filename header when it is not renamed', (): void => {
       const { renderResult } = renderFileDiff({
+        diff: GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
         filenameFrom: 'README.md',
         filenameTo: 'README.md',
       });
@@ -49,6 +56,7 @@ describe('<FileDiff/>', (): void => {
 
     it('displays the correct filename header when it has been renamed', (): void => {
       const { renderResult } = renderFileDiff({
+        diff: GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
         filenameFrom: 'OLD_README.md',
         filenameTo: 'NEW_README.md',
       });
@@ -66,6 +74,7 @@ describe('<FileDiff/>', (): void => {
 
       const toThrow = async (): Promise<void> => {
         renderFileDiff({
+          diff: GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
           filenameFrom: 'README.md',
         });
         await wait();
@@ -87,6 +96,7 @@ describe('<FileDiff/>', (): void => {
 
       const toThrow = async (): Promise<void> => {
         renderFileDiff({
+          diff: GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
           filenameTo: 'README.md',
         });
         await wait();
@@ -105,8 +115,9 @@ describe('<FileDiff/>', (): void => {
 
     it('displays the correct number of chunk separator', (): void => {
       const { renderResult } = renderFileDiff({
-        filenameFrom: 'OLD_README.md',
-        filenameTo: 'NEW_README.md',
+        diff: GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
+        filenameFrom: 'README.md',
+        filenameTo: 'README.md',
       });
 
       const bodyContainer = renderResult.getByTestId(CARD_BODY_TESTID);
@@ -114,6 +125,19 @@ describe('<FileDiff/>', (): void => {
         within(bodyContainer).getAllByTestId(FILE_DIFF_CHUNK_SEPARATOR_TESTID)
           .length
       ).toBe(2);
+    });
+
+    it('displays the correct number lines', (): void => {
+      const { renderResult } = renderFileDiff({
+        diff: GITHUB_SINGLE_FILE_SINGLE_CHUNK,
+        filenameFrom: 'README.md',
+        filenameTo: 'README.md',
+      });
+
+      const bodyContainer = renderResult.getByTestId(CARD_BODY_TESTID);
+      expect(
+        within(bodyContainer).getAllByTestId(FILE_DIFF_LINE_TESTID).length
+      ).toBe(44);
     });
   });
 });
