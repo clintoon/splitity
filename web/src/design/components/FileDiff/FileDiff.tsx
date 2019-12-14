@@ -42,12 +42,8 @@ const getFilenameHeader = (filename: FilenameChange): string | undefined => {
     return filename.from || filename.from;
   }
 
-  if (!filename.from) {
-    return filename.to;
-  }
-
-  if (!filename.to) {
-    return filename.from;
+  if (!filename.from || !filename.to) {
+    throw new Error('FileDiff: file path not specified');
   }
 
   return `${filename.from} → ${filename.to}`;

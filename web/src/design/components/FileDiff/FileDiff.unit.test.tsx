@@ -2,7 +2,7 @@ import React from 'react';
 import { FileDiff } from '@web/design/components/FileDiff/FileDiff';
 import parseDiff from 'parse-diff';
 import { GITHUB_SINGLE_FILE_DIFF } from '@web/testing/fixtures/pullRequestDiff';
-import { render, RenderResult, within } from '@testing-library/react';
+import { render, RenderResult, within, wait } from '@testing-library/react';
 import { CARD_HEADER_TESTID } from '../Card/Card';
 
 interface RenderFileDiffResult {
@@ -53,30 +53,48 @@ describe('<FileDiff/>', (): void => {
       ).not.toBe(null);
     });
 
-    it('displays the correct filename header when file has been deleted', (): void => {
-      const { renderResult } = renderFileDiff({
-        filenameFrom: 'OLD_README.md',
-      });
+    it('throws error when to filename is missing', async (): Promise<void> => {
+      // Mocking logError to not dump error to console
+      const consoleErrSpy = jest.spyOn(console, 'error');
+      consoleErrSpy.mockImplementation((): void => {});
 
-      const headerContainer = renderResult.getByTestId(CARD_HEADER_TESTID);
-      expect(within(headerContainer).queryByText('OLD_README.md')).not.toBe(
-        null
+      const toThrow = async (): Promise<void> => {
+        renderFileDiff({
+          filenameFrom: 'README.md',
+        });
+        await wait();
+      };
+
+      await expect(toThrow()).rejects.toThrowErrorMatchingInlineSnapshot(
+        `"FileDiff: file path not specified"`
       );
+
+      consoleErrSpy.mockRestore();
     });
 
-    it('displays the correct filename header when file has been added', (): void => {
-      const { renderResult } = renderFileDiff({
-        filenameTo: 'NEW_README.md',
-      });
+    it('throws error when from filename is missing', async (): Promise<
+      void
+    > => {
+      // Mocking logError to not dump error to console
+      const consoleErrSpy = jest.spyOn(console, 'error');
+      consoleErrSpy.mockImplementation((): void => {});
 
-      const headerContainer = renderResult.getByTestId(CARD_HEADER_TESTID);
-      expect(within(headerContainer).queryByText('NEW_README.md')).not.toBe(
-        null
+      const toThrow = async (): Promise<void> => {
+        renderFileDiff({
+          filenameTo: 'README.md',
+        });
+        await wait();
+      };
+
+      await expect(toThrow()).rejects.toThrowErrorMatchingInlineSnapshot(
+        `"FileDiff: file path not specified"`
       );
+
+      consoleErrSpy.mockRestore();
     });
   });
 
   describe('diff', (): void => {
-    // TODO(clintoon): Should have screenshot testing to avoid testing the implementation
+    // TODO(clintoon): Should also have screenshot testing to avoid testing the implementation
   });
 });
