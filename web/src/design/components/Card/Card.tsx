@@ -44,4 +44,4 @@ const Card = ({ header, children }: CardProps): JSX.Element => {
   );
 };
 
-export { Card, CARD_HEADER_TESTID };
+export { Card, CARD_HEADER_TESTID, CARD_BODY_TESTID };
