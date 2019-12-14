@@ -27,8 +27,6 @@ const HeaderText = styled.div`
 
 const Body = styled.div`
   border-radius: 0 0 5px 5px;
-  border: 2px solid ${Color.LightGray};
-  border-top: 0;
 `;
 
 const Card = ({ header, children }: CardProps): JSX.Element => {
