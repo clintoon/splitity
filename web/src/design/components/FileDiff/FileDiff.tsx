@@ -95,7 +95,6 @@ const FullWidthTableData = styled.td`
 `;
 
 const LineCode = styled.div<LineCodeProps>`
-  padding: 0 0 0 20px;
   line-height: 20px;
   white-space: pre;
   background-color: ${({ backgroundColor }): string => backgroundColor};
@@ -114,8 +113,13 @@ const LineNumbersSection = ({
   );
 };
 
+const Symbol = styled.span`
+  margin: 0 8px;
+`;
+
 const Line = ({ change }: LineProps): JSX.Element => {
-  const displayContent = change.content;
+  const symbol = change.content.charAt(0);
+  const displayContent = change.content.substr(1);
 
   let codeBackgroundColor: string;
   let lineNumBackgroundColor: string;
@@ -155,6 +159,7 @@ const Line = ({ change }: LineProps): JSX.Element => {
       />
       <FullWidthTableData>
         <LineCode backgroundColor={codeBackgroundColor}>
+          <Symbol>{symbol}</Symbol>
           {displayContent}
         </LineCode>
       </FullWidthTableData>
