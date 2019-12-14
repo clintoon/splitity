@@ -169,17 +169,17 @@ const Line = ({ change }: LineProps): JSX.Element => {
 
 const Chunk = ({ chunk }: ChunkProps): JSX.Element => {
   return (
-    <div>
+    <React.Fragment>
       {chunk.changes.map(
         (change, index): JSX.Element => {
           return <Line key={index} change={change} />;
         }
       )}
-    </div>
+    </React.Fragment>
   );
 };
 
-const ChunkSeparator = styled.div`
+const ChunkSeparator = styled.tr`
   height: 30px;
   background-color: ${Color.LightBlue};
 `;
@@ -188,16 +188,22 @@ const FileDiff = ({ filename, chunks }: FileDiffProps): JSX.Element => {
   return (
     <Card header={getFilenameHeader(filename) || ''}>
       <Table>
-        {chunks.map(
-          (chunk, index): JSX.Element => {
-            return (
-              <div key={chunk.content}>
-                <Chunk chunk={chunk} />
-                {index !== chunks.length - 1 && <ChunkSeparator />}
-              </div>
-            );
-          }
-        )}
+        <tbody>
+          {chunks.map(
+            (chunk, index): JSX.Element => {
+              return (
+                <React.Fragment key={chunk.content}>
+                  <Chunk chunk={chunk} />
+                  {index !== chunks.length - 1 && (
+                    <ChunkSeparator>
+                      <td colSpan={3} />
+                    </ChunkSeparator>
+                  )}
+                </React.Fragment>
+              );
+            }
+          )}
+        </tbody>
       </Table>
     </Card>
   );
