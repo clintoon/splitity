@@ -1,9 +1,5 @@
 import React from 'react';
-import styled, {
-  FlattenInterpolation,
-  css,
-  FlattenSimpleInterpolation,
-} from 'styled-components';
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
 import { Card } from '@web/design/components/Card/Card';
 import parseDiff from 'parse-diff';
 import { Color } from '@web/design/styles/color';
@@ -44,6 +40,7 @@ const Table = styled.table`
   overflow-x: auto;
   white-space: nowrap;
   ${codeFontFamily};
+  font-size: 12px;
 `;
 
 const TableRow = styled.tr`
@@ -59,13 +56,17 @@ interface TableDataProps {
 const LineNumber = styled.td<TableDataProps>`
   margin: 0;
   padding: 0 8px;
+  color: ${Color.Gray};
+  text-align: right;
+  min-width: 32px;
+
   ${({ backgroundColor }): FlattenSimpleInterpolation | null => {
     return backgroundColor
       ? css`
           background-color: ${backgroundColor};
         `
       : null;
-  }}
+  }};
 `;
 
 const FullWidthTableData = styled.td`
@@ -79,7 +80,8 @@ interface LineCodeProps {
 }
 
 const LineCode = styled.div<LineCodeProps>`
-  line-height: 24px;
+  padding: 0 0 0 20px;
+  line-height: 20px;
   white-space: pre;
   background-color: ${({ backgroundColor }): string => backgroundColor};
 `;
@@ -163,10 +165,10 @@ const Chunk = ({ chunk }: ChunkProps): JSX.Element => {
   );
 };
 
-// TODO
-const ChunkSeparator = (): JSX.Element => {
-  return <div />;
-};
+const ChunkSeparator = styled.div`
+  height: 30px;
+  background-color: ${Color.LightBlue};
+`;
 
 const FileDiff = ({ filename, chunks }: FileDiffProps): JSX.Element => {
   return (
