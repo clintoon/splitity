@@ -6,7 +6,7 @@ import { Color } from '@web/design/styles/color';
 import { codeFontFamily } from '@web/design/styles/font';
 
 interface FilenameChange {
-  from: string;
+  from?: string;
   to?: string;
 }
 
@@ -23,10 +23,33 @@ interface LineProps {
   change: parseDiff.Change;
 }
 
-const getFilenameHeader = (filename: FilenameChange): string => {
-  if (!filename.to || filename.from === filename.to) {
+interface TableDataProps {
+  backgroundColor?: string;
+}
+
+interface LineCodeProps {
+  backgroundColor: string;
+}
+
+interface LineNumbersSection {
+  backgroundColor: string;
+  rightNumber: number | null;
+  leftNumber: number | null;
+}
+
+const getFilenameHeader = (filename: FilenameChange): string | undefined => {
+  if (filename.from === filename.to) {
+    return filename.from || filename.from;
+  }
+
+  if (!filename.from) {
+    return filename.to;
+  }
+
+  if (!filename.to) {
     return filename.from;
   }
+
   return `${filename.from} → ${filename.to}`;
 };
 
@@ -48,10 +71,6 @@ const TableRow = styled.tr`
   margin: 0;
   width: 100%;
 `;
-
-interface TableDataProps {
-  backgroundColor?: string;
-}
 
 const LineNumber = styled.td<TableDataProps>`
   margin: 0;
@@ -75,22 +94,12 @@ const FullWidthTableData = styled.td`
   width: 100%;
 `;
 
-interface LineCodeProps {
-  backgroundColor: string;
-}
-
 const LineCode = styled.div<LineCodeProps>`
   padding: 0 0 0 20px;
   line-height: 20px;
   white-space: pre;
   background-color: ${({ backgroundColor }): string => backgroundColor};
 `;
-
-interface LineNumbersSection {
-  backgroundColor: string;
-  rightNumber: number | null;
-  leftNumber: number | null;
-}
 
 const LineNumbersSection = ({
   backgroundColor,
@@ -172,7 +181,7 @@ const ChunkSeparator = styled.div`
 
 const FileDiff = ({ filename, chunks }: FileDiffProps): JSX.Element => {
   return (
-    <Card header={getFilenameHeader(filename)}>
+    <Card header={getFilenameHeader(filename) || ''}>
       <Table>
         {chunks.map(
           (chunk, index): JSX.Element => {

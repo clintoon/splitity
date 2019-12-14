@@ -3,6 +3,8 @@ import { match } from 'react-router-dom';
 import { GithubAPI } from '@web/lib/github/github';
 import { PullRequestInfoPage } from '@web/pages/PullRequestSplittingPage/PullRequestInfo';
 import parseDiff from 'parse-diff';
+import { FileDiff } from '@web/design/components/FileDiff/FileDiff';
+import styled from 'styled-components';
 
 interface MatchProps {
   owner: string;
@@ -62,6 +64,16 @@ const useGetPRDiff = (
   return PRDiff;
 };
 
+const FileDiffsSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 30px;
+`;
+
+const FileDiffContainer = styled.div`
+  margin: 0 0 20px 0;
+`;
+
 const PullRequestSplittingPage = ({
   match,
 }: PullRequestSplittingPageProps): JSX.Element => {
@@ -69,14 +81,37 @@ const PullRequestSplittingPage = ({
   const title = useGetPRTitle(owner, repoName, Number(pullRequestId));
   const PRDiff = useGetPRDiff(owner, repoName, Number(pullRequestId));
 
-  console.log('PRDiff', PRDiff);
+  const PullRequestFileDiffs = (): JSX.Element => {
+    if (!PRDiff) {
+      return <div>Loading...</div>;
+    }
+    return (
+      <FileDiffsSection>
+        {PRDiff.map(
+          (fileDiff): JSX.Element => {
+            return (
+              <FileDiffContainer key={`${fileDiff.from} ${fileDiff.to}`}>
+                <FileDiff
+                  filename={{ from: fileDiff.from, to: fileDiff.to }}
+                  chunks={fileDiff.chunks}
+                />
+              </FileDiffContainer>
+            );
+          }
+        )}
+      </FileDiffsSection>
+    );
+  };
 
   return (
-    <PullRequestInfoPage
-      title={title || ''}
-      repoName={repoName}
-      owner={owner}
-    />
+    <div>
+      <PullRequestInfoPage
+        title={title || ''}
+        repoName={repoName}
+        owner={owner}
+      />
+      <PullRequestFileDiffs />
+    </div>
   );
 };
 
