@@ -18,8 +18,8 @@ const NavbarBox = styled.div`
   width: 100%;
   margin: 0;
   height: 60px;
-  background-color: ${Color.LightOrange};
-  box-shadow: 0 3px 3px -3px ${Color.Gray};
+  background-color: ${Color.Blue100};
+  box-shadow: 0 3px 3px -3px ${Color.Gray600};
   position: relative;
   z-index: 1;
 `;

@@ -40,12 +40,12 @@ const buttonSizeMap = {
 
 const buttonStyleOfMap = {
   primary: {
-    backgroundColor: Color.Orange,
-    fontColor: Color.Black,
+    backgroundColor: Color.BlueA200,
+    fontColor: Color.Gray900,
   },
   secondary: {
-    backgroundColor: Color.LightGray,
-    fontColor: Color.Orange,
+    backgroundColor: Color.Gray300,
+    fontColor: Color.Gray900,
   },
 };
 

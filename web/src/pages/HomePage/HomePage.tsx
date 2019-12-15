@@ -8,7 +8,7 @@ const HomePage = (): JSX.Element => {
     <Hero
       title="Split-my-prs"
       subtitle="The easier way to split your pull requests"
-      backgroundColor={Color.LightOrange}
+      backgroundColor={Color.Blue50}
       button={{
         label: 'Sign up',
         onClick: handleSignIn,

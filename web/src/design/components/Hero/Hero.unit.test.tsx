@@ -49,7 +49,7 @@ describe('<Hero/>', (): void => {
   describe('no button', (): void => {
     it('renders title', (): void => {
       const { renderResult } = renderHero({
-        backgroundColor: Color.Orange,
+        backgroundColor: Color.Blue50,
       });
       expect(renderResult.getByTestId(HERO_TITLE_TESTID)).toHaveTextContent(
         HERO_TITLE
@@ -58,7 +58,7 @@ describe('<Hero/>', (): void => {
 
     it('renders subtitle', (): void => {
       const { renderResult } = renderHero({
-        backgroundColor: Color.Orange,
+        backgroundColor: Color.Blue50,
       });
       expect(renderResult.getByTestId(HERO_SUBTITLE_TESTID)).toHaveTextContent(
         HERO_SUBTITLE
@@ -67,7 +67,7 @@ describe('<Hero/>', (): void => {
 
     it('does not render button', (): void => {
       const { renderResult } = renderHero({
-        backgroundColor: Color.Orange,
+        backgroundColor: Color.Blue50,
       });
       expect(renderResult.container).not.toContainHTML('button');
     });
@@ -76,7 +76,7 @@ describe('<Hero/>', (): void => {
   describe('with button', (): void => {
     it('renders title', (): void => {
       const { renderResult } = renderHero({
-        backgroundColor: Color.Orange,
+        backgroundColor: Color.Blue50,
         buttonLabel: HERO_BUTTON_LABEL,
       });
       expect(renderResult.getByTestId(HERO_TITLE_TESTID)).toHaveTextContent(
@@ -86,7 +86,7 @@ describe('<Hero/>', (): void => {
 
     it('renders subtitle', (): void => {
       const { renderResult } = renderHero({
-        backgroundColor: Color.Orange,
+        backgroundColor: Color.Blue50,
         buttonLabel: HERO_BUTTON_LABEL,
       });
       expect(renderResult.getByTestId(HERO_SUBTITLE_TESTID)).toHaveTextContent(
@@ -96,7 +96,7 @@ describe('<Hero/>', (): void => {
 
     it('does renders button', (): void => {
       const { renderResult } = renderHero({
-        backgroundColor: Color.Orange,
+        backgroundColor: Color.Blue50,
         buttonLabel: HERO_BUTTON_LABEL,
       });
       expect(renderResult.container).toContainElement(
@@ -106,7 +106,7 @@ describe('<Hero/>', (): void => {
 
     it('does renders correct button label', (): void => {
       const { renderResult } = renderHero({
-        backgroundColor: Color.Orange,
+        backgroundColor: Color.Blue50,
         buttonLabel: HERO_BUTTON_LABEL,
       });
       expect(renderResult.getByTestId(BUTTON_TESTID)).toHaveTextContent(
@@ -116,7 +116,7 @@ describe('<Hero/>', (): void => {
 
     it("calls button's onClick when is pressed", (): void => {
       const { renderResult, onButtonClickMock } = renderHero({
-        backgroundColor: Color.Orange,
+        backgroundColor: Color.Blue50,
         buttonLabel: HERO_BUTTON_LABEL,
       });
       fireEvent.click(renderResult.getByTestId(BUTTON_TESTID));

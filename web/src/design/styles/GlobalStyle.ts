@@ -5,7 +5,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    background-color: ${Color.LightGray};
+    background-color: ${Color.Gray100};
   }
 `;
 

@@ -22,7 +22,7 @@ const Box = styled.div`
   max-width: 450px;
   flex-basis: 450px;
   height: 250px;
-  border: 1px solid ${Color.DarkGray};
+  border: 1px solid ${Color.Gray700};
   border-radius: 12px;
 `;
 
@@ -40,7 +40,7 @@ const InstallAppNotice = (): JSX.Element => {
           styleOf={TextStyle.Title2}
           margin="30px 30px 0 30px"
           textAlign={TextAlign.Center}
-          color={Color.DarkGray}
+          color={Color.Gray700}
         >
           Install the Github App to get started
         </Text>

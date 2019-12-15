@@ -171,7 +171,7 @@ Text.defaultProps = {
   as: TextAs.Div,
   styleOf: TextStyle.Body,
   margin: '0',
-  color: Color.Black,
+  color: Color.Gray900,
 };
 
 export { Text, TEXT_TESTID };

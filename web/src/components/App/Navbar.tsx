@@ -10,7 +10,6 @@ import { useStore } from '@web/stores/useStore';
 import { observer } from 'mobx-react-lite';
 import { handleSignIn } from '@web/lib/eventHandlers/auth';
 import { onAddReposClick } from '@web/lib/actions/openPage';
-import { CurrentUser } from '@web/stores/authStore';
 
 const NAVBAR_SIGNIN_TESTID = 'navbar-signin';
 const NAVBAR_SIGN_OUT_TESTID = 'navbar-signout';

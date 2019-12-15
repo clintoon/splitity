@@ -175,7 +175,7 @@ describe('<Text/>', (): void => {
 
     describe('color', (): void => {
       it('displays text when you pass in color prop', (): void => {
-        const { getByTestId } = renderText({ color: Color.Orange });
+        const { getByTestId } = renderText({ color: Color.Gray500 });
         expect(getByTestId(TEXT_TESTID)).toHaveTextContent(TEXT_CHILD);
       });
     });

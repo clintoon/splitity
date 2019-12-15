@@ -61,7 +61,7 @@ const Chunk = ({ chunk }: ChunkProps): JSX.Element => {
 
 const ChunkSeparator = styled.tr`
   height: 30px;
-  background-color: ${Color.LightBlue};
+  background-color: ${Color.Blue50};
 `;
 
 const FileDiff = ({ filename, chunks }: FileDiffProps): JSX.Element => {
