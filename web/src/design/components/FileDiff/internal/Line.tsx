@@ -13,7 +13,7 @@ interface LineProps {
 }
 
 interface TableDataProps {
-  backgroundColor?: string;
+  backgroundColor: string;
 }
 
 interface LineCodeProps {
@@ -48,14 +48,7 @@ const LineNumber = styled.td<TableDataProps>`
   color: ${Color.Gray};
   text-align: right;
   min-width: 32px;
-
-  ${({ backgroundColor }): FlattenSimpleInterpolation | null => {
-    return backgroundColor
-      ? css`
-          background-color: ${backgroundColor};
-        `
-      : null;
-  }};
+  background-color: ${({ backgroundColor }): string => backgroundColor};
 `;
 
 const LineCode = styled.div<LineCodeProps>`
