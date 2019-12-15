@@ -6,6 +6,11 @@ import parseDiff from 'parse-diff';
 import { FileDiff } from '@web/design/components/FileDiff/FileDiff';
 import styled from 'styled-components';
 
+const PR_SPLITTING_PAGE_DIFFS_SECTION_TESTID =
+  'pr splitting page diffs sections';
+const PR_SPLITTING_PAGE_FILE_DIFF_TESTID = 'pr splitting page file diff';
+const PR_SPLITTING_PAGE_LOADING_TESTID = 'pr splitting page loading';
+
 interface MatchProps {
   owner: string;
   repoName: string;
@@ -83,14 +88,19 @@ const PullRequestSplittingPage = ({
 
   const PullRequestFileDiffs = (): JSX.Element => {
     if (!PRDiff) {
-      return <div>Loading...</div>;
+      return (
+        <div data-testid={PR_SPLITTING_PAGE_LOADING_TESTID}>Loading...</div>
+      );
     }
     return (
-      <FileDiffsSection>
+      <FileDiffsSection data-testid={PR_SPLITTING_PAGE_DIFFS_SECTION_TESTID}>
         {PRDiff.map(
           (fileDiff): JSX.Element => {
             return (
-              <FileDiffContainer key={`${fileDiff.from} ${fileDiff.to}`}>
+              <FileDiffContainer
+                data-testid={PR_SPLITTING_PAGE_FILE_DIFF_TESTID}
+                key={`${fileDiff.from} ${fileDiff.to}`}
+              >
                 <FileDiff
                   filename={{ from: fileDiff.from, to: fileDiff.to }}
                   chunks={fileDiff.chunks}
@@ -115,4 +125,9 @@ const PullRequestSplittingPage = ({
   );
 };
 
-export { PullRequestSplittingPage };
+export {
+  PullRequestSplittingPage,
+  PR_SPLITTING_PAGE_DIFFS_SECTION_TESTID,
+  PR_SPLITTING_PAGE_FILE_DIFF_TESTID,
+  PR_SPLITTING_PAGE_LOADING_TESTID,
+};

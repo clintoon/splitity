@@ -109,7 +109,82 @@ index 5cf2347..0000000
 -Donec hendrerit, magna sit amet fermentum laoreet, purus massa consectetur mauris, condimentum eleifend nibh enim quis ipsum.
 `;
 
+const GITHUB_MULTIPLE_FILE_DIFF = `
+diff --git a/web/jest.config.js b/web/jest.config.js
+index e429610..60a90dd 100644
+--- a/web/jest.config.js
++++ b/web/jest.config.js
+@@ -7,4 +7,5 @@ module.exports = {
+ },
+ clearMocks: true,
+ restoreMocks: true,
++  resetModules: true,
+};
+diff --git a/web/setupTest.ts b/web/setupTest.ts
+index 666127a..18d9215 100644
+--- a/web/setupTest.ts
++++ b/web/setupTest.ts
+@@ -1 +1,7 @@
+import '@testing-library/jest-dom/extend-expect';
++import { PROCESS_ENV_GITHUB_APP_NAME } from '@web/testing/testGlobals';
++
++// Setup globals
++process.env = Object.assign(process.env, {
++  GITHUB_APP_NAME: PROCESS_ENV_GITHUB_APP_NAME,
++});
+diff --git a/web/src/lib/actions/openPage.unit.test.ts b/web/src/lib/actions/openPage.unit.test.ts
+new file mode 100644
+index 0000000..3970dc8
+--- /dev/null
++++ b/web/src/lib/actions/openPage.unit.test.ts
+@@ -0,0 +1,34 @@
++import { onAddReposClick, onInstallGithubApp } from '@web/lib/actions/openPage';
++import { PROCESS_ENV_GITHUB_APP_NAME } from '@web/testing/testGlobals';
++
++const GITHUB_INSTALLATION_ID = 123;
++
++describe('openPage', (): void => {
++  describe('onAddReposClick', (): void => {
++    it('opens new tab with correct url', (): void => {
++      const windowOpenSpy = jest
++        .spyOn(window, 'open')
++        .mockImplementation((): null => null);
++
++      onAddReposClick(GITHUB_INSTALLATION_ID);
++
++      expect(windowOpenSpy).toBeCalledWith(
++        \`https://github.com/settings/installations/\${GITHUB_INSTALLATION_ID}\`
++      );
++    });
++  });
++
++  describe('onInstallGithubApp', (): void => {
++    it('opens new tab with correct url', (): void => {
++      const windowOpenSpy = jest
++        .spyOn(window, 'open')
++        .mockImplementation((): null => null);
++
++      onInstallGithubApp();
++
++      expect(windowOpenSpy).toBeCalledWith(
++        \`https://github.com/apps/\${PROCESS_ENV_GITHUB_APP_NAME}\`
++      );
++    });
++  });
++});
+diff --git a/web/src/testing/testGlobals.ts b/web/src/testing/testGlobals.ts
+new file mode 100644
+index 0000000..85ea7e9
+--- /dev/null
++++ b/web/src/testing/testGlobals.ts
+@@ -0,0 +1,3 @@
++const PROCESS_ENV_GITHUB_APP_NAME = 'split-my-prs-test';
++
++export { PROCESS_ENV_GITHUB_APP_NAME };
+`;
+
 export {
   GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
   GITHUB_SINGLE_FILE_SINGLE_CHUNK,
+  GITHUB_MULTIPLE_FILE_DIFF,
 };
