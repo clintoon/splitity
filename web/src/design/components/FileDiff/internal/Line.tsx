@@ -3,7 +3,10 @@ import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
 import parseDiff from 'parse-diff';
 import { Color } from '@web/design/styles/color';
 
-const FILE_DIFF_LINE_TESTID = 'fuke diff line testid';
+const FILE_DIFF_LINE_TESTID = 'file diff line testid';
+const FILE_DIFF_LEFT_LINE_NUMBER_TESTID = 'file diff left line number testid';
+const FILE_DIFF_RIGHT_LINE_NUMBER_TESTID = 'file diff right line number testid';
+const FILE_DIFF_SYMBOL_TESTID = 'file diff symbol testid';
 
 interface LineProps {
   change: parseDiff.Change;
@@ -68,8 +71,18 @@ const LineNumbersSection = ({
 }: LineNumbersSection): JSX.Element => {
   return (
     <>
-      <LineNumber backgroundColor={backgroundColor}>{rightNumber}</LineNumber>
-      <LineNumber backgroundColor={backgroundColor}>{leftNumber}</LineNumber>
+      <LineNumber
+        data-testid={FILE_DIFF_LEFT_LINE_NUMBER_TESTID}
+        backgroundColor={backgroundColor}
+      >
+        {rightNumber}
+      </LineNumber>
+      <LineNumber
+        data-testid={FILE_DIFF_RIGHT_LINE_NUMBER_TESTID}
+        backgroundColor={backgroundColor}
+      >
+        {leftNumber}
+      </LineNumber>
     </>
   );
 };
@@ -116,7 +129,7 @@ const Line = ({ change }: LineProps): JSX.Element => {
       />
       <FullWidthTableData>
         <LineCode backgroundColor={codeBackgroundColor}>
-          <Symbol>{symbol}</Symbol>
+          <Symbol data-testid={FILE_DIFF_SYMBOL_TESTID}>{symbol}</Symbol>
           {displayContent}
         </LineCode>
       </FullWidthTableData>
@@ -124,4 +137,10 @@ const Line = ({ change }: LineProps): JSX.Element => {
   );
 };
 
-export { Line, FILE_DIFF_LINE_TESTID };
+export {
+  Line,
+  FILE_DIFF_LINE_TESTID,
+  FILE_DIFF_LEFT_LINE_NUMBER_TESTID,
+  FILE_DIFF_RIGHT_LINE_NUMBER_TESTID,
+  FILE_DIFF_SYMBOL_TESTID,
+};
