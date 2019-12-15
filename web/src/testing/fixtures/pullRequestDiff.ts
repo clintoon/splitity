@@ -183,8 +183,24 @@ index 0000000..85ea7e9
 +export { PROCESS_ENV_GITHUB_APP_NAME };
 `;
 
+const GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF = `
+diff --git a/web/src/pages/GithubDashboard/PullRequestSelection.tsx b/web/src/pages/GithubDashboard/PullRequestSelection.tsx
+index 179dad9..797c9c3 100644
+--- a/web/src/pages/GithubDashboard/PullRequestSelection.tsx
++++ b/web/src/pages/GithubDashboard/PullRequestSelection.tsx
+@@ -40,7 +40,9 @@ const redirectSplitPR = (
+   repoNameWithOwner: string,
+   prNumber: number
+ ): void => {
+-  history.push(\`\${GithubRoutePath.AppRoot}/\${repoNameWithOwner}/\${prNumber}\`);
++  history.push(
++    \`\${GithubRoutePath.AppRoot}/\${repoNameWithOwner}/pull/\${prNumber}\`
++  );
+`;
+
 export {
   GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
   GITHUB_SINGLE_FILE_SINGLE_CHUNK,
   GITHUB_MULTIPLE_FILE_DIFF,
+  GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF,
 };
