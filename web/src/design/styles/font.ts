@@ -5,4 +5,9 @@ const fontFamily = css`
   font-family: 'Roboto', sans-serif;
 `;
 
-export { fontFamily };
+const codeFontFamily = css`
+  @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap');
+  font-family: 'Source Code Pro', monospace;
+`;
+
+export { fontFamily, codeFontFamily };
