@@ -33,7 +33,7 @@ const Container = styled.div`
 `;
 
 const Head = styled.div`
-  border-bottom: 1px solid ${Color.Gray500};
+  border-bottom: 1px solid ${Color.Gray700};
 `;
 
 const Items = styled.div`
