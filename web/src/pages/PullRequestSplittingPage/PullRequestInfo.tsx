@@ -12,7 +12,7 @@ interface PullRequestInfoPageProps {
 const TextGroup = styled.div`
   margin: 30px 60px;
   padding: 0 0 20px 0;
-  border-bottom: 2px solid ${Color.Gray};
+  border-bottom: 2px solid ${Color.Gray500};
 `;
 
 const PULL_REQUEST_INFO_TESTID = 'pull request info';

@@ -15,7 +15,7 @@ storiesOf('Hero', module)
         backgroundColor={select(
           'backgroundColor',
           Object.values(Color),
-          Color.LightOrange
+          Color.Blue50
         )}
       />
     )
@@ -29,7 +29,7 @@ storiesOf('Hero', module)
         backgroundColor={select(
           'backgroundColor',
           Object.values(Color),
-          Color.LightOrange
+          Color.Blue50
         )}
         button={{
           label: text('buttonLabel', 'button label'),

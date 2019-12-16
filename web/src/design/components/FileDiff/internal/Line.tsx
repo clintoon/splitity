@@ -45,7 +45,7 @@ const TableRow = styled.tr`
 const LineNumber = styled.td<TableDataProps>`
   margin: 0;
   padding: 0 8px;
-  color: ${Color.Gray};
+  color: ${Color.Gray400};
   text-align: right;
   min-width: 32px;
   background-color: ${({ backgroundColor }): string => backgroundColor};
@@ -91,14 +91,14 @@ const Line = ({ change }: LineProps): JSX.Element => {
 
   switch (change.type) {
     case 'add': {
-      codeBackgroundColor = Color.LightGreen;
+      codeBackgroundColor = Color.PRDiffGreen;
       lineNumBackgroundColor = Color.LineNumberGreen;
       rightNum = null;
       leftNum = change.ln;
       break;
     }
     case 'del': {
-      codeBackgroundColor = Color.LightRed;
+      codeBackgroundColor = Color.PRDiffRed;
       lineNumBackgroundColor = Color.LineNumberRed;
       rightNum = change.ln;
       leftNum = null;
@@ -106,7 +106,7 @@ const Line = ({ change }: LineProps): JSX.Element => {
     }
     case 'normal': {
       codeBackgroundColor = Color.White;
-      lineNumBackgroundColor = Color.LineNumberGray;
+      lineNumBackgroundColor = Color.Gray50;
       rightNum = change.ln1;
       leftNum = change.ln2;
       break;

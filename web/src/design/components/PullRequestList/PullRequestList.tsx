@@ -24,7 +24,7 @@ interface PullRequestListProps {
 }
 
 const Container = styled.div`
-  border: 1px solid ${Color.DarkGray};
+  border: 1px solid ${Color.Gray700};
   border-radius: 6px;
   max-width: 500px;
   flex-basis: 500px;
@@ -33,12 +33,12 @@ const Container = styled.div`
 `;
 
 const Head = styled.div`
-  border-bottom: 1px solid ${Color.DarkGray};
+  border-bottom: 1px solid ${Color.Gray500};
 `;
 
 const Items = styled.div`
   & > :not(:last-child) {
-    border-bottom: 1px solid ${Color.Gray};
+    border-bottom: 1px solid ${Color.Gray500};
   }
 `;
 
@@ -56,7 +56,7 @@ const LoadMoreSection = styled.div`
 const Item = styled.div`
   cursor: pointer;
   :hover {
-    background-color: ${Color.LightGray};
+    background-color: ${Color.Gray200};
   }
 `;
 
@@ -86,7 +86,7 @@ const PullRequestList = ({
     return (
       <Head>
         <TextWrapper>
-          <Text styleOf={TextStyle.Title5} color={Color.DarkGray}>
+          <Text styleOf={TextStyle.Title5} color={Color.Gray700}>
             {heading}
           </Text>
         </TextWrapper>
