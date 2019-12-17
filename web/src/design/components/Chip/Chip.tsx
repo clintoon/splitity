@@ -17,6 +17,7 @@ interface ChipProps {
 interface ContainerProps {
   disabled: boolean;
   borderColor: string;
+  hasDelete: boolean;
 }
 
 const Container = styled.button<ContainerProps>`
@@ -28,7 +29,16 @@ const Container = styled.button<ContainerProps>`
   min-width: 55px;
   height: 30px;
   border-radius: 50px;
-  padding: 0 3px 0 12px;
+  ${({ hasDelete }): FlattenSimpleInterpolation => {
+    if (hasDelete) {
+      return css`
+        padding: 0 3px 0 10px;
+      `;
+    }
+    return css`
+      padding: 0 6px;
+    `;
+  }}
 
   ${({ disabled }): FlattenSimpleInterpolation | null => {
     return disabled
@@ -46,7 +56,7 @@ const Container = styled.button<ContainerProps>`
 
 const DeleteButton = styled(IoIosCloseCircle)`
   padding: 0;
-  margin: 0 0 0 4px;
+  margin: 0;
 
   :focus,
   :hover {
@@ -62,6 +72,7 @@ const Chip = ({
 }: ChipProps): JSX.Element => {
   return (
     <Container
+      hasDelete={!!onDelete}
       data-testid={CHIP_TESTID}
       disabled={!onClick}
       onClick={onClick}
