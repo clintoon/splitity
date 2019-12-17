@@ -3,6 +3,8 @@ import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
 import { Color } from '@web/design/styles/color';
 import { Text } from '@web/design/components/Text/Text';
 
+const CHIP_TESTID = 'chip';
+
 interface ChipProps {
   label: string;
   onClick?: () => void;
@@ -37,6 +39,7 @@ const Container = styled.button<ContainerProps>`
 const Chip = ({ label, onClick, borderColor }: ChipProps): JSX.Element => {
   return (
     <Container
+      data-testid={CHIP_TESTID}
       disabled={!onClick}
       onClick={onClick}
       borderColor={borderColor || Color.Gray400}
@@ -46,4 +49,4 @@ const Chip = ({ label, onClick, borderColor }: ChipProps): JSX.Element => {
   );
 };
 
-export { Chip };
+export { Chip, CHIP_TESTID };

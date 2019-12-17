@@ -11,6 +11,7 @@ storiesOf('Chip', module).add(
     <Chip
       label={text('label', 'label')}
       onClick={boolean('onClick', true) ? action('onClick') : undefined}
+      onDelete={boolean('onDelete', true) ? action('onDelete') : undefined}
       borderColor={select('borderColor', Object.values(Color), undefined)}
     />
   )
