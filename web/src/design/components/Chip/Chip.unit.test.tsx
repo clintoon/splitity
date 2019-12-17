@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, RenderResult, fireEvent, wait } from '@testing-library/react';
+import { render, RenderResult, fireEvent } from '@testing-library/react';
 import { Chip, CHIP_TESTID } from '@web/design/components/Chip/Chip';
 
 interface RenderChipOptions {
