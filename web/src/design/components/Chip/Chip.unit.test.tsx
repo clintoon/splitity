@@ -5,7 +5,11 @@ import {
   fireEvent,
   within,
 } from '@testing-library/react';
-import { Chip, CHIP_TESTID } from '@web/design/components/Chip/Chip';
+import {
+  Chip,
+  CHIP_TESTID,
+  CHIP_DELETE_BUTTON_TESTID,
+} from '@web/design/components/Chip/Chip';
 
 const LABEL = 'label123';
 
@@ -43,5 +47,22 @@ describe('<Chip/>', (): void => {
     fireEvent.click(renderResult.getByTestId(CHIP_TESTID));
 
     expect(onClickMock).toBeCalled();
+  });
+
+  it('does not display delete button if onDelete is not passed in', (): void => {
+    const { renderResult } = renderChip({});
+    expect(renderResult.queryByTestId(CHIP_DELETE_BUTTON_TESTID)).toBe(null);
+  });
+
+  it('calls onDelete when clicking the delete button on chip', (): void => {
+    const onDeleteMock = jest.fn();
+
+    const { renderResult } = renderChip({
+      onDelete: onDeleteMock,
+    });
+
+    fireEvent.click(renderResult.getByTestId(CHIP_DELETE_BUTTON_TESTID));
+
+    expect(onDeleteMock).toBeCalled();
   });
 });
