@@ -30,16 +30,16 @@ const Container = styled.button<ContainerProps>`
   border-radius: 50px;
   padding: 0 3px 0 12px;
 
-  :focus,
-  :hover {
-    background: ${Color.Gray100};
-  }
-
   ${({ disabled }): FlattenSimpleInterpolation | null => {
     return disabled
       ? null
       : css`
           cursor: pointer;
+
+          :focus,
+          :hover {
+            background: ${Color.Gray100};
+          }
         `;
   }}
 `;
