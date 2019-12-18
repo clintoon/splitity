@@ -29,6 +29,7 @@ const Container = styled.button<ContainerProps>`
   min-width: 55px;
   height: 30px;
   border-radius: 50px;
+
   ${({ hasDelete }): FlattenSimpleInterpolation => {
     if (hasDelete) {
       return css`
@@ -57,6 +58,7 @@ const Container = styled.button<ContainerProps>`
 const DeleteButton = styled(IoIosCloseCircle)`
   padding: 0;
   margin: 0;
+  cursor: pointer;
 
   :focus,
   :hover {
