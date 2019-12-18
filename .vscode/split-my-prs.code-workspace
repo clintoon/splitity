@@ -25,6 +25,7 @@
     ],
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true
-    }
+    },
+    "typescript.tsdk": "split-my-prs/node_modules/typescript/lib"
   }
 }
