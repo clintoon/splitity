@@ -1,25 +1,34 @@
 import styled, { css, CSSProp } from 'styled-components';
 import { fontFamily } from '@web/design/styles/font';
+import { Color } from '@web/design/styles/color';
 
-export enum BaseButtonSize {
+enum ButtonStyle {
+  Primary = 'primary',
+  Secondary = 'secondary',
+}
+
+enum ButtonSize {
   Small = 's',
   Medium = 'm',
   Large = 'l',
 }
 
-export interface BaseButtonProps {
-  size: BaseButtonSize;
+interface BaseButtonProps {
+  size: ButtonSize;
 }
 
 const buttonSizeMap = {
   s: {
     padding: '6px 10px',
+    fontSize: '14px',
   },
   m: {
-    padding: '12px 18px',
+    padding: '8px 12px',
+    fontSize: '20px',
   },
   l: {
     padding: '18px 26px',
+    fontSize: '24px',
   },
 };
 
@@ -30,11 +39,16 @@ const BaseButton = styled('button')<BaseButtonProps>`
   cursor: pointer;
   border: none;
 
+  :hover {
+    filter: brightness(120%);
+  }
+
   ${({ size }): CSSProp => {
     return css`
       padding: ${buttonSizeMap[size].padding};
+      font-size: ${buttonSizeMap[size].fontSize};
     `;
   }}
 `;
 
-export { BaseButton };
+export { BaseButton, ButtonStyle, ButtonSize };

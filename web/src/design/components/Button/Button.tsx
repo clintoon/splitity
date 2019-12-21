@@ -3,21 +3,17 @@ import styled, { css, CSSProp } from 'styled-components';
 import { Color } from '@web/design/styles/color';
 import { fontFamily } from '@web/design/styles/font';
 import {
-  BaseButtonProps,
   BaseButton,
-  BaseButtonSize,
+  ButtonSize,
+  ButtonStyle,
 } from '@web/design/components/Button/internal/BaseButton';
 import { noop } from 'lodash';
 
 const BUTTON_TESTID = 'button';
 
-enum ButtonStyle {
-  Primary = 'primary',
-  Secondary = 'secondary',
-}
-
-interface ButtonProps extends BaseButtonProps {
+interface ButtonProps {
   children: string;
+  size: ButtonSize;
   styleOf: ButtonStyle;
   onClick: (event: React.MouseEvent) => void;
 }
@@ -62,14 +58,8 @@ const Button = (props: ButtonProps): JSX.Element => {
 };
 
 Button.defaultProps = {
-  size: BaseButtonSize.Medium,
+  size: ButtonSize.Medium,
   onClick: noop,
 };
 
-export {
-  Button,
-  BUTTON_TESTID,
-  ButtonStyle,
-  ButtonProps,
-  BaseButtonSize as ButtonSize,
-};
+export { Button, BUTTON_TESTID, ButtonStyle, ButtonProps, ButtonSize };
