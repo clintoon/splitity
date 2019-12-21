@@ -1,8 +1,11 @@
 import React from 'react';
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
+import styled, { FlattenSimpleInterpolation, css } from 'styled-components';
+import {
+  BaseButton,
+  ButtonSize,
+  ButtonStyle,
+} from '@web/design/components/Button/internal/BaseButton';
 import { Color } from '@web/design/styles/color';
-import { BaseButton, ButtonSize, ButtonStyle } from './internal/BaseButton';
-import { noop } from 'lodash';
 import { transparentize } from 'polished';
 
 interface TextButtonProps {
@@ -26,15 +29,14 @@ const buttonStyleMapping = {
 };
 
 const EnhancedBaseButton = styled(BaseButton)<EnhancedBaseButtonProps>`
-  border-width: 0;
   background-color: inherit;
 
   ${({ styleOf }): FlattenSimpleInterpolation => {
     const textColor = buttonStyleMapping[styleOf].textColor;
 
     return css`
+      border: 2px solid ${textColor};
       color: ${textColor};
-      background: transparent;
 
       :hover {
         background-color: ${transparentize(0.9, textColor)};
@@ -43,26 +45,21 @@ const EnhancedBaseButton = styled(BaseButton)<EnhancedBaseButtonProps>`
   }}
 `;
 
-const TextButton = ({
-  children,
-  onClick,
+const OutlineButton = ({
   size,
   styleOf,
+  children,
+  onClick,
 }: TextButtonProps): JSX.Element => {
   return (
-    <EnhancedBaseButton size={size} onClick={onClick} styleOf={styleOf}>
+    <EnhancedBaseButton size={size} styleOf={styleOf} onClick={onClick}>
       {children}
     </EnhancedBaseButton>
   );
 };
 
-TextButton.defaultProps = {
-  size: ButtonSize.Medium,
-  onClick: noop,
-};
-
 export {
-  TextButton,
-  ButtonStyle as TextButtonStyle,
-  ButtonSize as TextButtonSize,
+  OutlineButton,
+  ButtonStyle as OutlineButtonStyle,
+  ButtonSize as OutlineButtonSize,
 };

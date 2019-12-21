@@ -39,10 +39,6 @@ const BaseButton = styled('button')<BaseButtonProps>`
   cursor: pointer;
   border: none;
 
-  :hover {
-    filter: brightness(120%);
-  }
-
   ${({ size }): CSSProp => {
     return css`
       padding: ${buttonSizeMap[size].padding};

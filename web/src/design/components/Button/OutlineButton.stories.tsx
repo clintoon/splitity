@@ -1,30 +1,30 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import {
-  TextButton,
-  TextButtonStyle,
-  TextButtonSize,
-} from '@web/design/components/Button/TextButton';
+  OutlineButton,
+  OutlineButtonStyle,
+  OutlineButtonSize,
+} from '@web/design/components/Button/OutlineButton';
 import { text, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 
-storiesOf('TextButton', module).add(
+storiesOf('OutlineButton', module).add(
   'Documentation',
   (): JSX.Element => (
-    <TextButton
+    <OutlineButton
       onClick={action('onClick')}
       styleOf={select(
         'styleOf',
-        Object.values(TextButtonStyle),
-        TextButtonStyle.Primary
+        Object.values(OutlineButtonStyle),
+        OutlineButtonStyle.Primary
       )}
       size={select(
         'size',
-        Object.values(TextButtonSize),
-        TextButtonSize.Medium
+        Object.values(OutlineButtonSize),
+        OutlineButtonSize.Medium
       )}
     >
       {text('children', 'label')}
-    </TextButton>
+    </OutlineButton>
   )
 );
