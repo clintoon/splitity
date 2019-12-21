@@ -1,42 +1,30 @@
 import React from 'react';
 import styled, { css, CSSProp } from 'styled-components';
 import { Color } from '@web/design/styles/color';
-import { noop } from 'lodash';
 import { fontFamily } from '@web/design/styles/font';
+import {
+  BaseButtonProps,
+  BaseButton,
+  BaseButtonSize,
+} from '@web/design/components/Button/internal/BaseButton';
+import { noop } from 'lodash';
 
 const BUTTON_TESTID = 'button';
 
-export enum ButtonSize {
-  Small = 's',
-  Medium = 'm',
-  Large = 'l',
-}
-
-export enum ButtonStyle {
+enum ButtonStyle {
   Primary = 'primary',
   Secondary = 'secondary',
 }
 
-export interface ButtonProps {
+interface ButtonProps extends BaseButtonProps {
   children: string;
-  size: ButtonSize;
   styleOf: ButtonStyle;
   onClick: (event: React.MouseEvent) => void;
 }
 
-type ButtonBaseProps = Omit<ButtonProps, 'children'>;
-
-const buttonSizeMap = {
-  s: {
-    padding: '6px 10px',
-  },
-  m: {
-    padding: '12px 18px',
-  },
-  l: {
-    padding: '18px 26px',
-  },
-};
+interface EnhancedBaseButtonProps {
+  styleOf: ButtonStyle;
+}
 
 const buttonStyleOfMap = {
   primary: {
@@ -49,18 +37,12 @@ const buttonStyleOfMap = {
   },
 };
 
-const ButtonBase = styled('button')<ButtonBaseProps>`
+const EnhancedBaseButton = styled(BaseButton)<EnhancedBaseButtonProps>`
   ${fontFamily};
   border-radius: 4px;
   font-size: 14px;
   cursor: pointer;
   border: none;
-
-  ${({ size }): CSSProp => {
-    return css`
-      padding: ${buttonSizeMap[size].padding};
-    `;
-  }}
 
   ${({ styleOf }): CSSProp => {
     return css`
@@ -73,15 +55,21 @@ const ButtonBase = styled('button')<ButtonBaseProps>`
 const Button = (props: ButtonProps): JSX.Element => {
   const { children } = props;
   return (
-    <ButtonBase data-testid={BUTTON_TESTID} {...props}>
+    <EnhancedBaseButton data-testid={BUTTON_TESTID} {...props}>
       {children}
-    </ButtonBase>
+    </EnhancedBaseButton>
   );
 };
 
 Button.defaultProps = {
-  size: ButtonSize.Medium,
+  size: BaseButtonSize.Medium,
   onClick: noop,
 };
 
-export { Button, ButtonBase as ButtonBaseForTest, BUTTON_TESTID };
+export {
+  Button,
+  BUTTON_TESTID,
+  ButtonStyle,
+  ButtonProps,
+  BaseButtonSize as ButtonSize,
+};
