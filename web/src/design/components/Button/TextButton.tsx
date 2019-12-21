@@ -5,6 +5,8 @@ import { BaseButton, ButtonSize, ButtonStyle } from './internal/BaseButton';
 import { noop } from 'lodash';
 import { transparentize } from 'polished';
 
+const TEXT_BUTTON_TESTID = 'text button';
+
 interface TextButtonProps {
   children: string;
   styleOf: ButtonStyle;
@@ -50,7 +52,12 @@ const TextButton = ({
   styleOf,
 }: TextButtonProps): JSX.Element => {
   return (
-    <EnhancedBaseButton size={size} onClick={onClick} styleOf={styleOf}>
+    <EnhancedBaseButton
+      data-testid={TEXT_BUTTON_TESTID}
+      size={size}
+      onClick={onClick}
+      styleOf={styleOf}
+    >
       {children}
     </EnhancedBaseButton>
   );
@@ -65,4 +72,5 @@ export {
   TextButton,
   ButtonStyle as TextButtonStyle,
   ButtonSize as TextButtonSize,
+  TEXT_BUTTON_TESTID,
 };

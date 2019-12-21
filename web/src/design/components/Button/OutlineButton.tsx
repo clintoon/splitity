@@ -7,6 +7,9 @@ import {
 } from '@web/design/components/Button/internal/BaseButton';
 import { Color } from '@web/design/styles/color';
 import { transparentize } from 'polished';
+import { noop } from 'lodash';
+
+const OUTLINE_BUTTON_TESTID = 'outline button';
 
 interface TextButtonProps {
   children: string;
@@ -52,14 +55,25 @@ const OutlineButton = ({
   onClick,
 }: TextButtonProps): JSX.Element => {
   return (
-    <EnhancedBaseButton size={size} styleOf={styleOf} onClick={onClick}>
+    <EnhancedBaseButton
+      data-testid={OUTLINE_BUTTON_TESTID}
+      size={size}
+      styleOf={styleOf}
+      onClick={onClick}
+    >
       {children}
     </EnhancedBaseButton>
   );
+};
+
+OutlineButton.defaultProps = {
+  size: ButtonSize.Medium,
+  onClick: noop,
 };
 
 export {
   OutlineButton,
   ButtonStyle as OutlineButtonStyle,
   ButtonSize as OutlineButtonSize,
+  OUTLINE_BUTTON_TESTID,
 };
