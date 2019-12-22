@@ -86,9 +86,6 @@ describe('<PullRequestSplittingPage />', (): void => {
   describe('diffs section', (): void => {
     it('displays loading when is loading', async (): Promise<void> => {
       const { renderResult } = renderPullRequestSplittingPage();
-      // const diffsSectionContainer = renderResult.getByTestId(
-      //   PR_SPLITTING_PAGE_DIFFS_SECTION_TESTID
-      // );
 
       expect(
         renderResult.queryAllByTestId(PR_SPLITTING_PAGE_LOADING_TESTID)
