@@ -23,6 +23,8 @@ interface PullRequestControlPanelProps {
 }
 
 const Container = styled.div`
+  position: sticky;
+  top: 20px;
   min-width: 330px;
   max-width: 330px;
   height: 400px;
@@ -69,7 +71,7 @@ const PullRequestControlPanel = ({
           onChange={(event): void => {
             setBranchInputValue(event.target.value);
           }}
-          placeholder="Short PR name"
+          placeholder="A name, something short"
         />
         <Button
           size={ButtonSize.Small}
