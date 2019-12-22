@@ -10,8 +10,9 @@ const TEXT_BUTTON_TESTID = 'text button';
 interface TextButtonProps {
   children: string;
   styleOf: ButtonStyle;
-  onClick: () => void;
+  onClick?: () => void;
   size: ButtonSize;
+  disabled: boolean;
 }
 
 interface EnhancedBaseButtonProps {
@@ -50,13 +51,15 @@ const TextButton = ({
   onClick,
   size,
   styleOf,
+  disabled,
 }: TextButtonProps): JSX.Element => {
   return (
     <EnhancedBaseButton
       data-testid={TEXT_BUTTON_TESTID}
       size={size}
-      onClick={onClick}
+      onClick={disabled ? noop : onClick}
       styleOf={styleOf}
+      disabled={disabled}
     >
       {children}
     </EnhancedBaseButton>
@@ -65,7 +68,7 @@ const TextButton = ({
 
 TextButton.defaultProps = {
   size: ButtonSize.Medium,
-  onClick: noop,
+  disabled: false,
 };
 
 export {

@@ -5,7 +5,7 @@ import {
   OutlineButtonStyle,
   OutlineButtonSize,
 } from '@web/design/components/Button/OutlineButton';
-import { text, select } from '@storybook/addon-knobs';
+import { text, select, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 
 storiesOf('OutlineButton', module).add(
@@ -23,6 +23,7 @@ storiesOf('OutlineButton', module).add(
         Object.values(OutlineButtonSize),
         OutlineButtonSize.Medium
       )}
+      disabled={boolean('disabled', false)}
     >
       {text('children', 'label')}
     </OutlineButton>

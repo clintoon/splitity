@@ -5,7 +5,7 @@ import {
   TextButtonStyle,
   TextButtonSize,
 } from '@web/design/components/Button/TextButton';
-import { text, select } from '@storybook/addon-knobs';
+import { text, select, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 
 storiesOf('TextButton', module).add(
@@ -23,6 +23,7 @@ storiesOf('TextButton', module).add(
         Object.values(TextButtonSize),
         TextButtonSize.Medium
       )}
+      disabled={boolean('disabled', false)}
     >
       {text('children', 'label')}
     </TextButton>

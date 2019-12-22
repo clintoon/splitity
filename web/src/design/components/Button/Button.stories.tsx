@@ -5,7 +5,7 @@ import {
   ButtonStyle,
   ButtonSize,
 } from '@web/design/components/Button/Button';
-import { select } from '@storybook/addon-knobs';
+import { select, boolean } from '@storybook/addon-knobs';
 
 storiesOf('Button', module).add(
   'Documentation',
@@ -17,6 +17,7 @@ storiesOf('Button', module).add(
         ButtonStyle.Primary
       )}
       size={select('size', Object.values(ButtonSize), ButtonSize.Medium)}
+      disabled={boolean('disabled', false)}
     >
       Hello Button
     </Button>

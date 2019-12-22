@@ -1,6 +1,5 @@
 import styled, { css, CSSProp } from 'styled-components';
 import { fontFamily } from '@web/design/styles/font';
-import { Color } from '@web/design/styles/color';
 
 enum ButtonStyle {
   Primary = 'primary',
@@ -15,6 +14,7 @@ enum ButtonSize {
 
 interface BaseButtonProps {
   size: ButtonSize;
+  disabled: boolean;
 }
 
 const buttonSizeMap = {
@@ -38,6 +38,14 @@ const BaseButton = styled('button')<BaseButtonProps>`
   font-size: 14px;
   cursor: pointer;
   border: none;
+
+  ${({ disabled }): CSSProp | null => {
+    return disabled
+      ? css`
+          cursor: not-allowed;
+        `
+      : null;
+  }}
 
   ${({ size }): CSSProp => {
     return css`
