@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, RenderResult, wait, within } from '@testing-library/react';
+import { PullRequestSplittingPage } from '@web/pages/PullRequestSplittingPage/PullRequestSplittingPage';
 import {
-  PullRequestSplittingPage,
   PR_SPLITTING_PAGE_DIFFS_SECTION_TESTID,
   PR_SPLITTING_PAGE_FILE_DIFF_TESTID,
   PR_SPLITTING_PAGE_LOADING_TESTID,
-} from '@web/pages/PullRequestSplittingPage/PullRequestSplittingPage';
+} from '@web/pages/PullRequestSplittingPage/PullRequestsFileDiffs';
 import { PULL_REQUEST_INFO_TESTID } from '@web/pages/PullRequestSplittingPage/PullRequestInfo';
 import { GithubAPI } from '@web/lib/github/github';
 import parseDiff from 'parse-diff';
