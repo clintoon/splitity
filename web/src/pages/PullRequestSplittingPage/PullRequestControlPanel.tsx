@@ -12,14 +12,17 @@ import {
   TextButtonStyle,
   TextButtonSize,
 } from '@web/design/components/Button/TextButton';
-import { noop } from 'lodash';
 import { ChipArray } from '@web/design/components/Chip/ChipArray';
 import { PRBranchData } from './PullRequestSplittingPage';
 import { Chip } from '@web/design/components/Chip/Chip';
+import { TextWeight } from '@web/design/components/Text/Text';
 
 interface PullRequestControlPanelProps {
-  onAddPRClick: (PRName: string) => void;
+  selectedPRBranch: number | null;
   prCollection: PRBranchData[];
+  onAddPRClick: (PRName: string) => void;
+  onDeletePRClick: (prId: number) => void;
+  onSelectPR: (prId: number) => void;
 }
 
 const Container = styled.div`
@@ -58,10 +61,14 @@ const EnhancedChipArray = styled(ChipArray)`
 `;
 
 const PullRequestControlPanel = ({
-  onAddPRClick,
+  selectedPRBranch,
   prCollection,
+  onAddPRClick,
+  onDeletePRClick,
+  onSelectPR,
 }: PullRequestControlPanelProps): JSX.Element => {
   const [branchInputValue, setBranchInputValue] = useState<string>('');
+  const [isEditingPRs, setIsEditingPRs] = useState<boolean>(false);
 
   return (
     <Container>
@@ -89,16 +96,41 @@ const PullRequestControlPanel = ({
         <TextButton
           size={TextButtonSize.Small}
           styleOf={TextButtonStyle.Secondary}
-          onClick={noop}
+          onClick={(): void => {
+            setIsEditingPRs(!isEditingPRs);
+          }}
           disabled={prCollection.length === 0}
         >
-          Edit
+          {isEditingPRs ? 'Stop editing' : 'Edit'}
         </TextButton>
       </ButtonRightContainer>
       <EnhancedChipArray>
         {prCollection.map(
           (prData): JSX.Element => {
-            return <Chip label={prData.name} key={prData.id} />;
+            return (
+              <Chip
+                label={prData.name}
+                key={prData.id}
+                borderColor={prData.color}
+                onDelete={
+                  isEditingPRs
+                    ? (): void => {
+                        onDeletePRClick(prData.id);
+                      }
+                    : undefined
+                }
+                onClick={
+                  !isEditingPRs
+                    ? (): void => {
+                        onSelectPR(prData.id);
+                      }
+                    : undefined
+                }
+                fontWeight={
+                  selectedPRBranch === prData.id ? TextWeight.Bold : undefined
+                }
+              />
+            );
           }
         )}
       </EnhancedChipArray>

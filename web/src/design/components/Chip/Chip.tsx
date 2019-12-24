@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
 import { Color } from '@web/design/styles/color';
-import { Text } from '@web/design/components/Text/Text';
+import { Text, TextWeight } from '@web/design/components/Text/Text';
 import { IoIosCloseCircle } from 'react-icons/io';
 
 const CHIP_TESTID = 'chip';
@@ -12,6 +12,7 @@ interface ChipProps {
   onClick?: () => void;
   onDelete?: () => void;
   borderColor?: string;
+  fontWeight?: TextWeight;
 }
 
 interface ContainerProps {
@@ -71,6 +72,7 @@ const Chip = ({
   onClick,
   borderColor,
   onDelete,
+  fontWeight,
 }: ChipProps): JSX.Element => {
   return (
     <Container
@@ -80,7 +82,7 @@ const Chip = ({
       onClick={onClick}
       borderColor={borderColor || Color.Gray400}
     >
-      <Text>{label}</Text>
+      <Text fontWeight={fontWeight || TextWeight.Normal}>{label}</Text>
       {onDelete && (
         <DeleteButton
           data-testid={CHIP_DELETE_BUTTON_TESTID}

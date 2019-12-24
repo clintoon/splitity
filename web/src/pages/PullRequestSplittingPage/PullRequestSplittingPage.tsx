@@ -6,6 +6,8 @@ import parseDiff from 'parse-diff';
 import styled from 'styled-components';
 import { PullRequestControlPanel } from './PullRequestControlPanel';
 import { PullRequestFileDiffs } from './PullRequestsFileDiffs';
+import { generateRandomColor } from '@web/lib/randomColor/generateRandomColor';
+import { filter } from 'lodash';
 
 interface MatchProps {
   owner: string;
@@ -20,6 +22,7 @@ interface PullRequestSplittingPageProps {
 interface PRBranchData {
   id: number;
   name: string;
+  color: string;
 }
 
 interface PRBranchsData {
@@ -93,6 +96,7 @@ const PullRequestSplittingPage = ({
     count: 0,
     prCollection: [],
   });
+  const [selectedPRBranch, setSelectedPRBranch] = useState<number | null>(null);
 
   return (
     <div>
@@ -104,16 +108,40 @@ const PullRequestSplittingPage = ({
       <PRSplitSection>
         <PullRequestFileDiffs PRDiff={PRDiff} />
         <PullRequestControlPanel
+          prCollection={prBranchsData.prCollection}
           onAddPRClick={(name): void => {
+            const prColor = generateRandomColor();
             setPRBranchsData({
               count: prBranchsData.count + 1,
               prCollection: [
                 ...prBranchsData.prCollection,
-                { id: prBranchsData.count, name },
+                { id: prBranchsData.count, name, color: prColor },
               ],
             });
           }}
-          prCollection={prBranchsData.prCollection}
+          onDeletePRClick={(prId): void => {
+            const newPRBranchsData = {
+              ...prBranchsData,
+              prCollection: filter(
+                prBranchsData.prCollection,
+                (val): boolean => {
+                  return val.id !== prId;
+                }
+              ),
+            };
+            setPRBranchsData(newPRBranchsData);
+            if (selectedPRBranch === prId) {
+              setSelectedPRBranch(null);
+            }
+          }}
+          onSelectPR={(prId): void => {
+            if (prId === selectedPRBranch) {
+              setSelectedPRBranch(null);
+            } else {
+              setSelectedPRBranch(prId);
+            }
+          }}
+          selectedPRBranch={selectedPRBranch}
         />
       </PRSplitSection>
     </div>
