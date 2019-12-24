@@ -10,7 +10,7 @@ import {
   CHIP_TESTID,
   CHIP_DELETE_BUTTON_TESTID,
 } from '@web/design/components/Chip/Chip';
-import { TextWeight } from '../Text/Text';
+import { TextWeight } from '@web/design/components/Text/Text';
 
 const LABEL = 'label123';
 
