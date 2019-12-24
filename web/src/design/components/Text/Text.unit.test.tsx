@@ -6,6 +6,7 @@ import {
   TextStyle,
   TextAs,
   TextAlign,
+  TextWeight,
 } from '@web/design/components/Text/Text';
 import { Color } from '@web/design/styles/color';
 
@@ -17,6 +18,7 @@ interface RenderTextOptions {
   margin?: string;
   textAlign?: TextAlign;
   color?: Color;
+  fontWeight?: TextWeight;
 }
 
 const renderText = (options: RenderTextOptions): RenderResult => {
@@ -176,6 +178,13 @@ describe('<Text/>', (): void => {
     describe('color', (): void => {
       it('displays text when you pass in color prop', (): void => {
         const { getByTestId } = renderText({ color: Color.Gray500 });
+        expect(getByTestId(TEXT_TESTID)).toHaveTextContent(TEXT_CHILD);
+      });
+    });
+
+    describe('fontWeight', (): void => {
+      it('displays text when is bold', (): void => {
+        const { getByTestId } = renderText({ fontWeight: TextWeight.Bold });
         expect(getByTestId(TEXT_TESTID)).toHaveTextContent(TEXT_CHILD);
       });
     });

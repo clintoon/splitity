@@ -10,12 +10,14 @@ import {
   CHIP_TESTID,
   CHIP_DELETE_BUTTON_TESTID,
 } from '@web/design/components/Chip/Chip';
+import { TextWeight } from '../Text/Text';
 
 const LABEL = 'label123';
 
 interface RenderChipOptions {
   onClick?: () => void;
   onDelete?: () => void;
+  fontWeight?: TextWeight;
 }
 
 interface RenderChipResult {
@@ -24,7 +26,12 @@ interface RenderChipResult {
 
 const renderChip = (options: RenderChipOptions): RenderChipResult => {
   const renderResult = render(
-    <Chip onClick={options.onClick} onDelete={options.onDelete} label={LABEL} />
+    <Chip
+      onClick={options.onClick}
+      onDelete={options.onDelete}
+      fontWeight={options.fontWeight}
+      label={LABEL}
+    />
   );
 
   return { renderResult };
@@ -33,6 +40,12 @@ const renderChip = (options: RenderChipOptions): RenderChipResult => {
 describe('<Chip/>', (): void => {
   it('displays label', (): void => {
     const { renderResult } = renderChip({});
+    const chipContainer = renderResult.getByTestId(CHIP_TESTID);
+    expect(within(chipContainer).queryByText(LABEL)).not.toBe(null);
+  });
+
+  it('displays label when is bold', (): void => {
+    const { renderResult } = renderChip({ fontWeight: TextWeight.Bold });
     const chipContainer = renderResult.getByTestId(CHIP_TESTID);
     expect(within(chipContainer).queryByText(LABEL)).not.toBe(null);
   });
