@@ -1,5 +1,12 @@
 import React from 'react';
-import { render, RenderResult, wait, within } from '@testing-library/react';
+import {
+  render,
+  RenderResult,
+  wait,
+  within,
+  fireEvent,
+  prettyDOM,
+} from '@testing-library/react';
 import { PullRequestSplittingPage } from '@web/pages/PullRequestSplittingPage/PullRequestSplittingPage';
 import {
   PR_SPLITTING_PAGE_DIFFS_SECTION_TESTID,
@@ -10,6 +17,20 @@ import { PULL_REQUEST_INFO_TESTID } from '@web/pages/PullRequestSplittingPage/Pu
 import { GithubAPI } from '@web/lib/github/github';
 import parseDiff from 'parse-diff';
 import { GITHUB_MULTIPLE_FILE_DIFF } from '@web/testing/fixtures/pullRequestDiff';
+import {
+  PULL_REQUEST_CONTROL_PANEL_TESTID,
+  ADD_PR_SECTION_TESTID,
+  EDIT_PRS_SECTION_TESTID,
+  EDITING_TEXT_LABEL,
+  NOT_EDITING_TEXT_LABEL,
+} from './PullRequestControlPanel';
+import {
+  CHIP_TESTID,
+  CHIP_DELETE_BUTTON_TESTID,
+} from '@web/design/components/Chip/Chip';
+import { TEXT_INPUT_TESTID } from '@web/design/components/TextInput/TextInput';
+import { BUTTON_TESTID } from '@web/design/components/Button/Button';
+import { TEXT_BUTTON_TESTID } from '@web/design/components/Button/TextButton';
 
 jest.mock('@web/lib/github/github');
 
@@ -46,6 +67,54 @@ const renderPullRequestSplittingPage = (): RenderPullRequestSplittingPageResult 
   );
 
   return { renderResult };
+};
+
+interface UpdateAddPRTextInputOptions {
+  text: string;
+}
+
+const updateAddPRTextInput = (
+  renderResult: RenderResult,
+  { text }: UpdateAddPRTextInputOptions
+): void => {
+  const controlPanelContainer = renderResult.getByTestId(
+    PULL_REQUEST_CONTROL_PANEL_TESTID
+  );
+  const addPRsSectionContainer = within(controlPanelContainer).getByTestId(
+    ADD_PR_SECTION_TESTID
+  );
+  const addPRsTextInput = within(addPRsSectionContainer).getByTestId(
+    TEXT_INPUT_TESTID
+  );
+
+  fireEvent.change(addPRsTextInput, {
+    target: { value: text },
+  });
+};
+
+const clickAddPRButton = (renderResult: RenderResult): void => {
+  const controlPanelContainer = renderResult.getByTestId(
+    PULL_REQUEST_CONTROL_PANEL_TESTID
+  );
+  const addPRsSectionContainer = within(controlPanelContainer).getByTestId(
+    ADD_PR_SECTION_TESTID
+  );
+  const addPRsButton = within(addPRsSectionContainer).getByTestId(
+    BUTTON_TESTID
+  );
+
+  fireEvent.click(addPRsButton);
+};
+
+const clickEditPRsButton = (renderResult: RenderResult): void => {
+  const controlPanelContainer = renderResult.getByTestId(
+    PULL_REQUEST_CONTROL_PANEL_TESTID
+  );
+  const editButtonSection = within(controlPanelContainer).getByTestId(
+    EDIT_PRS_SECTION_TESTID
+  );
+
+  fireEvent.click(within(editButtonSection).getByTestId(TEXT_BUTTON_TESTID));
 };
 
 describe('<PullRequestSplittingPage />', (): void => {
@@ -109,5 +178,191 @@ describe('<PullRequestSplittingPage />', (): void => {
         ).toBe(4);
       });
     });
+  });
+
+  describe('control panel', (): void => {
+    it('adds an PR branch when the TextInput is filled', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
+
+      await wait((): void => {
+        const controlPanelContainer = renderResult.getByTestId(
+          PULL_REQUEST_CONTROL_PANEL_TESTID
+        );
+
+        updateAddPRTextInput(renderResult, { text: 'PR 1' });
+        clickAddPRButton(renderResult);
+
+        expect(
+          within(controlPanelContainer).queryAllByTestId(CHIP_TESTID).length
+        ).toBe(1);
+      });
+    });
+
+    it('unfills the add pr TextInput when add pr button is clicked', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
+
+      await wait((): void => {
+        updateAddPRTextInput(renderResult, { text: 'PR 1' });
+        clickAddPRButton(renderResult);
+
+        const addPRsSectionContainer = renderResult.getByTestId(
+          ADD_PR_SECTION_TESTID
+        );
+        const addPRsTextInput = within(addPRsSectionContainer).getByTestId(
+          TEXT_INPUT_TESTID
+        );
+
+        expect(addPRsTextInput.getAttribute('value')).toBe('');
+      });
+    });
+
+    it('the add PR branch button is disabled when the TextInput is not filled', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
+
+      await wait((): void => {
+        const controlPanelContainer = renderResult.getByTestId(
+          PULL_REQUEST_CONTROL_PANEL_TESTID
+        );
+
+        clickAddPRButton(renderResult);
+
+        expect(
+          within(controlPanelContainer).queryAllByTestId(CHIP_TESTID).length
+        ).toBe(0);
+      });
+    });
+
+    it('goes to edit mode when you click on the edit button when there is a PR branch', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
+
+      await wait((): void => {
+        updateAddPRTextInput(renderResult, { text: 'PR 1' });
+        clickAddPRButton(renderResult);
+
+        const editSectionContainer = renderResult.getByTestId(
+          EDIT_PRS_SECTION_TESTID
+        );
+
+        clickEditPRsButton(renderResult);
+
+        expect(
+          within(editSectionContainer).queryByText(EDITING_TEXT_LABEL)
+        ).not.toBe(null);
+      });
+    });
+
+    it('goes to unedit mode when you press the edit button when you are in edit mode when there is a PR branch', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
+
+      await wait((): void => {
+        updateAddPRTextInput(renderResult, { text: 'PR 1' });
+        clickAddPRButton(renderResult);
+
+        const editSectionContainer = renderResult.getByTestId(
+          EDIT_PRS_SECTION_TESTID
+        );
+
+        clickEditPRsButton(renderResult);
+        clickEditPRsButton(renderResult);
+
+        expect(
+          within(editSectionContainer).queryByText(NOT_EDITING_TEXT_LABEL)
+        ).not.toBe(null);
+      });
+    });
+
+    it('toggle edit mode is disabled when there is no PR branches', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
+
+      await wait((): void => {
+        const editSectionContainer = renderResult.getByTestId(
+          EDIT_PRS_SECTION_TESTID
+        );
+
+        clickEditPRsButton(renderResult);
+
+        expect(
+          within(editSectionContainer).queryByText(NOT_EDITING_TEXT_LABEL)
+        ).not.toBe(null);
+      });
+    });
+
+    it('displays delete buttons on all PR branch chips when in editing mode', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
+
+      await wait((): void => {
+        updateAddPRTextInput(renderResult, { text: 'PR 1' });
+        clickAddPRButton(renderResult);
+
+        updateAddPRTextInput(renderResult, { text: 'PR 2' });
+        clickAddPRButton(renderResult);
+
+        clickEditPRsButton(renderResult);
+
+        const controlPanelContainer = renderResult.getByTestId(
+          PULL_REQUEST_CONTROL_PANEL_TESTID
+        );
+
+        expect(
+          within(controlPanelContainer).queryAllByTestId(
+            CHIP_DELETE_BUTTON_TESTID
+          ).length
+        ).toBe(0);
+      });
+    });
+
+    it('clicking on the PR branch delete button deletes the PR', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
+
+      await wait((): void => {
+        updateAddPRTextInput(renderResult, { text: 'PR 1' });
+        clickAddPRButton(renderResult);
+
+        updateAddPRTextInput(renderResult, { text: 'PR 2' });
+        clickAddPRButton(renderResult);
+
+        clickEditPRsButton(renderResult);
+      });
+
+      const controlPanelContainer = renderResult.getByTestId(
+        PULL_REQUEST_CONTROL_PANEL_TESTID
+      );
+
+      const firstPRBranchChipContainer = within(controlPanelContainer)
+        .getAllByTestId(CHIP_TESTID)
+        .filter((el): boolean => {
+          return !!within(el).queryByText('PR 1');
+        })[0];
+
+      fireEvent.click(
+        within(firstPRBranchChipContainer).getByTestId(
+          CHIP_DELETE_BUTTON_TESTID
+        )
+      );
+
+      expect(within(controlPanelContainer).queryByText('PR 1')).toBe(null);
+    });
+
+    it('clicking on an PR branch selects it when not in edit mode', () => {});
+
+    it('clicking on an PR branch does not select it when in edit mode', () => {});
+
+    it('selecting an PR branch unselects the other selected PR branch', () => {});
   });
 });

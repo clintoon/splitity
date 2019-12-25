@@ -17,6 +17,15 @@ import { PRBranchData } from './PullRequestSplittingPage';
 import { Chip } from '@web/design/components/Chip/Chip';
 import { TextWeight } from '@web/design/components/Text/Text';
 
+const EDITING_TEXT_LABEL = 'Stop editing';
+const NOT_EDITING_TEXT_LABEL = 'Edit';
+
+const PULL_REQUEST_CONTROL_PANEL_TESTID = 'pull request control panel';
+const SELECTED_PR_CHIP_TESTID = 'pull request control panel selected pr chip';
+const ADD_PR_SECTION_TESTID = 'add pr section';
+const EDIT_PRS_SECTION_TESTID = 'edit prs section';
+const SPLIT_PR_BUTTON_SECTION_TESTID = 'split pr button section';
+
 interface PullRequestControlPanelProps {
   selectedPRBranch: number | null;
   prCollection: PRBranchData[];
@@ -79,9 +88,13 @@ const PullRequestControlPanel = ({
     setIsEditingPRs(!isEditingPRs);
   };
 
+  const isSelectedPRChip = (prData: PRBranchData): boolean => {
+    return prData.id === selectedPRBranch;
+  };
+
   return (
-    <Container>
-      <AddPRSection>
+    <Container data-testid={PULL_REQUEST_CONTROL_PANEL_TESTID}>
+      <AddPRSection data-testid={ADD_PR_SECTION_TESTID}>
         <AddPRTextInput
           value={branchInputValue}
           onChange={(event): void => {
@@ -98,51 +111,66 @@ const PullRequestControlPanel = ({
           Add PR
         </Button>
       </AddPRSection>
-      <ButtonRightContainer>
+      <ButtonRightContainer data-testid={EDIT_PRS_SECTION_TESTID}>
         <TextButton
           size={TextButtonSize.Small}
           styleOf={TextButtonStyle.Secondary}
           onClick={toggleEditMode}
           disabled={prCollection.length === 0}
         >
-          {isEditingPRs ? 'Stop editing' : 'Edit'}
+          {isEditingPRs ? EDITING_TEXT_LABEL : NOT_EDITING_TEXT_LABEL}
         </TextButton>
       </ButtonRightContainer>
       <EnhancedChipArray>
         {prCollection.map(
           (prData): JSX.Element => {
             return (
-              <Chip
-                label={prData.name}
+              <span
                 key={prData.id}
-                borderColor={prData.color}
-                onDelete={
-                  isEditingPRs
-                    ? (): void => {
-                        onDeletePRClick(prData.id);
-                      }
-                    : undefined
+                data-testid={
+                  isSelectedPRChip(prData) ? SELECTED_PR_CHIP_TESTID : undefined
                 }
-                onClick={
-                  !isEditingPRs
-                    ? (): void => {
-                        onSelectPR(prData.id);
-                      }
-                    : undefined
-                }
-                fontWeight={
-                  selectedPRBranch === prData.id ? TextWeight.Bold : undefined
-                }
-              />
+              >
+                <Chip
+                  label={prData.name}
+                  borderColor={prData.color}
+                  onDelete={
+                    isEditingPRs
+                      ? (): void => {
+                          onDeletePRClick(prData.id);
+                        }
+                      : undefined
+                  }
+                  onClick={
+                    !isEditingPRs
+                      ? (): void => {
+                          onSelectPR(prData.id);
+                        }
+                      : undefined
+                  }
+                  fontWeight={
+                    isSelectedPRChip(prData) ? TextWeight.Bold : undefined
+                  }
+                />
+              </span>
             );
           }
         )}
       </EnhancedChipArray>
-      <ButtonRightContainer>
+      <ButtonRightContainer data-testid={SPLIT_PR_BUTTON_SECTION_TESTID}>
         <Button styleOf={ButtonStyle.Primary}>Split</Button>
       </ButtonRightContainer>
     </Container>
   );
 };
 
-export { PullRequestControlPanel };
+export {
+  PullRequestControlPanel,
+  EDITING_TEXT_LABEL,
+  NOT_EDITING_TEXT_LABEL,
+  PULL_REQUEST_CONTROL_PANEL_TESTID,
+  SELECTED_PR_CHIP_TESTID,
+  ADD_PR_SECTION_TESTID,
+  EDIT_PRS_SECTION_TESTID,
+  SPLIT_PR_BUTTON_SECTION_TESTID,
+};
