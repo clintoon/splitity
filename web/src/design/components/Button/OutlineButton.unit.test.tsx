@@ -13,15 +13,25 @@ import {
 
 const LABEL = 'label';
 
+interface RenderOutlineOptions {
+  disabled?: boolean;
+}
+
 interface RenderOutlineButtonResult {
   renderResult: RenderResult;
   onClickMock: jest.Mock;
 }
 
-const renderOutlineButton = (): RenderOutlineButtonResult => {
+const renderOutlineButton = ({
+  disabled,
+}: RenderOutlineOptions): RenderOutlineButtonResult => {
   const onClickMock = jest.fn();
   const renderResult = render(
-    <OutlineButton styleOf={OutlineButtonStyle.Primary} onClick={onClickMock}>
+    <OutlineButton
+      styleOf={OutlineButtonStyle.Primary}
+      onClick={onClickMock}
+      disabled={disabled}
+    >
       {LABEL}
     </OutlineButton>
   );
@@ -31,7 +41,7 @@ const renderOutlineButton = (): RenderOutlineButtonResult => {
 
 describe('<OutlineButton/>', (): void => {
   it('displays label', (): void => {
-    const { renderResult } = renderOutlineButton();
+    const { renderResult } = renderOutlineButton({});
     const outlineButtonContainer = renderResult.getByTestId(
       OUTLINE_BUTTON_TESTID
     );
@@ -39,12 +49,22 @@ describe('<OutlineButton/>', (): void => {
   });
 
   it('calls onClick handler when clicked', (): void => {
-    const { renderResult, onClickMock } = renderOutlineButton();
+    const { renderResult, onClickMock } = renderOutlineButton({});
     const outlineButtonContainer = renderResult.getByTestId(
       OUTLINE_BUTTON_TESTID
     );
 
     fireEvent.click(outlineButtonContainer);
     expect(onClickMock).toBeCalled();
+  });
+
+  it('does not trigger onClick on click when is disabled', (): void => {
+    const { renderResult, onClickMock } = renderOutlineButton({
+      disabled: true,
+    });
+
+    fireEvent.click(renderResult.getByTestId(OUTLINE_BUTTON_TESTID));
+
+    expect(onClickMock).not.toHaveBeenCalled();
   });
 });

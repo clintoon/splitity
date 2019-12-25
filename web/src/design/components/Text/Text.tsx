@@ -32,6 +32,11 @@ export enum TextAlign {
   Right = 'right',
 }
 
+export enum TextWeight {
+  Normal = 'normal',
+  Bold = 'bold',
+}
+
 export interface TextProps {
   styleOf: TextStyle;
   as: TextAs;
@@ -39,6 +44,7 @@ export interface TextProps {
   margin: string;
   textAlign?: TextAlign;
   color: Color;
+  fontWeight: TextWeight;
 }
 
 interface TextBaseProps {
@@ -46,6 +52,7 @@ interface TextBaseProps {
   margin: string;
   textAlign?: TextAlign;
   color: Color;
+  fontWeight: TextWeight;
 }
 
 const textStyleMapping = {
@@ -73,8 +80,9 @@ const textStyleMapping = {
 };
 
 const applyTextCSSProperties = (props: TextBaseProps): CSSProp => {
-  const { styleOf, margin, textAlign, color } = props;
+  const { styleOf, margin, textAlign, color, fontWeight } = props;
   return css`
+    color: ${color};
     ${fontFamily};
     font-size: ${textStyleMapping[styleOf].fontSize};
     margin: ${margin};
@@ -82,7 +90,10 @@ const applyTextCSSProperties = (props: TextBaseProps): CSSProp => {
       css`
         text-align: ${textAlign};
       `}
-    color: ${color};
+    ${fontWeight === TextWeight.Bold &&
+      css`
+        font-weight: 700;
+      `}
   `;
 };
 
@@ -151,6 +162,7 @@ const Text = ({
   margin,
   textAlign,
   color,
+  fontWeight,
   children,
 }: TextProps): JSX.Element => {
   const BaseComponent = textTagTypeToComponentMap[as];
@@ -161,6 +173,7 @@ const Text = ({
       margin={margin}
       textAlign={textAlign}
       color={color}
+      fontWeight={fontWeight}
     >
       {children}
     </BaseComponent>
@@ -172,6 +185,7 @@ Text.defaultProps = {
   styleOf: TextStyle.Body,
   margin: '0',
   color: Color.Gray900,
+  fontWeight: TextWeight.Normal,
 };
 
 export { Text, TEXT_TESTID };

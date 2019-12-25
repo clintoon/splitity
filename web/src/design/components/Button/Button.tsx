@@ -15,7 +15,8 @@ interface ButtonProps {
   children: string;
   size: ButtonSize;
   styleOf: ButtonStyle;
-  onClick: (event: React.MouseEvent) => void;
+  onClick?: (event: React.MouseEvent) => void;
+  disabled: boolean;
 }
 
 interface EnhancedBaseButtonProps {
@@ -37,7 +38,6 @@ const EnhancedBaseButton = styled(BaseButton)<EnhancedBaseButtonProps>`
   ${fontFamily};
   border-radius: 4px;
   font-size: 14px;
-  cursor: pointer;
   border: none;
 
   ${({ styleOf }): CSSProp => {
@@ -49,9 +49,14 @@ const EnhancedBaseButton = styled(BaseButton)<EnhancedBaseButtonProps>`
 `;
 
 const Button = (props: ButtonProps): JSX.Element => {
-  const { children } = props;
+  const { children, onClick, disabled, ...rest } = props;
   return (
-    <EnhancedBaseButton data-testid={BUTTON_TESTID} {...props}>
+    <EnhancedBaseButton
+      data-testid={BUTTON_TESTID}
+      onClick={disabled ? noop : onClick}
+      disabled={disabled}
+      {...rest}
+    >
       {children}
     </EnhancedBaseButton>
   );
@@ -59,7 +64,7 @@ const Button = (props: ButtonProps): JSX.Element => {
 
 Button.defaultProps = {
   size: ButtonSize.Medium,
-  onClick: noop,
+  disabled: false,
 };
 
 export { Button, BUTTON_TESTID, ButtonStyle, ButtonProps, ButtonSize };

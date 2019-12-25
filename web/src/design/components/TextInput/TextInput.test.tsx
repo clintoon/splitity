@@ -18,15 +18,21 @@ interface RenderTextInputResult {
 
 interface RenderTextInputOptions {
   value: string;
+  placeholder?: string;
 }
 
 const renderTextInput = ({
   value,
+  placeholder,
 }: RenderTextInputOptions): RenderTextInputResult => {
   const onChangeMock = jest.fn();
 
   const renderResult = render(
-    <TextInput value={value} onChange={onChangeMock} />
+    <TextInput
+      value={value}
+      placeholder={placeholder}
+      onChange={onChangeMock}
+    />
   );
 
   return { renderResult, onChangeMock };
@@ -54,5 +60,16 @@ describe('<TextInput />', (): void => {
     });
 
     expect(onChangeMock).toBeCalled();
+  });
+
+  it('has placeholder attribute when placeholder prop is passed in', (): void => {
+    const { renderResult } = renderTextInput({
+      value: '',
+      placeholder: 'placeholder123',
+    });
+
+    expect(
+      renderResult.getByTestId(TEXT_INPUT_TESTID).getAttribute('placeholder')
+    ).toBe('placeholder123');
   });
 });

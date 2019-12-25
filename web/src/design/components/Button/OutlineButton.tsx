@@ -14,8 +14,9 @@ const OUTLINE_BUTTON_TESTID = 'outline button';
 interface TextButtonProps {
   children: string;
   styleOf: ButtonStyle;
-  onClick: () => void;
+  onClick?: () => void;
   size: ButtonSize;
+  disabled: boolean;
 }
 
 interface EnhancedBaseButtonProps {
@@ -53,13 +54,15 @@ const OutlineButton = ({
   styleOf,
   children,
   onClick,
+  disabled,
 }: TextButtonProps): JSX.Element => {
   return (
     <EnhancedBaseButton
       data-testid={OUTLINE_BUTTON_TESTID}
       size={size}
       styleOf={styleOf}
-      onClick={onClick}
+      onClick={disabled ? noop : onClick}
+      disabled={disabled}
     >
       {children}
     </EnhancedBaseButton>
@@ -68,7 +71,7 @@ const OutlineButton = ({
 
 OutlineButton.defaultProps = {
   size: ButtonSize.Medium,
-  onClick: noop,
+  disabled: false,
 };
 
 export {

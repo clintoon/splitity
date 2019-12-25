@@ -3,13 +3,11 @@ import { match } from 'react-router-dom';
 import { GithubAPI } from '@web/lib/github/github';
 import { PullRequestInfoPage } from '@web/pages/PullRequestSplittingPage/PullRequestInfo';
 import parseDiff from 'parse-diff';
-import { FileDiff } from '@web/design/components/FileDiff/FileDiff';
 import styled from 'styled-components';
-
-const PR_SPLITTING_PAGE_DIFFS_SECTION_TESTID =
-  'pr splitting page diffs sections';
-const PR_SPLITTING_PAGE_FILE_DIFF_TESTID = 'pr splitting page file diff';
-const PR_SPLITTING_PAGE_LOADING_TESTID = 'pr splitting page loading';
+import { PullRequestControlPanel } from './PullRequestControlPanel';
+import { PullRequestFileDiffs } from './PullRequestsFileDiffs';
+import { generateRandomColor } from '@web/lib/randomColor/generateRandomColor';
+import { filter } from 'lodash';
 
 interface MatchProps {
   owner: string;
@@ -19,6 +17,17 @@ interface MatchProps {
 
 interface PullRequestSplittingPageProps {
   match: match<MatchProps>;
+}
+
+interface PRBranchData {
+  id: number;
+  name: string;
+  color: string;
+}
+
+interface PRBranchsData {
+  count: number;
+  prCollection: PRBranchData[];
 }
 
 const useGetPRTitle = (
@@ -69,14 +78,11 @@ const useGetPRDiff = (
   return PRDiff;
 };
 
-const FileDiffsSection = styled.div`
+const PRSplitSection = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: stretch;
   margin: 30px;
-`;
-
-const FileDiffContainer = styled.div`
-  margin: 0 0 20px 0;
 `;
 
 const PullRequestSplittingPage = ({
@@ -86,31 +92,42 @@ const PullRequestSplittingPage = ({
   const title = useGetPRTitle(owner, repoName, Number(pullRequestId));
   const PRDiff = useGetPRDiff(owner, repoName, Number(pullRequestId));
 
-  const PullRequestFileDiffs = (): JSX.Element => {
-    if (!PRDiff) {
-      return (
-        <div data-testid={PR_SPLITTING_PAGE_LOADING_TESTID}>Loading...</div>
-      );
+  const [prBranchsData, setPRBranchsData] = useState<PRBranchsData>({
+    count: 0,
+    prCollection: [],
+  });
+  const [selectedPRBranch, setSelectedPRBranch] = useState<number | null>(null);
+
+  const onDeletePRClickHandler = (prId: number): void => {
+    const newPRBranchsData = {
+      ...prBranchsData,
+      prCollection: filter(prBranchsData.prCollection, (val): boolean => {
+        return val.id !== prId;
+      }),
+    };
+    setPRBranchsData(newPRBranchsData);
+    if (selectedPRBranch === prId) {
+      setSelectedPRBranch(null);
     }
-    return (
-      <FileDiffsSection data-testid={PR_SPLITTING_PAGE_DIFFS_SECTION_TESTID}>
-        {PRDiff.map(
-          (fileDiff): JSX.Element => {
-            return (
-              <FileDiffContainer
-                data-testid={PR_SPLITTING_PAGE_FILE_DIFF_TESTID}
-                key={`${fileDiff.from} ${fileDiff.to}`}
-              >
-                <FileDiff
-                  filename={{ from: fileDiff.from, to: fileDiff.to }}
-                  chunks={fileDiff.chunks}
-                />
-              </FileDiffContainer>
-            );
-          }
-        )}
-      </FileDiffsSection>
-    );
+  };
+
+  const onAddPRClickHandler = (name: string): void => {
+    const prColor = generateRandomColor();
+    setPRBranchsData({
+      count: prBranchsData.count + 1,
+      prCollection: [
+        ...prBranchsData.prCollection,
+        { id: prBranchsData.count, name, color: prColor },
+      ],
+    });
+  };
+
+  const onSelectPRHandler = (prId: number): void => {
+    if (prId === selectedPRBranch) {
+      setSelectedPRBranch(null);
+    } else {
+      setSelectedPRBranch(prId);
+    }
   };
 
   return (
@@ -120,14 +137,18 @@ const PullRequestSplittingPage = ({
         repoName={repoName}
         owner={owner}
       />
-      <PullRequestFileDiffs />
+      <PRSplitSection>
+        <PullRequestFileDiffs PRDiff={PRDiff} />
+        <PullRequestControlPanel
+          prCollection={prBranchsData.prCollection}
+          onAddPRClick={onAddPRClickHandler}
+          onDeletePRClick={onDeletePRClickHandler}
+          onSelectPR={onSelectPRHandler}
+          selectedPRBranch={selectedPRBranch}
+        />
+      </PRSplitSection>
     </div>
   );
 };
 
-export {
-  PullRequestSplittingPage,
-  PR_SPLITTING_PAGE_DIFFS_SECTION_TESTID,
-  PR_SPLITTING_PAGE_FILE_DIFF_TESTID,
-  PR_SPLITTING_PAGE_LOADING_TESTID,
-};
+export { PullRequestSplittingPage, PRBranchData };

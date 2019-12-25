@@ -10,6 +10,7 @@ const BUTTON_LABEL = 'label';
 
 interface RenderButton {
   styleOf: ButtonStyle;
+  disabled?: boolean;
 }
 
 interface RenderButtonResult {
@@ -17,10 +18,13 @@ interface RenderButtonResult {
   onClickMock: jest.Mock;
 }
 
-const renderButton = ({ styleOf }: RenderButton): RenderButtonResult => {
+const renderButton = ({
+  styleOf,
+  disabled,
+}: RenderButton): RenderButtonResult => {
   const onClickMock = jest.fn();
   const renderResult = render(
-    <Button styleOf={styleOf} onClick={onClickMock}>
+    <Button styleOf={styleOf} onClick={onClickMock} disabled={disabled}>
       {BUTTON_LABEL}
     </Button>
   );
@@ -52,6 +56,17 @@ describe('<Button/>', (): void => {
     const { onClickMock } = renderButton({
       styleOf: ButtonStyle.Primary,
     });
+
+    expect(onClickMock).not.toHaveBeenCalled();
+  });
+
+  it('does not trigger onClick on click when is disabled', (): void => {
+    const { renderResult, onClickMock } = renderButton({
+      styleOf: ButtonStyle.Primary,
+      disabled: true,
+    });
+
+    fireEvent.click(renderResult.getByTestId(BUTTON_TESTID));
 
     expect(onClickMock).not.toHaveBeenCalled();
   });

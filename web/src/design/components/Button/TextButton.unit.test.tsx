@@ -13,15 +13,25 @@ import {
 
 const LABEL = 'label';
 
+interface RenderOutlineOptions {
+  disabled?: boolean;
+}
+
 interface RenderTextButtonResult {
   renderResult: RenderResult;
   onClickMock: jest.Mock;
 }
 
-const renderTextButton = (): RenderTextButtonResult => {
+const renderTextButton = ({
+  disabled,
+}: RenderOutlineOptions): RenderTextButtonResult => {
   const onClickMock = jest.fn();
   const renderResult = render(
-    <TextButton styleOf={TextButtonStyle.Primary} onClick={onClickMock}>
+    <TextButton
+      styleOf={TextButtonStyle.Primary}
+      onClick={onClickMock}
+      disabled={disabled}
+    >
       {LABEL}
     </TextButton>
   );
@@ -31,16 +41,26 @@ const renderTextButton = (): RenderTextButtonResult => {
 
 describe('<TextButton/>', (): void => {
   it('displays label', (): void => {
-    const { renderResult } = renderTextButton();
+    const { renderResult } = renderTextButton({});
     const textButtonContainer = renderResult.getByTestId(TEXT_BUTTON_TESTID);
     expect(within(textButtonContainer).queryByText(LABEL)).not.toBe(null);
   });
 
   it('calls onClick handler when clicked', (): void => {
-    const { renderResult, onClickMock } = renderTextButton();
+    const { renderResult, onClickMock } = renderTextButton({});
     const textButtonContainer = renderResult.getByTestId(TEXT_BUTTON_TESTID);
 
     fireEvent.click(textButtonContainer);
     expect(onClickMock).toBeCalled();
+  });
+
+  it('does not trigger onClick on click when is disabled', (): void => {
+    const { renderResult, onClickMock } = renderTextButton({
+      disabled: true,
+    });
+
+    fireEvent.click(renderResult.getByTestId(TEXT_BUTTON_TESTID));
+
+    expect(onClickMock).not.toHaveBeenCalled();
   });
 });
