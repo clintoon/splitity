@@ -23,6 +23,7 @@ import {
   EDIT_PRS_SECTION_TESTID,
   EDITING_TEXT_LABEL,
   NOT_EDITING_TEXT_LABEL,
+  SELECTED_PR_CHIP_TESTID,
 } from './PullRequestControlPanel';
 import {
   CHIP_TESTID,
@@ -40,6 +41,10 @@ const REPO_NAME = 'test01';
 
 interface RenderPullRequestSplittingPageResult {
   renderResult: RenderResult;
+}
+
+interface GetPRBranchChip {
+  prName: string;
 }
 
 const renderPullRequestSplittingPage = (): RenderPullRequestSplittingPageResult => {
@@ -115,6 +120,19 @@ const clickEditPRsButton = (renderResult: RenderResult): void => {
   );
 
   fireEvent.click(within(editButtonSection).getByTestId(TEXT_BUTTON_TESTID));
+};
+
+const getPRBranchChip = (
+  container: HTMLElement,
+  { prName }: GetPRBranchChip
+): HTMLElement => {
+  const firstPRBranchChipContainer = within(container)
+    .getAllByTestId(CHIP_TESTID)
+    .filter((el): boolean => {
+      return !!within(el).queryByText(prName);
+    })[0];
+
+  return firstPRBranchChipContainer;
 };
 
 describe('<PullRequestSplittingPage />', (): void => {
@@ -344,11 +362,12 @@ describe('<PullRequestSplittingPage />', (): void => {
         PULL_REQUEST_CONTROL_PANEL_TESTID
       );
 
-      const firstPRBranchChipContainer = within(controlPanelContainer)
-        .getAllByTestId(CHIP_TESTID)
-        .filter((el): boolean => {
-          return !!within(el).queryByText('PR 1');
-        })[0];
+      const firstPRBranchChipContainer = getPRBranchChip(
+        controlPanelContainer,
+        {
+          prName: 'PR 1',
+        }
+      );
 
       fireEvent.click(
         within(firstPRBranchChipContainer).getByTestId(
@@ -359,10 +378,127 @@ describe('<PullRequestSplittingPage />', (): void => {
       expect(within(controlPanelContainer).queryByText('PR 1')).toBe(null);
     });
 
-    it('clicking on an PR branch selects it when not in edit mode', () => {});
+    it('clicking on an PR branch selects it when not in edit mode', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
 
-    it('clicking on an PR branch does not select it when in edit mode', () => {});
+      await wait((): void => {
+        updateAddPRTextInput(renderResult, { text: 'PR 1' });
+        clickAddPRButton(renderResult);
 
-    it('selecting an PR branch unselects the other selected PR branch', () => {});
+        updateAddPRTextInput(renderResult, { text: 'PR 2' });
+        clickAddPRButton(renderResult);
+
+        const controlPanelContainer = renderResult.getByTestId(
+          PULL_REQUEST_CONTROL_PANEL_TESTID
+        );
+
+        const firstPRBranchChipContainer = getPRBranchChip(
+          controlPanelContainer,
+          {
+            prName: 'PR 1',
+          }
+        );
+
+        fireEvent.click(firstPRBranchChipContainer);
+
+        const selectedPRChipContainer = within(
+          controlPanelContainer
+        ).getByTestId(SELECTED_PR_CHIP_TESTID);
+
+        expect(within(selectedPRChipContainer).queryByText('PR 1')).not.toBe(
+          null
+        );
+      });
+    });
+
+    it('clicking on an PR branch does not select it when in edit mode', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
+
+      await wait((): void => {
+        updateAddPRTextInput(renderResult, { text: 'PR 1' });
+        clickAddPRButton(renderResult);
+
+        clickEditPRsButton(renderResult);
+
+        const controlPanelContainer = renderResult.getByTestId(
+          PULL_REQUEST_CONTROL_PANEL_TESTID
+        );
+
+        fireEvent.click(within(controlPanelContainer).getByTestId(CHIP_TESTID));
+
+        expect(
+          within(controlPanelContainer).queryByTestId(SELECTED_PR_CHIP_TESTID)
+        ).toBe(null);
+      });
+    });
+
+    it('selecting an PR branch unselects the other selected PR branch', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
+
+      await wait((): void => {
+        updateAddPRTextInput(renderResult, { text: 'PR 1' });
+        clickAddPRButton(renderResult);
+
+        updateAddPRTextInput(renderResult, { text: 'PR 2' });
+        clickAddPRButton(renderResult);
+
+        const controlPanelContainer = renderResult.getByTestId(
+          PULL_REQUEST_CONTROL_PANEL_TESTID
+        );
+        const firstPRBranchChipContainer = getPRBranchChip(
+          controlPanelContainer,
+          {
+            prName: 'PR 1',
+          }
+        );
+
+        fireEvent.click(firstPRBranchChipContainer);
+
+        const secondPRBranchChipContainer = getPRBranchChip(
+          controlPanelContainer,
+          {
+            prName: 'PR 2',
+          }
+        );
+
+        fireEvent.click(secondPRBranchChipContainer);
+
+        const selectedPRBranchContainer = within(
+          controlPanelContainer
+        ).getByTestId(SELECTED_PR_CHIP_TESTID);
+
+        expect(within(selectedPRBranchContainer).queryByText('PR 2')).not.toBe(
+          null
+        );
+      });
+    });
+
+    it('unselects the current PR branch if you click on it', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
+
+      await wait((): void => {
+        updateAddPRTextInput(renderResult, { text: 'PR 1' });
+        clickAddPRButton(renderResult);
+
+        const controlPanelContainer = renderResult.getByTestId(
+          PULL_REQUEST_CONTROL_PANEL_TESTID
+        );
+
+        fireEvent.click(within(controlPanelContainer).getByTestId(CHIP_TESTID));
+        fireEvent.click(within(controlPanelContainer).getByTestId(CHIP_TESTID));
+
+        expect(
+          within(controlPanelContainer).queryByTestId(SELECTED_PR_CHIP_TESTID)
+        ).toBe(null);
+      });
+    });
   });
 });
