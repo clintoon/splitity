@@ -70,6 +70,15 @@ const PullRequestControlPanel = ({
   const [branchInputValue, setBranchInputValue] = useState<string>('');
   const [isEditingPRs, setIsEditingPRs] = useState<boolean>(false);
 
+  const onAddPrClickHandler = (): void => {
+    onAddPRClick(branchInputValue);
+    setBranchInputValue('');
+  };
+
+  const toggleEditMode = (): void => {
+    setIsEditingPRs(!isEditingPRs);
+  };
+
   return (
     <Container>
       <AddPRSection>
@@ -84,10 +93,7 @@ const PullRequestControlPanel = ({
           size={ButtonSize.Small}
           styleOf={ButtonStyle.Secondary}
           disabled={branchInputValue === ''}
-          onClick={(): void => {
-            onAddPRClick(branchInputValue);
-            setBranchInputValue('');
-          }}
+          onClick={onAddPrClickHandler}
         >
           Add PR
         </Button>
@@ -96,9 +102,7 @@ const PullRequestControlPanel = ({
         <TextButton
           size={TextButtonSize.Small}
           styleOf={TextButtonStyle.Secondary}
-          onClick={(): void => {
-            setIsEditingPRs(!isEditingPRs);
-          }}
+          onClick={toggleEditMode}
           disabled={prCollection.length === 0}
         >
           {isEditingPRs ? 'Stop editing' : 'Edit'}

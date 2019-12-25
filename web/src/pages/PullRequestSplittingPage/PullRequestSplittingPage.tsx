@@ -98,6 +98,38 @@ const PullRequestSplittingPage = ({
   });
   const [selectedPRBranch, setSelectedPRBranch] = useState<number | null>(null);
 
+  const onDeletePRClickHandler = (prId: number): void => {
+    const newPRBranchsData = {
+      ...prBranchsData,
+      prCollection: filter(prBranchsData.prCollection, (val): boolean => {
+        return val.id !== prId;
+      }),
+    };
+    setPRBranchsData(newPRBranchsData);
+    if (selectedPRBranch === prId) {
+      setSelectedPRBranch(null);
+    }
+  };
+
+  const onAddPRClickHandler = (name: string): void => {
+    const prColor = generateRandomColor();
+    setPRBranchsData({
+      count: prBranchsData.count + 1,
+      prCollection: [
+        ...prBranchsData.prCollection,
+        { id: prBranchsData.count, name, color: prColor },
+      ],
+    });
+  };
+
+  const onSelectPRHandler = (prId: number): void => {
+    if (prId === selectedPRBranch) {
+      setSelectedPRBranch(null);
+    } else {
+      setSelectedPRBranch(prId);
+    }
+  };
+
   return (
     <div>
       <PullRequestInfoPage
@@ -109,38 +141,9 @@ const PullRequestSplittingPage = ({
         <PullRequestFileDiffs PRDiff={PRDiff} />
         <PullRequestControlPanel
           prCollection={prBranchsData.prCollection}
-          onAddPRClick={(name): void => {
-            const prColor = generateRandomColor();
-            setPRBranchsData({
-              count: prBranchsData.count + 1,
-              prCollection: [
-                ...prBranchsData.prCollection,
-                { id: prBranchsData.count, name, color: prColor },
-              ],
-            });
-          }}
-          onDeletePRClick={(prId): void => {
-            const newPRBranchsData = {
-              ...prBranchsData,
-              prCollection: filter(
-                prBranchsData.prCollection,
-                (val): boolean => {
-                  return val.id !== prId;
-                }
-              ),
-            };
-            setPRBranchsData(newPRBranchsData);
-            if (selectedPRBranch === prId) {
-              setSelectedPRBranch(null);
-            }
-          }}
-          onSelectPR={(prId): void => {
-            if (prId === selectedPRBranch) {
-              setSelectedPRBranch(null);
-            } else {
-              setSelectedPRBranch(prId);
-            }
-          }}
+          onAddPRClick={onAddPRClickHandler}
+          onDeletePRClick={onDeletePRClickHandler}
+          onSelectPR={onSelectPRHandler}
           selectedPRBranch={selectedPRBranch}
         />
       </PRSplitSection>
