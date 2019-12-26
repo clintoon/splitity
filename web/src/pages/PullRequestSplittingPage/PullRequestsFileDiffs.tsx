@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FileDiff as PRFileDiff } from '@web/design/components/FileDiff/FileDiff';
+import { PRFileDiff } from '@web/design/components/PRFileDiff/PRFileDiff';
 import { FileDiff } from '@web/lib/parseDiff/parseDiff';
 
 interface PullRequestFileDiffsProps {

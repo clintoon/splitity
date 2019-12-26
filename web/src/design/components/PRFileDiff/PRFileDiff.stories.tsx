@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileDiff } from '@web/design/components/FileDiff/FileDiff';
+import { PRFileDiff } from '@web/design/components/PRFileDiff/PRFileDiff';
 import { storiesOf } from '@storybook/react';
 import {
   GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF,
@@ -13,11 +13,11 @@ const multipleChunkFileDiff = parseDiff(
   GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF
 )[0];
 
-storiesOf('FileDiff', module)
+storiesOf('PRFileDiff', module)
   .add(
     'Documentation',
     (): JSX.Element => (
-      <FileDiff
+      <PRFileDiff
         filename={{
           to: singleChunkFileDiff.to,
           from: singleChunkFileDiff.from as string,
@@ -30,7 +30,7 @@ storiesOf('FileDiff', module)
     'Multiple chunks',
     (): JSX.Element => {
       return (
-        <FileDiff
+        <PRFileDiff
           filename={{
             to: multipleChunkFileDiff.to,
             from: multipleChunkFileDiff.from as string,

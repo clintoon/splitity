@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-  FileDiff,
+  PRFileDiff,
   FILE_DIFF_CHUNK_SEPARATOR_TESTID,
-} from '@web/design/components/FileDiff/FileDiff';
+} from '@web/design/components/PRFileDiff/PRFileDiff';
 import {
   GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
   GITHUB_SINGLE_FILE_SINGLE_CHUNK,
@@ -12,7 +12,7 @@ import {
   CARD_HEADER_TESTID,
   CARD_BODY_TESTID,
 } from '@web/design/components/Card/Card';
-import { FILE_DIFF_LINE_TESTID } from '@web/design/components/FileDiff/internal/Line';
+import { FILE_DIFF_LINE_TESTID } from '@web/design/components/PRFileDiff/internal/Line';
 import { parseDiff } from '@web/lib/parseDiff/parseDiff';
 
 interface RenderFileDiffResult {
@@ -25,7 +25,7 @@ interface RenderFileDiffOptions {
   filenameFrom?: string;
 }
 
-const renderFileDiff = ({
+const renderPRFileDiff = ({
   diff,
   filenameFrom,
   filenameTo,
@@ -33,7 +33,7 @@ const renderFileDiff = ({
   const fileDiff = parseDiff(diff)[0];
 
   const renderResult = render(
-    <FileDiff
+    <PRFileDiff
       filename={{ from: filenameFrom, to: filenameTo }}
       chunks={fileDiff.chunks}
     />
@@ -42,10 +42,10 @@ const renderFileDiff = ({
   return { renderResult };
 };
 
-describe('<FileDiff/>', (): void => {
+describe('<PRFileDiff/>', (): void => {
   describe('header', (): void => {
     it('displays the correct filename header when it is not renamed', (): void => {
-      const { renderResult } = renderFileDiff({
+      const { renderResult } = renderPRFileDiff({
         diff: GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
         filenameFrom: 'README.md',
         filenameTo: 'README.md',
@@ -56,7 +56,7 @@ describe('<FileDiff/>', (): void => {
     });
 
     it('displays the correct filename header when it has been renamed', (): void => {
-      const { renderResult } = renderFileDiff({
+      const { renderResult } = renderPRFileDiff({
         diff: GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
         filenameFrom: 'OLD_README.md',
         filenameTo: 'NEW_README.md',
@@ -74,7 +74,7 @@ describe('<FileDiff/>', (): void => {
       consoleErrSpy.mockImplementation((): void => {});
 
       const toThrow = async (): Promise<void> => {
-        renderFileDiff({
+        renderPRFileDiff({
           diff: GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
           filenameFrom: 'README.md',
         });
@@ -96,7 +96,7 @@ describe('<FileDiff/>', (): void => {
       consoleErrSpy.mockImplementation((): void => {});
 
       const toThrow = async (): Promise<void> => {
-        renderFileDiff({
+        renderPRFileDiff({
           diff: GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
           filenameTo: 'README.md',
         });
@@ -115,7 +115,7 @@ describe('<FileDiff/>', (): void => {
     // TODO(clintoon): Should also have screenshot testing to avoid testing the implementation
 
     it('displays the correct number of chunk separator', (): void => {
-      const { renderResult } = renderFileDiff({
+      const { renderResult } = renderPRFileDiff({
         diff: GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
         filenameFrom: 'README.md',
         filenameTo: 'README.md',
@@ -129,7 +129,7 @@ describe('<FileDiff/>', (): void => {
     });
 
     it('displays the correct number lines', (): void => {
-      const { renderResult } = renderFileDiff({
+      const { renderResult } = renderPRFileDiff({
         diff: GITHUB_SINGLE_FILE_SINGLE_CHUNK,
         filenameFrom: 'README.md',
         filenameTo: 'README.md',

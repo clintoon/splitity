@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Card } from '@web/design/components/Card/Card';
 import { Color } from '@web/design/styles/color';
 import { codeFontFamily } from '@web/design/styles/font';
-import { Line } from '@web/design/components/FileDiff/internal/Line';
+import { Line } from '@web/design/components/PRFileDiff/internal/Line';
 import { DiffChunk, HunkBoundary } from '@web/lib/parseDiff/parseDiff';
 
 interface FilenameChange {
@@ -11,7 +11,7 @@ interface FilenameChange {
   to?: string;
 }
 
-interface FileDiffProps {
+interface PRFileDiffProps {
   filename: FilenameChange;
   chunks: DiffChunk[];
 }
@@ -80,7 +80,7 @@ const ChunkSeparator = styled.tr`
   background-color: ${Color.Blue50};
 `;
 
-const FileDiff = ({ filename, chunks }: FileDiffProps): JSX.Element => {
+const PRFileDiff = ({ filename, chunks }: PRFileDiffProps): JSX.Element => {
   return (
     <Card header={getFilenameHeader(filename) || ''}>
       <Table>
@@ -107,4 +107,4 @@ const FileDiff = ({ filename, chunks }: FileDiffProps): JSX.Element => {
   );
 };
 
-export { FileDiff, FILE_DIFF_CHUNK_SEPARATOR_TESTID };
+export { PRFileDiff, FILE_DIFF_CHUNK_SEPARATOR_TESTID };
