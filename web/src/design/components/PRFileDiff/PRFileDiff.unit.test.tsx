@@ -31,11 +31,13 @@ const renderPRFileDiff = ({
   filenameTo,
 }: RenderFileDiffOptions): RenderFileDiffResult => {
   const fileDiff = parseDiff(diff)[0];
+  const onHunkClickMock = jest.fn();
 
   const renderResult = render(
     <PRFileDiff
       filename={{ from: filenameFrom, to: filenameTo }}
       chunks={fileDiff.chunks}
+      onHunkClick={onHunkClickMock}
     />
   );
 

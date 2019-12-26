@@ -1,13 +1,13 @@
 import parse, { Change, Chunk, File } from 'parse-diff';
-import { addHunkBoundariesToFileDiffs } from './internal/calculateHunks';
+import { addLineGroupsToFileDiffs } from './internal/calculateHunks';
 
-interface HunkBoundary {
+interface FileDiffLineGroup {
   isHunk: boolean;
   changes: Change[];
 }
 
 interface DiffChunk extends Chunk {
-  hunkBoundaries: HunkBoundary[];
+  lineGroups: FileDiffLineGroup[];
 }
 
 interface FileDiff extends Omit<File, 'chunks'> {
@@ -17,7 +17,7 @@ interface FileDiff extends Omit<File, 'chunks'> {
 const parseDiff = (diff: string): FileDiff[] => {
   const res = parse(diff);
 
-  return addHunkBoundariesToFileDiffs(res);
+  return addLineGroupsToFileDiffs(res);
 };
 
-export { parseDiff, HunkBoundary, DiffChunk, FileDiff };
+export { parseDiff, FileDiffLineGroup, DiffChunk, FileDiff };

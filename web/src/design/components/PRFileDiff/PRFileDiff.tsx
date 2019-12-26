@@ -1,23 +1,33 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { FlattenSimpleInterpolation, css } from 'styled-components';
 import { Card } from '@web/design/components/Card/Card';
 import { Color } from '@web/design/styles/color';
 import { codeFontFamily } from '@web/design/styles/font';
 import { Line } from '@web/design/components/PRFileDiff/internal/Line';
-import { DiffChunk, HunkBoundary } from '@web/lib/parseDiff/parseDiff';
+import { DiffChunk, FileDiffLineGroup } from '@web/lib/parseDiff/parseDiff';
 
 interface FilenameChange {
   from?: string;
   to?: string;
 }
 
+type OnHunkClick = (lineGroupIndex: number) => void;
+
 interface PRFileDiffProps {
   filename: FilenameChange;
   chunks: DiffChunk[];
+  onHunkClick: OnHunkClick;
 }
 
 interface ChunkProps {
   chunk: DiffChunk;
+  onHunkClick: OnHunkClick;
+}
+
+interface LineGroupProps {
+  lineGroup: FileDiffLineGroup;
+  onHunkClick: OnHunkClick;
+  lineGroupIndex: number;
 }
 
 const FILE_DIFF_CHUNK_SEPARATOR_TESTID = 'file diff chunk separator';
@@ -47,28 +57,58 @@ const Table = styled.table`
   font-size: 12px;
 `;
 
-interface HunkBoundaryProps {
-  hunkBoundary: HunkBoundary;
+interface LineGroupContainerProps {
+  isHunk: boolean;
 }
 
-const HunkBoundary = ({ hunkBoundary }: HunkBoundaryProps): JSX.Element => {
+const LineGroupContainer = styled.tbody<LineGroupContainerProps>`
+  ${({ isHunk }): FlattenSimpleInterpolation | null => {
+    if (!isHunk) {
+      return null;
+    }
+
+    return css`
+      cursor: pointer;
+    `;
+  }}
+`;
+
+const LineGroup = ({
+  lineGroup,
+  onHunkClick,
+  lineGroupIndex,
+}: LineGroupProps): JSX.Element => {
+  const onHunkClickHandler = (): void => {
+    onHunkClick(lineGroupIndex);
+  };
+
   return (
-    <tbody>
-      {hunkBoundary.changes.map(
+    <LineGroupContainer
+      isHunk={lineGroup.isHunk}
+      onClick={lineGroup.isHunk ? onHunkClickHandler : undefined}
+    >
+      {lineGroup.changes.map(
         (change, index): JSX.Element => {
           return <Line key={index} change={change} />;
         }
       )}
-    </tbody>
+    </LineGroupContainer>
   );
 };
 
-const Chunk = ({ chunk }: ChunkProps): JSX.Element => {
+const Chunk = ({ chunk, onHunkClick }: ChunkProps): JSX.Element => {
   return (
     <React.Fragment>
-      {chunk.hunkBoundaries.map(
-        (hunkBoundary, index): JSX.Element => {
-          return <HunkBoundary key={index} hunkBoundary={hunkBoundary} />;
+      {chunk.lineGroups.map(
+        (lineGroups, index): JSX.Element => {
+          return (
+            <LineGroup
+              key={index}
+              lineGroupIndex={index}
+              lineGroup={lineGroups}
+              onHunkClick={onHunkClick}
+            />
+          );
         }
       )}
     </React.Fragment>
@@ -80,7 +120,11 @@ const ChunkSeparator = styled.tr`
   background-color: ${Color.Blue50};
 `;
 
-const PRFileDiff = ({ filename, chunks }: PRFileDiffProps): JSX.Element => {
+const PRFileDiff = ({
+  filename,
+  chunks,
+  onHunkClick,
+}: PRFileDiffProps): JSX.Element => {
   return (
     <Card header={getFilenameHeader(filename) || ''}>
       <Table>
@@ -88,7 +132,7 @@ const PRFileDiff = ({ filename, chunks }: PRFileDiffProps): JSX.Element => {
           (chunk, index): JSX.Element => {
             return (
               <React.Fragment key={chunk.content}>
-                <Chunk chunk={chunk} />
+                <Chunk chunk={chunk} onHunkClick={onHunkClick} />
                 {index !== chunks.length - 1 && (
                   <tbody>
                     <ChunkSeparator

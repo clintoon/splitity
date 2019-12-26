@@ -6,6 +6,7 @@ import {
   GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
 } from '@web/testing/fixtures/pullRequestDiff';
 import { parseDiff } from '@web/lib/parseDiff/parseDiff';
+import { action } from '@storybook/addon-actions';
 
 const singleChunkFileDiff = parseDiff(GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF)[0];
 
@@ -23,6 +24,7 @@ storiesOf('PRFileDiff', module)
           from: singleChunkFileDiff.from as string,
         }}
         chunks={singleChunkFileDiff.chunks}
+        onHunkClick={action('onHunkClick')}
       />
     )
   )
@@ -36,6 +38,7 @@ storiesOf('PRFileDiff', module)
             from: multipleChunkFileDiff.from as string,
           }}
           chunks={multipleChunkFileDiff.chunks}
+          onHunkClick={action('onHunkClick')}
         />
       );
     }

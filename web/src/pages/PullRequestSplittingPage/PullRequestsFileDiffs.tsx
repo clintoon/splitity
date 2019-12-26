@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { PRFileDiff } from '@web/design/components/PRFileDiff/PRFileDiff';
 import { FileDiff } from '@web/lib/parseDiff/parseDiff';
+import { noop } from 'lodash';
 
 interface PullRequestFileDiffsProps {
   PRDiff?: FileDiff[];
@@ -40,6 +41,7 @@ const PullRequestFileDiffs = ({
               <PRFileDiff
                 filename={{ from: fileDiff.from, to: fileDiff.to }}
                 chunks={fileDiff.chunks}
+                onHunkClick={noop}
               />
             </FileDiffContainer>
           );
