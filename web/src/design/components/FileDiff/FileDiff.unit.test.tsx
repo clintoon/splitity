@@ -3,7 +3,6 @@ import {
   FileDiff,
   FILE_DIFF_CHUNK_SEPARATOR_TESTID,
 } from '@web/design/components/FileDiff/FileDiff';
-import parseDiff from 'parse-diff';
 import {
   GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
   GITHUB_SINGLE_FILE_SINGLE_CHUNK,
@@ -14,7 +13,7 @@ import {
   CARD_BODY_TESTID,
 } from '@web/design/components/Card/Card';
 import { FILE_DIFF_LINE_TESTID } from '@web/design/components/FileDiff/internal/Line';
-import { addHunkBoundariesToFileDiffs } from '@web/pages/PullRequestSplittingPage/calculateHunks';
+import { parseDiff } from '@web/lib/parseDiff/parseDiff';
 
 interface RenderFileDiffResult {
   renderResult: RenderResult;
@@ -31,7 +30,7 @@ const renderFileDiff = ({
   filenameFrom,
   filenameTo,
 }: RenderFileDiffOptions): RenderFileDiffResult => {
-  const fileDiff = addHunkBoundariesToFileDiffs(parseDiff(diff))[0];
+  const fileDiff = parseDiff(diff)[0];
 
   const renderResult = render(
     <FileDiff

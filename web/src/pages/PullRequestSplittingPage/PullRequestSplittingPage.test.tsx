@@ -14,7 +14,6 @@ import {
 } from '@web/pages/PullRequestSplittingPage/PullRequestsFileDiffs';
 import { PULL_REQUEST_INFO_TESTID } from '@web/pages/PullRequestSplittingPage/PullRequestInfo';
 import { GithubAPI } from '@web/lib/github/github';
-import parseDiff from 'parse-diff';
 import { GITHUB_MULTIPLE_FILE_DIFF } from '@web/testing/fixtures/pullRequestDiff';
 import {
   PULL_REQUEST_CONTROL_PANEL_TESTID,
@@ -53,7 +52,7 @@ const renderPullRequestSplittingPage = (): RenderPullRequestSplittingPageResult 
 
   jest
     .spyOn(GithubAPI.prototype, 'getPullRequestDiff')
-    .mockResolvedValue(parseDiff(GITHUB_MULTIPLE_FILE_DIFF));
+    .mockResolvedValue(GITHUB_MULTIPLE_FILE_DIFF);
 
   const renderResult = render(
     <PullRequestSplittingPage

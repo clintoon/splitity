@@ -4,10 +4,7 @@ import { Card } from '@web/design/components/Card/Card';
 import { Color } from '@web/design/styles/color';
 import { codeFontFamily } from '@web/design/styles/font';
 import { Line } from '@web/design/components/FileDiff/internal/Line';
-import {
-  ChunkWithHunkBoundaries,
-  HunkBoundary,
-} from '@web/pages/PullRequestSplittingPage/calculateHunks';
+import { DiffChunk, HunkBoundary } from '@web/lib/parseDiff/parseDiff';
 
 interface FilenameChange {
   from?: string;
@@ -16,11 +13,11 @@ interface FilenameChange {
 
 interface FileDiffProps {
   filename: FilenameChange;
-  chunks: ChunkWithHunkBoundaries[];
+  chunks: DiffChunk[];
 }
 
 interface ChunkProps {
-  chunk: ChunkWithHunkBoundaries;
+  chunk: DiffChunk;
 }
 
 const FILE_DIFF_CHUNK_SEPARATOR_TESTID = 'file diff chunk separator';

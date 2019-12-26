@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FileDiff } from '@web/design/components/FileDiff/FileDiff';
-import { FileWithHunkBoundaries } from './calculateHunks';
+import { FileDiff as PRFileDiff } from '@web/design/components/FileDiff/FileDiff';
+import { FileDiff } from '@web/lib/parseDiff/parseDiff';
 
 interface PullRequestFileDiffsProps {
-  PRDiff?: FileWithHunkBoundaries[];
+  PRDiff?: FileDiff[];
 }
 
 const PR_SPLITTING_PAGE_DIFFS_SECTION_TESTID =
@@ -37,7 +37,7 @@ const PullRequestFileDiffs = ({
               data-testid={PR_SPLITTING_PAGE_FILE_DIFF_TESTID}
               key={`${fileDiff.from} ${fileDiff.to}`}
             >
-              <FileDiff
+              <PRFileDiff
                 filename={{ from: fileDiff.from, to: fileDiff.to }}
                 chunks={fileDiff.chunks}
               />

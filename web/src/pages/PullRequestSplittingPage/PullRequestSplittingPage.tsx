@@ -7,10 +7,7 @@ import { PullRequestControlPanel } from './PullRequestControlPanel';
 import { PullRequestFileDiffs } from './PullRequestsFileDiffs';
 import { generateRandomColor } from '@web/lib/randomColor/generateRandomColor';
 import { filter } from 'lodash';
-import {
-  addHunkBoundariesToFileDiffs,
-  FileWithHunkBoundaries,
-} from './calculateHunks';
+import { parseDiff, FileDiff } from '@web/lib/parseDiff/parseDiff';
 
 interface MatchProps {
   owner: string;
@@ -62,19 +59,19 @@ const useGetPRDiff = (
   owner: string,
   repoName: string,
   pullRequestId: number
-): FileWithHunkBoundaries[] | undefined => {
-  const [PRDiff, setPRDiff] = useState<FileWithHunkBoundaries[]>();
+): FileDiff[] | undefined => {
+  const [PRDiff, setPRDiff] = useState<FileDiff[]>();
   useEffect((): void => {
     const callback = async (): Promise<void> => {
       const githubApi = new GithubAPI();
-      const fileDiffs = await githubApi.getPullRequestDiff({
+      const diff = await githubApi.getPullRequestDiff({
         owner,
         repoName,
         pullRequestId,
       });
 
-      const fileDiffsWithHunkInfo = addHunkBoundariesToFileDiffs(fileDiffs);
-      setPRDiff(fileDiffsWithHunkInfo);
+      const fileDiffs = parseDiff(diff);
+      setPRDiff(fileDiffs);
     };
     callback();
   }, []);

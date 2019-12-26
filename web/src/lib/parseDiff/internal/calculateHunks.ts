@@ -2,19 +2,7 @@ import { Chunk, Change, File } from 'parse-diff';
 import { last } from 'lodash';
 import { assert } from '@web/lib/assert';
 import { cloneDeep } from 'lodash';
-
-interface HunkBoundary {
-  isHunk: boolean;
-  changes: Change[];
-}
-
-interface ChunkWithHunkBoundaries extends Chunk {
-  hunkBoundaries: HunkBoundary[];
-}
-
-interface FileWithHunkBoundaries extends Omit<File, 'chunks'> {
-  chunks: ChunkWithHunkBoundaries[];
-}
+import { HunkBoundary, FileDiff, DiffChunk } from '../parseDiff';
 
 const isNormalLine = (line: Change): boolean => {
   return line.type === 'normal';
@@ -61,17 +49,15 @@ const calculateChunkHunkBoundaries = (chunk: Chunk): HunkBoundary[] => {
   return hunks;
 };
 
-const addHunkBoundariesToFileDiffs = (
-  files: File[]
-): FileWithHunkBoundaries[] => {
+const addHunkBoundariesToFileDiffs = (files: File[]): FileDiff[] => {
   const filesCpy = cloneDeep(files);
 
   const result = filesCpy.map(
-    (file): FileWithHunkBoundaries => {
+    (file): FileDiff => {
       return {
         ...file,
         chunks: file.chunks.map(
-          (chunk): ChunkWithHunkBoundaries => {
+          (chunk): DiffChunk => {
             return {
               ...chunk,
               hunkBoundaries: calculateChunkHunkBoundaries(chunk),
@@ -85,9 +71,4 @@ const addHunkBoundariesToFileDiffs = (
   return result;
 };
 
-export {
-  addHunkBoundariesToFileDiffs,
-  HunkBoundary,
-  ChunkWithHunkBoundaries,
-  FileWithHunkBoundaries,
-};
+export { addHunkBoundariesToFileDiffs };

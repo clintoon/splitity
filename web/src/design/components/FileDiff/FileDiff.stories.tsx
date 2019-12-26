@@ -1,19 +1,16 @@
 import React from 'react';
 import { FileDiff } from '@web/design/components/FileDiff/FileDiff';
 import { storiesOf } from '@storybook/react';
-import parseDiff from 'parse-diff';
 import {
   GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF,
   GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
 } from '@web/testing/fixtures/pullRequestDiff';
-import { addHunkBoundariesToFileDiffs } from '@web/pages/PullRequestSplittingPage/calculateHunks';
+import { parseDiff } from '@web/lib/parseDiff/parseDiff';
 
-const singleChunkFileDiff = addHunkBoundariesToFileDiffs(
-  parseDiff(GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF)
-)[0];
+const singleChunkFileDiff = parseDiff(GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF)[0];
 
-const multipleChunkFileDiff = addHunkBoundariesToFileDiffs(
-  parseDiff(GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF)
+const multipleChunkFileDiff = parseDiff(
+  GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF
 )[0];
 
 storiesOf('FileDiff', module)
