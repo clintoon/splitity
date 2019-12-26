@@ -5,7 +5,6 @@ import {
   wait,
   within,
   fireEvent,
-  prettyDOM,
 } from '@testing-library/react';
 import { PullRequestSplittingPage } from '@web/pages/PullRequestSplittingPage/PullRequestSplittingPage';
 import {

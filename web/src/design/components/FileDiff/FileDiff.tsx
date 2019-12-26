@@ -1,10 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Card } from '@web/design/components/Card/Card';
-import parseDiff from 'parse-diff';
 import { Color } from '@web/design/styles/color';
 import { codeFontFamily } from '@web/design/styles/font';
 import { Line } from '@web/design/components/FileDiff/internal/Line';
+import {
+  ChunkWithHunkBoundaries,
+  HunkBoundary,
+} from '@web/pages/PullRequestSplittingPage/calculateHunks';
 
 interface FilenameChange {
   from?: string;
@@ -13,11 +16,11 @@ interface FilenameChange {
 
 interface FileDiffProps {
   filename: FilenameChange;
-  chunks: parseDiff.Chunk[];
+  chunks: ChunkWithHunkBoundaries[];
 }
 
 interface ChunkProps {
-  chunk: parseDiff.Chunk;
+  chunk: ChunkWithHunkBoundaries;
 }
 
 const FILE_DIFF_CHUNK_SEPARATOR_TESTID = 'file diff chunk separator';
@@ -47,12 +50,28 @@ const Table = styled.table`
   font-size: 12px;
 `;
 
+interface HunkBoundaryProps {
+  hunkBoundary: HunkBoundary;
+}
+
+const HunkBoundary = ({ hunkBoundary }: HunkBoundaryProps): JSX.Element => {
+  return (
+    <tbody>
+      {hunkBoundary.changes.map(
+        (change, index): JSX.Element => {
+          return <Line key={index} change={change} />;
+        }
+      )}
+    </tbody>
+  );
+};
+
 const Chunk = ({ chunk }: ChunkProps): JSX.Element => {
   return (
     <React.Fragment>
-      {chunk.changes.map(
-        (change, index): JSX.Element => {
-          return <Line key={index} change={change} />;
+      {chunk.hunkBoundaries.map(
+        (hunkBoundary, index): JSX.Element => {
+          return <HunkBoundary key={index} hunkBoundary={hunkBoundary} />;
         }
       )}
     </React.Fragment>
@@ -68,24 +87,24 @@ const FileDiff = ({ filename, chunks }: FileDiffProps): JSX.Element => {
   return (
     <Card header={getFilenameHeader(filename) || ''}>
       <Table>
-        <tbody>
-          {chunks.map(
-            (chunk, index): JSX.Element => {
-              return (
-                <React.Fragment key={chunk.content}>
-                  <Chunk chunk={chunk} />
-                  {index !== chunks.length - 1 && (
+        {chunks.map(
+          (chunk, index): JSX.Element => {
+            return (
+              <React.Fragment key={chunk.content}>
+                <Chunk chunk={chunk} />
+                {index !== chunks.length - 1 && (
+                  <tbody>
                     <ChunkSeparator
                       data-testid={FILE_DIFF_CHUNK_SEPARATOR_TESTID}
                     >
                       <td colSpan={3} />
                     </ChunkSeparator>
-                  )}
-                </React.Fragment>
-              );
-            }
-          )}
-        </tbody>
+                  </tbody>
+                )}
+              </React.Fragment>
+            );
+          }
+        )}
       </Table>
     </Card>
   );

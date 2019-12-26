@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FileDiff } from '@web/design/components/FileDiff/FileDiff';
-import parseDiff from 'parse-diff';
+import { FileWithHunkBoundaries } from './calculateHunks';
 
 interface PullRequestFileDiffsProps {
-  PRDiff?: parseDiff.File[];
+  PRDiff?: FileWithHunkBoundaries[];
 }
 
 const PR_SPLITTING_PAGE_DIFFS_SECTION_TESTID =

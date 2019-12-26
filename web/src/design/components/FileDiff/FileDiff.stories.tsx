@@ -6,11 +6,14 @@ import {
   GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF,
   GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
 } from '@web/testing/fixtures/pullRequestDiff';
+import { addHunkBoundariesToFileDiffs } from '@web/pages/PullRequestSplittingPage/calculateHunks';
 
-const singleChunkFileDiff = parseDiff(GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF)[0];
+const singleChunkFileDiff = addHunkBoundariesToFileDiffs(
+  parseDiff(GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF)
+)[0];
 
-const multipleChunkFileDiff = parseDiff(
-  GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF
+const multipleChunkFileDiff = addHunkBoundariesToFileDiffs(
+  parseDiff(GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF)
 )[0];
 
 storiesOf('FileDiff', module)

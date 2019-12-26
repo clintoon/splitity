@@ -14,6 +14,7 @@ import {
   CARD_BODY_TESTID,
 } from '@web/design/components/Card/Card';
 import { FILE_DIFF_LINE_TESTID } from '@web/design/components/FileDiff/internal/Line';
+import { addHunkBoundariesToFileDiffs } from '@web/pages/PullRequestSplittingPage/calculateHunks';
 
 interface RenderFileDiffResult {
   renderResult: RenderResult;
@@ -30,7 +31,8 @@ const renderFileDiff = ({
   filenameFrom,
   filenameTo,
 }: RenderFileDiffOptions): RenderFileDiffResult => {
-  const fileDiff = parseDiff(diff)[0];
+  const fileDiff = addHunkBoundariesToFileDiffs(parseDiff(diff))[0];
+
   const renderResult = render(
     <FileDiff
       filename={{ from: filenameFrom, to: filenameTo }}

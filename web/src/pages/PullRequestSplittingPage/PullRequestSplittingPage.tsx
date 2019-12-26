@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { match } from 'react-router-dom';
 import { GithubAPI } from '@web/lib/github/github';
 import { PullRequestInfoPage } from '@web/pages/PullRequestSplittingPage/PullRequestInfo';
-import parseDiff from 'parse-diff';
 import styled from 'styled-components';
 import { PullRequestControlPanel } from './PullRequestControlPanel';
 import { PullRequestFileDiffs } from './PullRequestsFileDiffs';
 import { generateRandomColor } from '@web/lib/randomColor/generateRandomColor';
 import { filter } from 'lodash';
+import {
+  addHunkBoundariesToFileDiffs,
+  FileWithHunkBoundaries,
+} from './calculateHunks';
 
 interface MatchProps {
   owner: string;
@@ -35,7 +38,7 @@ const useGetPRTitle = (
   repoName: string,
   pullRequestId: number
 ): string | undefined => {
-  const [title, setTitle] = useState();
+  const [title, setTitle] = useState<string | undefined>();
 
   useEffect((): void => {
     const callback = async (): Promise<void> => {
@@ -59,8 +62,8 @@ const useGetPRDiff = (
   owner: string,
   repoName: string,
   pullRequestId: number
-): parseDiff.File[] | undefined => {
-  const [PRDiff, setPRDiff] = useState<parseDiff.File[]>();
+): FileWithHunkBoundaries[] | undefined => {
+  const [PRDiff, setPRDiff] = useState<FileWithHunkBoundaries[]>();
   useEffect((): void => {
     const callback = async (): Promise<void> => {
       const githubApi = new GithubAPI();
@@ -70,7 +73,8 @@ const useGetPRDiff = (
         pullRequestId,
       });
 
-      setPRDiff(fileDiffs);
+      const fileDiffsWithHunkInfo = addHunkBoundariesToFileDiffs(fileDiffs);
+      setPRDiff(fileDiffsWithHunkInfo);
     };
     callback();
   }, []);
