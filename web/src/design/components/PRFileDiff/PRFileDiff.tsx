@@ -11,23 +11,29 @@ interface FilenameChange {
   to?: string;
 }
 
-type OnHunkClick = (lineGroupIndex: number) => void;
+type OnHunkClick = (lineGroupId: string) => void;
 
 interface PRFileDiffProps {
   filename: FilenameChange;
   chunks: DiffChunk[];
   onHunkClick: OnHunkClick;
+  fileDiffId: string;
 }
 
 interface ChunkProps {
   chunk: DiffChunk;
   onHunkClick: OnHunkClick;
+  chunkId: string;
 }
 
+type PRFileDiffLineGroup = FileDiffLineGroup & {
+  color?: string;
+};
+
 interface LineGroupProps {
-  lineGroup: FileDiffLineGroup;
+  lineGroup: PRFileDiffLineGroup;
   onHunkClick: OnHunkClick;
-  lineGroupIndex: number;
+  lineGroupId: string;
 }
 
 const FILE_DIFF_CHUNK_SEPARATOR_TESTID = 'file diff chunk separator';
@@ -59,9 +65,18 @@ const Table = styled.table`
 
 interface LineGroupContainerProps {
   isHunk: boolean;
+  hunkColor?: string;
 }
 
 const LineGroupContainer = styled.tbody<LineGroupContainerProps>`
+  display: block;
+
+  ${({ hunkColor }): FlattenSimpleInterpolation => {
+    return css`
+      border-left: 4px solid ${hunkColor || Color.Gray300};
+    `;
+  }};
+
   ${({ isHunk }): FlattenSimpleInterpolation | null => {
     if (!isHunk) {
       return null;
@@ -73,19 +88,27 @@ const LineGroupContainer = styled.tbody<LineGroupContainerProps>`
   }}
 `;
 
+const ChunkSeparatorContainer = styled.tbody`
+  display: table;
+  width: 100%;
+`;
+
 const LineGroup = ({
   lineGroup,
   onHunkClick,
-  lineGroupIndex,
+  lineGroupId,
 }: LineGroupProps): JSX.Element => {
-  const onHunkClickHandler = (): void => {
-    onHunkClick(lineGroupIndex);
-  };
-
   return (
     <LineGroupContainer
+      hunkColor={lineGroup.color}
       isHunk={lineGroup.isHunk}
-      onClick={lineGroup.isHunk ? onHunkClickHandler : undefined}
+      onClick={
+        lineGroup.isHunk
+          ? (): void => {
+              onHunkClick(lineGroupId);
+            }
+          : undefined
+      }
     >
       {lineGroup.changes.map(
         (change, index): JSX.Element => {
@@ -96,16 +119,16 @@ const LineGroup = ({
   );
 };
 
-const Chunk = ({ chunk, onHunkClick }: ChunkProps): JSX.Element => {
+const Chunk = ({ chunk, onHunkClick, chunkId }: ChunkProps): JSX.Element => {
   return (
     <React.Fragment>
       {chunk.lineGroups.map(
-        (lineGroups, index): JSX.Element => {
+        (lineGroup, lineGroupIndex): JSX.Element => {
           return (
             <LineGroup
-              key={index}
-              lineGroupIndex={index}
-              lineGroup={lineGroups}
+              key={lineGroupIndex}
+              lineGroupId={`${chunkId} ${lineGroupIndex}`}
+              lineGroup={lineGroup}
               onHunkClick={onHunkClick}
             />
           );
@@ -124,23 +147,28 @@ const PRFileDiff = ({
   filename,
   chunks,
   onHunkClick,
+  fileDiffId,
 }: PRFileDiffProps): JSX.Element => {
   return (
     <Card header={getFilenameHeader(filename) || ''}>
       <Table>
         {chunks.map(
-          (chunk, index): JSX.Element => {
+          (chunk, chunkIndex): JSX.Element => {
             return (
               <React.Fragment key={chunk.content}>
-                <Chunk chunk={chunk} onHunkClick={onHunkClick} />
-                {index !== chunks.length - 1 && (
-                  <tbody>
+                <Chunk
+                  chunk={chunk}
+                  onHunkClick={onHunkClick}
+                  chunkId={`${fileDiffId} ${chunkIndex}`}
+                />
+                {chunkIndex !== chunks.length - 1 && (
+                  <ChunkSeparatorContainer>
                     <ChunkSeparator
                       data-testid={FILE_DIFF_CHUNK_SEPARATOR_TESTID}
                     >
-                      <td colSpan={3} />
+                      <td />
                     </ChunkSeparator>
-                  </tbody>
+                  </ChunkSeparatorContainer>
                 )}
               </React.Fragment>
             );
@@ -151,4 +179,4 @@ const PRFileDiff = ({
   );
 };
 
-export { PRFileDiff, FILE_DIFF_CHUNK_SEPARATOR_TESTID };
+export { PRFileDiff, FILE_DIFF_CHUNK_SEPARATOR_TESTID, PRFileDiffLineGroup };

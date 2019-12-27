@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { PRFileDiff } from '@web/design/components/PRFileDiff/PRFileDiff';
 import { FileDiff } from '@web/lib/parseDiff/parseDiff';
-import { noop } from 'lodash';
 
 interface PullRequestFileDiffsProps {
   PRDiff?: FileDiff[];
+  onHunkClick: (lineGroupId: string) => void;
 }
 
 const PR_SPLITTING_PAGE_DIFFS_SECTION_TESTID =
@@ -25,6 +25,7 @@ const FileDiffContainer = styled.div`
 
 const PullRequestFileDiffs = ({
   PRDiff,
+  onHunkClick,
 }: PullRequestFileDiffsProps): JSX.Element => {
   if (!PRDiff) {
     return <div data-testid={PR_SPLITTING_PAGE_LOADING_TESTID}>Loading...</div>;
@@ -32,7 +33,7 @@ const PullRequestFileDiffs = ({
   return (
     <FileDiffsSection data-testid={PR_SPLITTING_PAGE_DIFFS_SECTION_TESTID}>
       {PRDiff.map(
-        (fileDiff): JSX.Element => {
+        (fileDiff, fileIndex): JSX.Element => {
           return (
             <FileDiffContainer
               data-testid={PR_SPLITTING_PAGE_FILE_DIFF_TESTID}
@@ -41,7 +42,8 @@ const PullRequestFileDiffs = ({
               <PRFileDiff
                 filename={{ from: fileDiff.from, to: fileDiff.to }}
                 chunks={fileDiff.chunks}
-                onHunkClick={noop}
+                onHunkClick={onHunkClick}
+                fileDiffId={`${fileIndex}`}
               />
             </FileDiffContainer>
           );

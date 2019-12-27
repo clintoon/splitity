@@ -13,7 +13,7 @@ interface CardProps {
 
 const Container = styled.div`
   border-radius: 5px;
-  border: 2px solid ${Color.Gray300};
+  border: 1px solid ${Color.Gray300};
 `;
 
 const Header = styled.div`

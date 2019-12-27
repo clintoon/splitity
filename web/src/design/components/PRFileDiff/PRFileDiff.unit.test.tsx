@@ -15,6 +15,8 @@ import {
 import { FILE_DIFF_LINE_TESTID } from '@web/design/components/PRFileDiff/internal/Line';
 import { parseDiff } from '@web/lib/parseDiff/parseDiff';
 
+const FILE_DIFF_ID = '1';
+
 interface RenderFileDiffResult {
   renderResult: RenderResult;
 }
@@ -38,6 +40,7 @@ const renderPRFileDiff = ({
       filename={{ from: filenameFrom, to: filenameTo }}
       chunks={fileDiff.chunks}
       onHunkClick={onHunkClickMock}
+      fileDiffId={FILE_DIFF_ID}
     />
   );
 

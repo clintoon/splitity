@@ -1,5 +1,8 @@
 import React from 'react';
-import { PRFileDiff } from '@web/design/components/PRFileDiff/PRFileDiff';
+import {
+  PRFileDiff,
+  PRFileDiffLineGroup,
+} from '@web/design/components/PRFileDiff/PRFileDiff';
 import { storiesOf } from '@storybook/react';
 import {
   GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF,
@@ -7,12 +10,19 @@ import {
 } from '@web/testing/fixtures/pullRequestDiff';
 import { parseDiff } from '@web/lib/parseDiff/parseDiff';
 import { action } from '@storybook/addon-actions';
+import { text } from '@storybook/addon-knobs';
 
 const singleChunkFileDiff = parseDiff(GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF)[0];
 
 const multipleChunkFileDiff = parseDiff(
   GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF
 )[0];
+const colorChunkFileDiff = parseDiff(
+  GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF
+)[0];
+
+(colorChunkFileDiff.chunks[0].lineGroups[0] as PRFileDiffLineGroup).color =
+  '#123109';
 
 storiesOf('PRFileDiff', module)
   .add(
@@ -25,6 +35,7 @@ storiesOf('PRFileDiff', module)
         }}
         chunks={singleChunkFileDiff.chunks}
         onHunkClick={action('onHunkClick')}
+        fileDiffId={text('fileDiffId', '')}
       />
     )
   )
@@ -39,6 +50,23 @@ storiesOf('PRFileDiff', module)
           }}
           chunks={multipleChunkFileDiff.chunks}
           onHunkClick={action('onHunkClick')}
+          fileDiffId={text('fileDiffId', '')}
+        />
+      );
+    }
+  )
+  .add(
+    'hunk color',
+    (): JSX.Element => {
+      return (
+        <PRFileDiff
+          filename={{
+            to: colorChunkFileDiff.to,
+            from: colorChunkFileDiff.from as string,
+          }}
+          chunks={colorChunkFileDiff.chunks}
+          onHunkClick={action('onHunkClick')}
+          fileDiffId={text('fileDiffId', '')}
         />
       );
     }

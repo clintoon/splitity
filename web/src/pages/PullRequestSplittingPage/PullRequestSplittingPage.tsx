@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { PullRequestControlPanel } from './PullRequestControlPanel';
 import { PullRequestFileDiffs } from './PullRequestsFileDiffs';
 import { generateRandomColor } from '@web/lib/randomColor/generateRandomColor';
-import { filter } from 'lodash';
+import { filter, has, cloneDeep } from 'lodash';
 import { parseDiff, FileDiff } from '@web/lib/parseDiff/parseDiff';
 
 interface MatchProps {
@@ -28,6 +28,10 @@ interface PRBranchData {
 interface PRBranchsData {
   count: number;
   prCollection: PRBranchData[];
+}
+
+interface HunkInfo {
+  prBranchId: number;
 }
 
 const useGetPRTitle = (
@@ -98,6 +102,9 @@ const PullRequestSplittingPage = ({
     prCollection: [],
   });
   const [selectedPRBranch, setSelectedPRBranch] = useState<number | null>(null);
+  const [allocatedHunks, setAllocatedHunks] = useState<
+    Record<string, HunkInfo>
+  >({});
 
   const onDeletePRClickHandler = (prId: number): void => {
     const newPRBranchsData = {
@@ -131,6 +138,26 @@ const PullRequestSplittingPage = ({
     }
   };
 
+  const onHunkClickHandler = (lineGroupId: string): void => {
+    const allocatedHunksCpy = cloneDeep(allocatedHunks);
+    const allocateHunksKey = lineGroupId;
+    const isAllocated = has(allocatedHunks, allocateHunksKey);
+
+    if (isAllocated) {
+      if (!selectedPRBranch) {
+        delete allocatedHunksCpy[allocateHunksKey];
+        setAllocatedHunks(allocatedHunksCpy);
+        return;
+      }
+    }
+
+    if (selectedPRBranch !== null) {
+      allocatedHunksCpy[allocateHunksKey] = { prBranchId: selectedPRBranch };
+      setAllocatedHunks(allocatedHunksCpy);
+      return;
+    }
+  };
+
   return (
     <div>
       <PullRequestInfoPage
@@ -139,7 +166,10 @@ const PullRequestSplittingPage = ({
         owner={owner}
       />
       <PRSplitSection>
-        <PullRequestFileDiffs PRDiff={PRDiff} />
+        <PullRequestFileDiffs
+          PRDiff={PRDiff}
+          onHunkClick={onHunkClickHandler}
+        />
         <PullRequestControlPanel
           prCollection={prBranchsData.prCollection}
           onAddPRClick={onAddPRClickHandler}
