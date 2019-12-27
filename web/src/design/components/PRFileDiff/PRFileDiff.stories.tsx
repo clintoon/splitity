@@ -22,7 +22,7 @@ const colorChunkFileDiff = parseDiff(
 )[0];
 
 (colorChunkFileDiff.chunks[0].lineGroups[0] as PRFileDiffLineGroup).color =
-  '#123109';
+  '#ff99ff';
 
 storiesOf('PRFileDiff', module)
   .add(
