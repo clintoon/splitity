@@ -6,6 +6,9 @@ import { codeFontFamily } from '@web/design/styles/font';
 import { Line } from '@web/design/components/PRFileDiff/internal/Line';
 import { DiffChunk, FileDiffLineGroup } from '@web/lib/parseDiff/parseDiff';
 
+const HUNK_LINEGROUP_TEST_ID = 'pr file diff hunk linegroup';
+const NORMAL_LINEGROUP_TEST_ID = 'pr file diff not hunk normal linegroup';
+
 interface FilenameChange {
   from?: string;
   to?: string;
@@ -101,6 +104,9 @@ const LineGroup = ({
 }: LineGroupProps): JSX.Element => {
   return (
     <LineGroupContainer
+      data-testid={
+        lineGroup.isHunk ? HUNK_LINEGROUP_TEST_ID : NORMAL_LINEGROUP_TEST_ID
+      }
       disabled={!onHunkClick}
       hunkColor={lineGroup.color}
       isHunk={lineGroup.isHunk}
@@ -181,4 +187,10 @@ const PRFileDiff = ({
   );
 };
 
-export { PRFileDiff, FILE_DIFF_CHUNK_SEPARATOR_TESTID, PRFileDiffLineGroup };
+export {
+  PRFileDiff,
+  FILE_DIFF_CHUNK_SEPARATOR_TESTID,
+  PRFileDiffLineGroup,
+  HUNK_LINEGROUP_TEST_ID,
+  NORMAL_LINEGROUP_TEST_ID,
+};

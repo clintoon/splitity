@@ -2,12 +2,21 @@ import React from 'react';
 import {
   PRFileDiff,
   FILE_DIFF_CHUNK_SEPARATOR_TESTID,
+  HUNK_LINEGROUP_TEST_ID,
+  NORMAL_LINEGROUP_TEST_ID,
 } from '@web/design/components/PRFileDiff/PRFileDiff';
 import {
   GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
   GITHUB_SINGLE_FILE_SINGLE_CHUNK,
+  GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF,
 } from '@web/testing/fixtures/pullRequestDiff';
-import { render, RenderResult, within, wait } from '@testing-library/react';
+import {
+  render,
+  RenderResult,
+  within,
+  wait,
+  fireEvent,
+} from '@testing-library/react';
 import {
   CARD_HEADER_TESTID,
   CARD_BODY_TESTID,
@@ -25,21 +34,22 @@ interface RenderFileDiffOptions {
   diff: string;
   filenameTo?: string;
   filenameFrom?: string;
+  onHunkClick?: jest.Mock;
 }
 
 const renderPRFileDiff = ({
   diff,
   filenameFrom,
   filenameTo,
+  onHunkClick,
 }: RenderFileDiffOptions): RenderFileDiffResult => {
   const fileDiff = parseDiff(diff)[0];
-  const onHunkClickMock = jest.fn();
 
   const renderResult = render(
     <PRFileDiff
       filename={{ from: filenameFrom, to: filenameTo }}
       chunks={fileDiff.chunks}
-      onHunkClick={onHunkClickMock}
+      onHunkClick={onHunkClick}
       fileDiffId={FILE_DIFF_ID}
     />
   );
@@ -145,5 +155,71 @@ describe('<PRFileDiff/>', (): void => {
         within(bodyContainer).getAllByTestId(FILE_DIFF_LINE_TESTID).length
       ).toBe(44);
     });
+  });
+
+  it('displays the correct number of hunks', (): void => {
+    const { renderResult } = renderPRFileDiff({
+      diff: GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF,
+      filenameFrom: 'README.md',
+      filenameTo: 'README.md',
+    });
+
+    const bodyContainer = renderResult.getByTestId(CARD_BODY_TESTID);
+    expect(
+      within(bodyContainer).getAllByTestId(HUNK_LINEGROUP_TEST_ID).length
+    ).toBe(1);
+  });
+
+  it('displays the correct number of normal linegroups', (): void => {
+    const { renderResult } = renderPRFileDiff({
+      diff: GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF,
+      filenameFrom: 'README.md',
+      filenameTo: 'README.md',
+    });
+
+    const bodyContainer = renderResult.getByTestId(CARD_BODY_TESTID);
+    expect(
+      within(bodyContainer).getAllByTestId(NORMAL_LINEGROUP_TEST_ID).length
+    ).toBe(1);
+  });
+
+  it('does not trigger the onHunkClick if the lineGroup which is not a hunk when clicked', (): void => {
+    const onHunkClickMock = jest.fn();
+
+    const { renderResult } = renderPRFileDiff({
+      diff: GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF,
+      filenameFrom: 'README.md',
+      filenameTo: 'README.md',
+      onHunkClick: onHunkClickMock,
+    });
+
+    const bodyContainer = renderResult.getByTestId(CARD_BODY_TESTID);
+    const normalLineGroupContainer = within(bodyContainer).getByTestId(
+      NORMAL_LINEGROUP_TEST_ID
+    );
+
+    fireEvent.click(normalLineGroupContainer);
+
+    expect(onHunkClickMock).not.toBeCalled();
+  });
+
+  it('does triggers the onHunkClick if the lineGroup which is a hunk when clicked', (): void => {
+    const onHunkClickMock = jest.fn();
+
+    const { renderResult } = renderPRFileDiff({
+      diff: GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF,
+      filenameFrom: 'README.md',
+      filenameTo: 'README.md',
+      onHunkClick: onHunkClickMock,
+    });
+
+    const bodyContainer = renderResult.getByTestId(CARD_BODY_TESTID);
+    const normalLineGroupContainer = within(bodyContainer).getByTestId(
+      HUNK_LINEGROUP_TEST_ID
+    );
+
+    fireEvent.click(normalLineGroupContainer);
+
+    expect(onHunkClickMock).toBeCalled();
   });
 });
