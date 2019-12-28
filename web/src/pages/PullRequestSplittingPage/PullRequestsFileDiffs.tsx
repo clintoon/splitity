@@ -5,7 +5,7 @@ import { FileDiff } from '@web/lib/parseDiff/parseDiff';
 
 interface PullRequestFileDiffsProps {
   PRDiff?: FileDiff[];
-  onHunkClick?: (lineGroupId: string) => void;
+  onHunkClick: (lineGroupId: string) => void;
 }
 
 const PR_SPLITTING_PAGE_DIFFS_SECTION_TESTID =

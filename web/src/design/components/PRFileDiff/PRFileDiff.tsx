@@ -6,8 +6,9 @@ import { codeFontFamily } from '@web/design/styles/font';
 import { Line } from '@web/design/components/PRFileDiff/internal/Line';
 import { DiffChunk, FileDiffLineGroup } from '@web/lib/parseDiff/parseDiff';
 
-const HUNK_LINEGROUP_TEST_ID = 'pr file diff hunk linegroup';
-const NORMAL_LINEGROUP_TEST_ID = 'pr file diff not hunk normal linegroup';
+const NORMAL_LINEGROUP_TEST_ID = 'pr-file-diff-not-hunk-normal-linegroup';
+const NOT_ALLOCED_HUNK_TEST_ID = 'pr-file-diff-hunk-linegroup';
+const ALLOCED_HUNK_TEST_ID = 'pr-file-diff-alloc-color-set-linegroup';
 
 interface FilenameChange {
   from?: string;
@@ -19,13 +20,13 @@ type OnHunkClick = (lineGroupId: string) => void;
 interface PRFileDiffProps {
   filename: FilenameChange;
   chunks: DiffChunk[];
-  onHunkClick?: OnHunkClick;
+  onHunkClick: OnHunkClick;
   fileDiffId: string;
 }
 
 interface ChunkProps {
   chunk: DiffChunk;
-  onHunkClick?: OnHunkClick;
+  onHunkClick: OnHunkClick;
   chunkId: string;
 }
 
@@ -35,7 +36,7 @@ type PRFileDiffLineGroup = FileDiffLineGroup & {
 
 interface LineGroupProps {
   lineGroup: PRFileDiffLineGroup;
-  onHunkClick?: OnHunkClick;
+  onHunkClick: OnHunkClick;
   lineGroupId: string;
 }
 
@@ -102,16 +103,23 @@ const LineGroup = ({
   onHunkClick,
   lineGroupId,
 }: LineGroupProps): JSX.Element => {
+  let lineGroupTypeTestId: string;
+  if (lineGroup.isHunk) {
+    lineGroupTypeTestId = lineGroup.color
+      ? ALLOCED_HUNK_TEST_ID
+      : NOT_ALLOCED_HUNK_TEST_ID;
+  } else {
+    lineGroupTypeTestId = NORMAL_LINEGROUP_TEST_ID;
+  }
+
   return (
     <LineGroupContainer
-      data-testid={
-        lineGroup.isHunk ? HUNK_LINEGROUP_TEST_ID : NORMAL_LINEGROUP_TEST_ID
-      }
+      data-testid={lineGroupTypeTestId}
       disabled={!onHunkClick}
       hunkColor={lineGroup.color}
       isHunk={lineGroup.isHunk}
       onClick={
-        lineGroup.isHunk && onHunkClick
+        lineGroup.isHunk
           ? (): void => {
               onHunkClick(lineGroupId);
             }
@@ -191,6 +199,7 @@ export {
   PRFileDiff,
   FILE_DIFF_CHUNK_SEPARATOR_TESTID,
   PRFileDiffLineGroup,
-  HUNK_LINEGROUP_TEST_ID,
+  NOT_ALLOCED_HUNK_TEST_ID,
+  ALLOCED_HUNK_TEST_ID,
   NORMAL_LINEGROUP_TEST_ID,
 };

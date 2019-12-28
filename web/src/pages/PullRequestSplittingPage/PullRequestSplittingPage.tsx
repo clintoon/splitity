@@ -182,9 +182,7 @@ const PullRequestSplittingPage = ({
                 })
               : undefined
           }
-          onHunkClick={
-            selectedPRBranch !== null ? onHunkClickHandler : undefined
-          }
+          onHunkClick={onHunkClickHandler}
         />
         <PullRequestControlPanel
           prCollection={prBranchsData.prCollection}

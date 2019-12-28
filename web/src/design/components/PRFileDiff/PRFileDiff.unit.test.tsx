@@ -2,8 +2,10 @@ import React from 'react';
 import {
   PRFileDiff,
   FILE_DIFF_CHUNK_SEPARATOR_TESTID,
-  HUNK_LINEGROUP_TEST_ID,
+  NOT_ALLOCED_HUNK_TEST_ID,
+  ALLOCED_HUNK_TEST_ID,
   NORMAL_LINEGROUP_TEST_ID,
+  PRFileDiffLineGroup,
 } from '@web/design/components/PRFileDiff/PRFileDiff';
 import {
   GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
@@ -22,46 +24,51 @@ import {
   CARD_BODY_TESTID,
 } from '@web/design/components/Card/Card';
 import { FILE_DIFF_LINE_TESTID } from '@web/design/components/PRFileDiff/internal/Line';
-import { parseDiff } from '@web/lib/parseDiff/parseDiff';
+import { parseDiff, FileDiff } from '@web/lib/parseDiff/parseDiff';
 
 const FILE_DIFF_ID = '1';
 
 interface RenderFileDiffResult {
   renderResult: RenderResult;
+  onHunkClickMock: jest.Mock;
 }
 
 interface RenderFileDiffOptions {
-  diff: string;
+  fileDiff: FileDiff;
   filenameTo?: string;
   filenameFrom?: string;
-  onHunkClick?: jest.Mock;
 }
 
 const renderPRFileDiff = ({
-  diff,
+  fileDiff,
   filenameFrom,
   filenameTo,
-  onHunkClick,
 }: RenderFileDiffOptions): RenderFileDiffResult => {
-  const fileDiff = parseDiff(diff)[0];
+  // const fileDiff = parseDiff(diff)[0];
+  const onHunkClickMock = jest.fn();
 
   const renderResult = render(
     <PRFileDiff
       filename={{ from: filenameFrom, to: filenameTo }}
       chunks={fileDiff.chunks}
-      onHunkClick={onHunkClick}
+      onHunkClick={onHunkClickMock}
       fileDiffId={FILE_DIFF_ID}
     />
   );
 
-  return { renderResult };
+  return { renderResult, onHunkClickMock };
+};
+
+const getFileDiff = (diff: string): FileDiff => {
+  const fileDiff = parseDiff(diff)[0];
+  return fileDiff;
 };
 
 describe('<PRFileDiff/>', (): void => {
   describe('header', (): void => {
     it('displays the correct filename header when it is not renamed', (): void => {
       const { renderResult } = renderPRFileDiff({
-        diff: GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
+        fileDiff: getFileDiff(GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF),
         filenameFrom: 'README.md',
         filenameTo: 'README.md',
       });
@@ -72,7 +79,7 @@ describe('<PRFileDiff/>', (): void => {
 
     it('displays the correct filename header when it has been renamed', (): void => {
       const { renderResult } = renderPRFileDiff({
-        diff: GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
+        fileDiff: getFileDiff(GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF),
         filenameFrom: 'OLD_README.md',
         filenameTo: 'NEW_README.md',
       });
@@ -90,7 +97,7 @@ describe('<PRFileDiff/>', (): void => {
 
       const toThrow = async (): Promise<void> => {
         renderPRFileDiff({
-          diff: GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
+          fileDiff: getFileDiff(GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF),
           filenameFrom: 'README.md',
         });
         await wait();
@@ -112,7 +119,7 @@ describe('<PRFileDiff/>', (): void => {
 
       const toThrow = async (): Promise<void> => {
         renderPRFileDiff({
-          diff: GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
+          fileDiff: getFileDiff(GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF),
           filenameTo: 'README.md',
         });
         await wait();
@@ -131,7 +138,7 @@ describe('<PRFileDiff/>', (): void => {
 
     it('displays the correct number of chunk separator', (): void => {
       const { renderResult } = renderPRFileDiff({
-        diff: GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF,
+        fileDiff: getFileDiff(GITHUB_SINGLE_FILE_MULTIPLE_CHUNKS_DIFF),
         filenameFrom: 'README.md',
         filenameTo: 'README.md',
       });
@@ -145,7 +152,7 @@ describe('<PRFileDiff/>', (): void => {
 
     it('displays the correct number lines', (): void => {
       const { renderResult } = renderPRFileDiff({
-        diff: GITHUB_SINGLE_FILE_SINGLE_CHUNK,
+        fileDiff: getFileDiff(GITHUB_SINGLE_FILE_SINGLE_CHUNK),
         filenameFrom: 'README.md',
         filenameTo: 'README.md',
       });
@@ -157,22 +164,38 @@ describe('<PRFileDiff/>', (): void => {
     });
   });
 
-  it('displays the correct number of hunks', (): void => {
+  it('displays the correct number of unallocated hunks', (): void => {
     const { renderResult } = renderPRFileDiff({
-      diff: GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF,
+      fileDiff: getFileDiff(GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF),
       filenameFrom: 'README.md',
       filenameTo: 'README.md',
     });
 
     const bodyContainer = renderResult.getByTestId(CARD_BODY_TESTID);
     expect(
-      within(bodyContainer).getAllByTestId(HUNK_LINEGROUP_TEST_ID).length
+      within(bodyContainer).getAllByTestId(NOT_ALLOCED_HUNK_TEST_ID).length
+    ).toBe(1);
+  });
+
+  it('displays the correct number of allocated hunks', (): void => {
+    const fileDiff = getFileDiff(GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF);
+    (fileDiff.chunks[0].lineGroups[1] as PRFileDiffLineGroup).color = '#123123';
+
+    const { renderResult } = renderPRFileDiff({
+      fileDiff,
+      filenameFrom: 'README.md',
+      filenameTo: 'README.md',
+    });
+
+    const bodyContainer = renderResult.getByTestId(CARD_BODY_TESTID);
+    expect(
+      within(bodyContainer).getAllByTestId(ALLOCED_HUNK_TEST_ID).length
     ).toBe(1);
   });
 
   it('displays the correct number of normal linegroups', (): void => {
     const { renderResult } = renderPRFileDiff({
-      diff: GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF,
+      fileDiff: getFileDiff(GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF),
       filenameFrom: 'README.md',
       filenameTo: 'README.md',
     });
@@ -183,14 +206,11 @@ describe('<PRFileDiff/>', (): void => {
     ).toBe(1);
   });
 
-  it('does not trigger the onHunkClick if the lineGroup which is not a hunk when clicked', (): void => {
-    const onHunkClickMock = jest.fn();
-
-    const { renderResult } = renderPRFileDiff({
-      diff: GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF,
+  it('does not trigger the onHunkClick if the lineGroup which is not a unallocated hunk when clicked', (): void => {
+    const { renderResult, onHunkClickMock } = renderPRFileDiff({
+      fileDiff: getFileDiff(GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF),
       filenameFrom: 'README.md',
       filenameTo: 'README.md',
-      onHunkClick: onHunkClickMock,
     });
 
     const bodyContainer = renderResult.getByTestId(CARD_BODY_TESTID);
@@ -203,19 +223,16 @@ describe('<PRFileDiff/>', (): void => {
     expect(onHunkClickMock).not.toBeCalled();
   });
 
-  it('does triggers the onHunkClick if the lineGroup which is a hunk when clicked', (): void => {
-    const onHunkClickMock = jest.fn();
-
-    const { renderResult } = renderPRFileDiff({
-      diff: GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF,
+  it('does triggers the onHunkClick if the lineGroup which is a unallocated hunk when clicked', (): void => {
+    const { renderResult, onHunkClickMock } = renderPRFileDiff({
+      fileDiff: getFileDiff(GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF),
       filenameFrom: 'README.md',
       filenameTo: 'README.md',
-      onHunkClick: onHunkClickMock,
     });
 
     const bodyContainer = renderResult.getByTestId(CARD_BODY_TESTID);
     const normalLineGroupContainer = within(bodyContainer).getByTestId(
-      HUNK_LINEGROUP_TEST_ID
+      NOT_ALLOCED_HUNK_TEST_ID
     );
 
     fireEvent.click(normalLineGroupContainer);

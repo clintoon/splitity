@@ -30,6 +30,10 @@ import {
 import { TEXT_INPUT_TESTID } from '@web/design/components/TextInput/TextInput';
 import { BUTTON_TESTID } from '@web/design/components/Button/Button';
 import { TEXT_BUTTON_TESTID } from '@web/design/components/Button/TextButton';
+import {
+  NOT_ALLOCED_HUNK_TEST_ID,
+  ALLOCED_HUNK_TEST_ID,
+} from '@web/design/components/PRFileDiff/PRFileDiff';
 
 jest.mock('@web/lib/github/github');
 
@@ -498,5 +502,92 @@ describe('<PullRequestSplittingPage />', (): void => {
         ).toBe(null);
       });
     });
+  });
+
+  describe('allocating hunks to PRs', (): void => {
+    it('allocates an hunk when an hunk is clicked and a pr branch is selected', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
+      await wait();
+
+      updateAddPRTextInput(renderResult, { text: 'PR 1' });
+      clickAddPRButton(renderResult);
+
+      const controlPanelContainer = renderResult.getByTestId(
+        PULL_REQUEST_CONTROL_PANEL_TESTID
+      );
+      fireEvent.click(within(controlPanelContainer).getByTestId(CHIP_TESTID));
+
+      fireEvent.click(renderResult.getAllByTestId(NOT_ALLOCED_HUNK_TEST_ID)[0]);
+
+      expect(renderResult.queryByTestId(ALLOCED_HUNK_TEST_ID)).not.toBe(null);
+    });
+
+    it('does not allocate an hunk when a hunk is clicked and a pr branch is not selected', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
+
+      await wait();
+
+      fireEvent.click(renderResult.getAllByTestId(NOT_ALLOCED_HUNK_TEST_ID)[0]);
+
+      expect(renderResult.queryByTestId(ALLOCED_HUNK_TEST_ID)).toBe(null);
+    });
+
+    it('removes the allocated hunk of a pr branch if it is deleted', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
+      await wait();
+
+      updateAddPRTextInput(renderResult, { text: 'PR 1' });
+      clickAddPRButton(renderResult);
+
+      const controlPanelContainer = renderResult.getByTestId(
+        PULL_REQUEST_CONTROL_PANEL_TESTID
+      );
+      fireEvent.click(within(controlPanelContainer).getByTestId(CHIP_TESTID));
+
+      fireEvent.click(renderResult.getAllByTestId(NOT_ALLOCED_HUNK_TEST_ID)[0]);
+
+      clickEditPRsButton(renderResult);
+      const chipDeleteButtonContainer = within(
+        controlPanelContainer
+      ).getByTestId(CHIP_DELETE_BUTTON_TESTID);
+
+      fireEvent.click(chipDeleteButtonContainer);
+
+      expect(renderResult.queryByTestId(ALLOCED_HUNK_TEST_ID)).toBe(null);
+    });
+
+    it('unallocates an hunk if you click the hunk when in unselected mode', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderPullRequestSplittingPage();
+      await wait();
+
+      updateAddPRTextInput(renderResult, { text: 'PR 1' });
+      clickAddPRButton(renderResult);
+
+      const controlPanelContainer = renderResult.getByTestId(
+        PULL_REQUEST_CONTROL_PANEL_TESTID
+      );
+      const prChipContainer = within(controlPanelContainer).getByTestId(
+        CHIP_TESTID
+      );
+      fireEvent.click(prChipContainer);
+
+      fireEvent.click(renderResult.getAllByTestId(NOT_ALLOCED_HUNK_TEST_ID)[0]);
+
+      fireEvent.click(prChipContainer);
+
+      fireEvent.click(renderResult.getByTestId(ALLOCED_HUNK_TEST_ID));
+
+      expect(renderResult.queryByTestId(ALLOCED_HUNK_TEST_ID)).toBe(null);
+    });
+
+    // TODO(clinton): Test that you can allocate hunks to separate PRs using screenshot testing.
   });
 });
