@@ -16,13 +16,13 @@ type OnHunkClick = (lineGroupId: string) => void;
 interface PRFileDiffProps {
   filename: FilenameChange;
   chunks: DiffChunk[];
-  onHunkClick: OnHunkClick;
+  onHunkClick?: OnHunkClick;
   fileDiffId: string;
 }
 
 interface ChunkProps {
   chunk: DiffChunk;
-  onHunkClick: OnHunkClick;
+  onHunkClick?: OnHunkClick;
   chunkId: string;
 }
 
@@ -32,7 +32,7 @@ type PRFileDiffLineGroup = FileDiffLineGroup & {
 
 interface LineGroupProps {
   lineGroup: PRFileDiffLineGroup;
-  onHunkClick: OnHunkClick;
+  onHunkClick?: OnHunkClick;
   lineGroupId: string;
 }
 
@@ -66,6 +66,7 @@ const Table = styled.table`
 interface LineGroupContainerProps {
   isHunk: boolean;
   hunkColor?: string;
+  disabled: boolean;
 }
 
 const LineGroupContainer = styled.tbody<LineGroupContainerProps>`
@@ -77,8 +78,8 @@ const LineGroupContainer = styled.tbody<LineGroupContainerProps>`
     `;
   }};
 
-  ${({ isHunk }): FlattenSimpleInterpolation | null => {
-    if (!isHunk) {
+  ${({ isHunk, disabled }): FlattenSimpleInterpolation | null => {
+    if (!isHunk || disabled) {
       return null;
     }
 
@@ -100,10 +101,11 @@ const LineGroup = ({
 }: LineGroupProps): JSX.Element => {
   return (
     <LineGroupContainer
+      disabled={!onHunkClick}
       hunkColor={lineGroup.color}
       isHunk={lineGroup.isHunk}
       onClick={
-        lineGroup.isHunk
+        lineGroup.isHunk && onHunkClick
           ? (): void => {
               onHunkClick(lineGroupId);
             }

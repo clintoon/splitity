@@ -1,7 +1,9 @@
 import randomcolor from 'randomcolor';
 
 const generateRandomColor = (): string => {
-  return randomcolor();
+  return randomcolor({
+    luminosity: 'bright',
+  });
 };
 
 export { generateRandomColor };

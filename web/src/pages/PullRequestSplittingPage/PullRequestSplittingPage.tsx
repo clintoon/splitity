@@ -178,7 +178,9 @@ const PullRequestSplittingPage = ({
           PRDiff={mapDataToFileDiff(PRDiff, allocatedHunks, (prId): string => {
             return prCollectionDict[prId].color;
           })}
-          onHunkClick={onHunkClickHandler}
+          onHunkClick={
+            selectedPRBranch !== null ? onHunkClickHandler : undefined
+          }
         />
         <PullRequestControlPanel
           prCollection={prBranchsData.prCollection}
