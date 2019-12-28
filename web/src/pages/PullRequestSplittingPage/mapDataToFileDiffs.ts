@@ -3,10 +3,12 @@ import { cloneDeep, has } from 'lodash';
 import { HunkInfo } from './PullRequestSplittingPage';
 import { PRFileDiffLineGroup } from '@web/design/components/PRFileDiff/PRFileDiff';
 
+// TODO(clinton): Write unit tests for this when you decouple logic here
 const mapDataToFileDiff = (
   fileDiffs: FileDiff[],
   allocatedHunks: Record<string, HunkInfo>,
-  getColor: (prId: number) => string
+  getColor: (prId: number) => string,
+  selectedPrBranch: number | null
 ): FileDiff[] => {
   const fileDiffsCpy = cloneDeep(fileDiffs);
 
@@ -23,13 +25,12 @@ const mapDataToFileDiff = (
                   const lineGroupId = `${fileDiffIndex} ${chunkIndex} ${lineGroupIndex}`;
                   const isAllocated = has(allocatedHunks, lineGroupId);
 
-                  if (!isAllocated) {
-                    return lineGroup;
-                  }
-
                   return {
                     ...lineGroup,
-                    color: getColor(allocatedHunks[lineGroupId].prBranchId),
+                    color: isAllocated
+                      ? getColor(allocatedHunks[lineGroupId].prBranchId)
+                      : undefined,
+                    clickDisabled: !isAllocated && selectedPrBranch === null,
                   };
                 }
               ),

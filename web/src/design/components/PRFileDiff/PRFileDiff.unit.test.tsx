@@ -239,4 +239,25 @@ describe('<PRFileDiff/>', (): void => {
 
     expect(onHunkClickMock).toBeCalled();
   });
+
+  it('does not triggers the onHunkClick if the lineGroup which is a unallocated hunk when clicked when clickDisabled is true', (): void => {
+    const fileDiff = getFileDiff(GITHUB_SINGLE_CHUNK_SINGLE_FILE_DIFF);
+    (fileDiff.chunks[0]
+      .lineGroups[1] as PRFileDiffLineGroup).clickDisabled = true;
+
+    const { renderResult, onHunkClickMock } = renderPRFileDiff({
+      fileDiff,
+      filenameFrom: 'README.md',
+      filenameTo: 'README.md',
+    });
+
+    const bodyContainer = renderResult.getByTestId(CARD_BODY_TESTID);
+    const normalLineGroupContainer = within(bodyContainer).getByTestId(
+      NOT_ALLOCED_HUNK_TEST_ID
+    );
+
+    fireEvent.click(normalLineGroupContainer);
+
+    expect(onHunkClickMock).not.toBeCalled();
+  });
 });

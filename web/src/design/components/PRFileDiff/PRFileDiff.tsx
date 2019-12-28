@@ -32,6 +32,7 @@ interface ChunkProps {
 
 type PRFileDiffLineGroup = FileDiffLineGroup & {
   color?: string;
+  clickDisabled?: boolean;
 };
 
 interface LineGroupProps {
@@ -103,6 +104,7 @@ const LineGroup = ({
   onHunkClick,
   lineGroupId,
 }: LineGroupProps): JSX.Element => {
+  // TODO(clinton): Move this outside of component as a function and write unit test
   let lineGroupTypeTestId: string;
   if (lineGroup.isHunk) {
     lineGroupTypeTestId = lineGroup.color
@@ -115,11 +117,11 @@ const LineGroup = ({
   return (
     <LineGroupContainer
       data-testid={lineGroupTypeTestId}
-      disabled={!onHunkClick}
+      disabled={!!lineGroup.clickDisabled}
       hunkColor={lineGroup.color}
       isHunk={lineGroup.isHunk}
       onClick={
-        lineGroup.isHunk
+        lineGroup.isHunk && !lineGroup.clickDisabled
           ? (): void => {
               onHunkClick(lineGroupId);
             }
