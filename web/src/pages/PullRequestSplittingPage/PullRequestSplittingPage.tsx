@@ -64,8 +64,8 @@ const useGetPRDiff = (
   owner: string,
   repoName: string,
   pullRequestId: number
-): FileDiff[] => {
-  const [PRDiff, setPRDiff] = useState<FileDiff[]>([]);
+): FileDiff[] | undefined => {
+  const [PRDiff, setPRDiff] = useState<FileDiff[]>();
   useEffect((): void => {
     const callback = async (): Promise<void> => {
       const githubApi = new GithubAPI();
@@ -175,9 +175,13 @@ const PullRequestSplittingPage = ({
       />
       <PRSplitSection>
         <PullRequestFileDiffs
-          PRDiff={mapDataToFileDiff(PRDiff, allocatedHunks, (prId): string => {
-            return prCollectionDict[prId].color;
-          })}
+          PRDiff={
+            PRDiff
+              ? mapDataToFileDiff(PRDiff, allocatedHunks, (prId): string => {
+                  return prCollectionDict[prId].color;
+                })
+              : undefined
+          }
           onHunkClick={
             selectedPRBranch !== null ? onHunkClickHandler : undefined
           }
