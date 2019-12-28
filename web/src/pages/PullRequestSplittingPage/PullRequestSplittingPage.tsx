@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { match } from 'react-router-dom';
 import { GithubAPI } from '@web/lib/github/github';
 import { PullRequestInfoPage } from '@web/pages/PullRequestSplittingPage/PullRequestInfo';
-import parseDiff from 'parse-diff';
 import styled from 'styled-components';
 import { PullRequestControlPanel } from './PullRequestControlPanel';
 import { PullRequestFileDiffs } from './PullRequestsFileDiffs';
 import { generateRandomColor } from '@web/lib/randomColor/generateRandomColor';
-import { filter } from 'lodash';
+import { filter, has, cloneDeep, keyBy, pickBy } from 'lodash';
+import { parseDiff, FileDiff } from '@web/lib/parseDiff/parseDiff';
+import { mapDataToFileDiff } from './mapDataToFileDiffs';
 
 interface MatchProps {
   owner: string;
@@ -30,12 +31,16 @@ interface PRBranchsData {
   prCollection: PRBranchData[];
 }
 
+interface HunkInfo {
+  prBranchId: number;
+}
+
 const useGetPRTitle = (
   owner: string,
   repoName: string,
   pullRequestId: number
 ): string | undefined => {
-  const [title, setTitle] = useState();
+  const [title, setTitle] = useState<string | undefined>();
 
   useEffect((): void => {
     const callback = async (): Promise<void> => {
@@ -59,17 +64,18 @@ const useGetPRDiff = (
   owner: string,
   repoName: string,
   pullRequestId: number
-): parseDiff.File[] | undefined => {
-  const [PRDiff, setPRDiff] = useState<parseDiff.File[]>();
+): FileDiff[] | undefined => {
+  const [PRDiff, setPRDiff] = useState<FileDiff[]>();
   useEffect((): void => {
     const callback = async (): Promise<void> => {
       const githubApi = new GithubAPI();
-      const fileDiffs = await githubApi.getPullRequestDiff({
+      const diff = await githubApi.getPullRequestDiff({
         owner,
         repoName,
         pullRequestId,
       });
 
+      const fileDiffs = parseDiff(diff);
       setPRDiff(fileDiffs);
     };
     callback();
@@ -97,6 +103,9 @@ const PullRequestSplittingPage = ({
     prCollection: [],
   });
   const [selectedPRBranch, setSelectedPRBranch] = useState<number | null>(null);
+  const [allocatedHunks, setAllocatedHunks] = useState<
+    Record<string, HunkInfo>
+  >({});
 
   const onDeletePRClickHandler = (prId: number): void => {
     const newPRBranchsData = {
@@ -109,6 +118,13 @@ const PullRequestSplittingPage = ({
     if (selectedPRBranch === prId) {
       setSelectedPRBranch(null);
     }
+
+    // Need to remove from allocated hunks with the pr id
+    const filteredOutDeletedHunks = pickBy(allocatedHunks, (hunk): boolean => {
+      return hunk.prBranchId !== prId;
+    });
+
+    setAllocatedHunks(filteredOutDeletedHunks);
   };
 
   const onAddPRClickHandler = (name: string): void => {
@@ -130,6 +146,26 @@ const PullRequestSplittingPage = ({
     }
   };
 
+  const onHunkClickHandler = (lineGroupId: string): void => {
+    const allocatedHunksCpy = cloneDeep(allocatedHunks);
+    const allocateHunksKey = lineGroupId;
+    const isAllocated = has(allocatedHunks, allocateHunksKey);
+
+    if (isAllocated && selectedPRBranch === null) {
+      delete allocatedHunksCpy[allocateHunksKey];
+      setAllocatedHunks(allocatedHunksCpy);
+      return;
+    }
+
+    if (selectedPRBranch !== null) {
+      allocatedHunksCpy[allocateHunksKey] = { prBranchId: selectedPRBranch };
+      setAllocatedHunks(allocatedHunksCpy);
+      return;
+    }
+  };
+
+  const prCollectionDict = keyBy(prBranchsData.prCollection, 'id');
+
   return (
     <div>
       <PullRequestInfoPage
@@ -138,7 +174,21 @@ const PullRequestSplittingPage = ({
         owner={owner}
       />
       <PRSplitSection>
-        <PullRequestFileDiffs PRDiff={PRDiff} />
+        <PullRequestFileDiffs
+          PRDiff={
+            PRDiff
+              ? mapDataToFileDiff(
+                  PRDiff,
+                  allocatedHunks,
+                  (prId): string => {
+                    return prCollectionDict[prId].color;
+                  },
+                  selectedPRBranch
+                )
+              : undefined
+          }
+          onHunkClick={onHunkClickHandler}
+        />
         <PullRequestControlPanel
           prCollection={prBranchsData.prCollection}
           onAddPRClick={onAddPRClickHandler}
@@ -151,4 +201,4 @@ const PullRequestSplittingPage = ({
   );
 };
 
-export { PullRequestSplittingPage, PRBranchData };
+export { PullRequestSplittingPage, PRBranchData, HunkInfo };

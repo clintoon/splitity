@@ -5,7 +5,7 @@ import {
   FILE_DIFF_LEFT_LINE_NUMBER_TESTID,
   FILE_DIFF_RIGHT_LINE_NUMBER_TESTID,
   FILE_DIFF_SYMBOL_TESTID,
-} from '@web/design/components/FileDiff/internal/Line';
+} from '@web/design/components/PRFileDiff/internal/Line';
 
 interface RenderNormalLineOptions {
   type: 'normal';

@@ -8,7 +8,9 @@ interface ChipArrayProps {
 }
 
 const ChipContainer = styled.div`
-  overflow-x: wrap;
+  display: flex;
+  flex-wrap: wrap;
+
   padding: 8px 4px;
   border-radius: 10px;
   box-shadow: 2px 2px 2px ${Color.Gray50};
