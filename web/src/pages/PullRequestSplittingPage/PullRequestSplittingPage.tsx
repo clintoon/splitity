@@ -6,9 +6,18 @@ import styled from 'styled-components';
 import { PullRequestControlPanel } from './PullRequestControlPanel';
 import { PullRequestFileDiffs } from './PullRequestsFileDiffs';
 import { generateRandomColor } from '@web/lib/randomColor/generateRandomColor';
-import { filter, has, cloneDeep, keyBy, pickBy } from 'lodash';
+import { filter, has, cloneDeep, keyBy, pickBy, size } from 'lodash';
 import { parseDiff, FileDiff } from '@web/lib/parseDiff/parseDiff';
-import { mapDataToFileDiff } from './mapDataToFileDiffs';
+import {
+  mapPropDataToFileDiff,
+  mapPrIdsToFileDiff,
+} from './mapDataToFileDiffs';
+import { BackendAPI } from '@web/lib/backend/backendApi';
+import { logError } from '@web/lib/logger';
+import { showAlert } from '@web/lib/alert/alert';
+import { useHistory } from 'react-router-dom';
+import { History } from 'history';
+import { GithubRoutePath } from '@web/constants/routes';
 
 interface MatchProps {
   owner: string;
@@ -97,6 +106,7 @@ const PullRequestSplittingPage = ({
   const { owner, repoName, pullRequestId } = match.params;
   const title = useGetPRTitle(owner, repoName, Number(pullRequestId));
   const PRDiff = useGetPRDiff(owner, repoName, Number(pullRequestId));
+  const history: History = useHistory();
 
   const [prBranchsData, setPRBranchsData] = useState<PRBranchsData>({
     count: 0,
@@ -106,6 +116,8 @@ const PullRequestSplittingPage = ({
   const [allocatedHunks, setAllocatedHunks] = useState<
     Record<string, HunkInfo>
   >({});
+
+  const prCollectionDict = keyBy(prBranchsData.prCollection, 'id');
 
   const onDeletePRClickHandler = (prId: number): void => {
     const newPRBranchsData = {
@@ -164,7 +176,33 @@ const PullRequestSplittingPage = ({
     }
   };
 
-  const prCollectionDict = keyBy(prBranchsData.prCollection, 'id');
+  const onSplitPR = async (): Promise<void> => {
+    if (size(allocatedHunks) === 0) {
+      showAlert(
+        'Allocate at least one hunk to an PR before you can split the PR.'
+      );
+      return;
+    }
+
+    if (PRDiff) {
+      try {
+        const backendApi = new BackendAPI();
+        await backendApi.splitPullRequest({
+          owner,
+          repoName,
+          pullRequestId: Number(pullRequestId),
+          fileDiffs: mapPrIdsToFileDiff(PRDiff, allocatedHunks),
+        });
+        history.replace(GithubRoutePath.AppRoot);
+        showAlert(
+          'An job to split the PR was added to the queue. Please wait for the pull requests to be created in the github repo.'
+        );
+      } catch (error) {
+        logError(`Error: unable to split PR ${error}`);
+        showAlert('Unable to split PR. Please try again.');
+      }
+    }
+  };
 
   return (
     <div>
@@ -177,7 +215,7 @@ const PullRequestSplittingPage = ({
         <PullRequestFileDiffs
           PRDiff={
             PRDiff
-              ? mapDataToFileDiff(
+              ? mapPropDataToFileDiff(
                   PRDiff,
                   allocatedHunks,
                   (prId): string => {
@@ -195,6 +233,7 @@ const PullRequestSplittingPage = ({
           onDeletePRClick={onDeletePRClickHandler}
           onSelectPR={onSelectPRHandler}
           selectedPRBranch={selectedPRBranch}
+          onSplitPR={onSplitPR}
         />
       </PRSplitSection>
     </div>
