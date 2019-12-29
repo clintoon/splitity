@@ -39,7 +39,7 @@
       "git add"
     ],
     "backend/{app,test}/**/*.rb": [
-      "BUNDLE_GEMFILE=backend/Gemfile bundle exec rubocop -a",
+      "rubocop -a",
       "git add"
     ]
   }

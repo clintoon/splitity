@@ -29,6 +29,7 @@
     "typescript.tsdk": "split-my-prs/node_modules/typescript/lib",
     "editor.formatOnSave": true,
     "editor.formatOnSaveTimeout": 5000,
-    "ruby.format": "rubocop"
+    "ruby.format": "rubocop",
+    "ruby.useLanguageServer": true
   }
 }
