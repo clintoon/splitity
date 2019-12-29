@@ -179,7 +179,7 @@ const PullRequestSplittingPage = ({
   const onSplitPR = async (): Promise<void> => {
     if (size(allocatedHunks) === 0) {
       showAlert(
-        'Allocate at least one hunk to an PR before you can split the PR.'
+        'You must allocate at least one hunk to an PR before you can split the PR.'
       );
       return;
     }
