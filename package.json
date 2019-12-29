@@ -37,6 +37,10 @@
     "*{js,jsx,ts,tsx}": [
       "eslint --fix",
       "git add"
+    ],
+    "backend/{app,test}/**/*.rb": [
+      "rubocop -a",
+      "git add"
     ]
   }
 }

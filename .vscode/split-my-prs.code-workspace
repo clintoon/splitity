@@ -26,6 +26,10 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true
     },
-    "typescript.tsdk": "split-my-prs/node_modules/typescript/lib"
+    "typescript.tsdk": "split-my-prs/node_modules/typescript/lib",
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveTimeout": 5000,
+    "ruby.format": "rubocop",
+    "ruby.useLanguageServer": true
   }
 }
