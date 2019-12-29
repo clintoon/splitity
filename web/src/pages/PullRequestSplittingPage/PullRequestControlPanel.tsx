@@ -32,6 +32,7 @@ interface PullRequestControlPanelProps {
   onAddPRClick: (PRName: string) => void;
   onDeletePRClick: (prId: number) => void;
   onSelectPR: (prId: number) => void;
+  onSplitPR: () => void;
 }
 
 const Container = styled.div`
@@ -75,6 +76,7 @@ const PullRequestControlPanel = ({
   onAddPRClick,
   onDeletePRClick,
   onSelectPR,
+  onSplitPR,
 }: PullRequestControlPanelProps): JSX.Element => {
   const [branchInputValue, setBranchInputValue] = useState<string>('');
   const [isEditingPRs, setIsEditingPRs] = useState<boolean>(false);
@@ -100,7 +102,7 @@ const PullRequestControlPanel = ({
           onChange={(event): void => {
             setBranchInputValue(event.target.value);
           }}
-          placeholder="A name, something short"
+          placeholder="Pull request title"
         />
         <Button
           size={ButtonSize.Small}
@@ -158,7 +160,9 @@ const PullRequestControlPanel = ({
         )}
       </EnhancedChipArray>
       <ButtonRightContainer data-testid={SPLIT_PR_BUTTON_SECTION_TESTID}>
-        <Button styleOf={ButtonStyle.Primary}>Split</Button>
+        <Button styleOf={ButtonStyle.Primary} onClick={onSplitPR}>
+          Split
+        </Button>
       </ButtonRightContainer>
     </Container>
   );

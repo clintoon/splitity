@@ -1,14 +1,14 @@
-import { FileDiff, DiffChunk } from '@web/lib/parseDiff/parseDiff';
+import {
+  FileDiff,
+  DiffChunk,
+  FileDiffLineGroup,
+} from '@web/lib/parseDiff/parseDiff';
 import { cloneDeep, has } from 'lodash';
 import { HunkInfo } from './PullRequestSplittingPage';
-import { PRFileDiffLineGroup } from '@web/design/components/PRFileDiff/PRFileDiff';
 
-// TODO(clinton): Write unit tests for this when you decouple logic here
 const mapDataToFileDiff = (
   fileDiffs: FileDiff[],
-  allocatedHunks: Record<string, HunkInfo>,
-  getColor: (prId: number) => string,
-  selectedPrBranch: number | null
+  getAdditionalData: (lineGroupId: string) => object
 ): FileDiff[] => {
   const fileDiffsCpy = cloneDeep(fileDiffs);
 
@@ -21,16 +21,12 @@ const mapDataToFileDiff = (
             return {
               ...chunk,
               lineGroups: chunk.lineGroups.map(
-                (lineGroup, lineGroupIndex): PRFileDiffLineGroup => {
+                (lineGroup, lineGroupIndex): FileDiffLineGroup => {
                   const lineGroupId = `${fileDiffIndex} ${chunkIndex} ${lineGroupIndex}`;
-                  const isAllocated = has(allocatedHunks, lineGroupId);
 
                   return {
                     ...lineGroup,
-                    color: isAllocated
-                      ? getColor(allocatedHunks[lineGroupId].prBranchId)
-                      : undefined,
-                    clickDisabled: !isAllocated && selectedPrBranch === null,
+                    ...getAdditionalData(lineGroupId),
                   };
                 }
               ),
@@ -42,4 +38,39 @@ const mapDataToFileDiff = (
   );
 };
 
-export { mapDataToFileDiff };
+// TODO(clinton): Write unit tests for this...
+const mapPropDataToFileDiff = (
+  fileDiffs: FileDiff[],
+  allocatedHunks: Record<string, HunkInfo>,
+  getColor: (prId: number) => string,
+  selectedPrBranch: number | null
+): FileDiff[] => {
+  return mapDataToFileDiff(fileDiffs, (lineGroupId): object => {
+    const isAllocated = has(allocatedHunks, lineGroupId);
+
+    return {
+      color: isAllocated
+        ? getColor(allocatedHunks[lineGroupId].prBranchId)
+        : undefined,
+      clickDisabled: !isAllocated && selectedPrBranch === null,
+    };
+  });
+};
+
+// TODO(clinton): Write unit tests for this...
+const mapPrIdsToFileDiff = (
+  fileDiffs: FileDiff[],
+  allocatedHunks: Record<string, HunkInfo>
+): FileDiff[] => {
+  return mapDataToFileDiff(fileDiffs, (lineGroupId): object => {
+    const isAllocated = has(allocatedHunks, lineGroupId);
+
+    return {
+      prBranchId: isAllocated
+        ? allocatedHunks[lineGroupId].prBranchId
+        : undefined,
+    };
+  });
+};
+
+export { mapPropDataToFileDiff, mapPrIdsToFileDiff };
