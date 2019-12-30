@@ -1,13 +1,12 @@
 import axios, { AxiosInstance } from 'axios';
 import { getOAuthToken } from '../cookie/authCookie';
 import { backendConfig } from '@web/config/backend';
-import { FileDiff } from '../parseDiff/parseDiff';
 
 interface SplitPullRequestOptions {
   owner: string;
   repoName: string;
   pullRequestId: number;
-  fileDiffs: FileDiff[];
+  patch: string;
 }
 
 interface SplitPullRequestResult {
@@ -33,13 +32,13 @@ class BackendAPI {
     owner,
     repoName,
     pullRequestId,
-    fileDiffs,
+    patch,
   }: SplitPullRequestOptions): Promise<SplitPullRequestResult> {
     const resp = await this.httpWithAuth({
       method: 'post',
       url: `/v1/repos/${owner}/${repoName}/pulls/${pullRequestId}/split`,
       data: {
-        fileDiffs,
+        patch,
       },
     });
 

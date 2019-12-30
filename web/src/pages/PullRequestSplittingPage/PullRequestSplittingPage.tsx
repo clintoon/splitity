@@ -8,10 +8,7 @@ import { PullRequestFileDiffs } from './PullRequestsFileDiffs';
 import { generateRandomColor } from '@web/lib/randomColor/generateRandomColor';
 import { filter, has, cloneDeep, keyBy, pickBy, size } from 'lodash';
 import { parseDiff, FileDiff } from '@web/lib/parseDiff/parseDiff';
-import {
-  mapPropDataToFileDiff,
-  mapPrIdsToFileDiff,
-} from './mapDataToFileDiffs';
+import { mapPropDataToFileDiff } from './mapDataToFileDiffs';
 import { BackendAPI } from '@web/lib/backend/backendApi';
 import { logError } from '@web/lib/logger';
 import { showAlert } from '@web/lib/alert/alert';
@@ -191,7 +188,7 @@ const PullRequestSplittingPage = ({
           owner,
           repoName,
           pullRequestId: Number(pullRequestId),
-          fileDiffs: mapPrIdsToFileDiff(PRDiff, allocatedHunks),
+          patch: '', // TODO(clinton): convert fileDiff to a diff patch
         });
         history.replace(GithubRoutePath.AppRoot);
         showAlert(

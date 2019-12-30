@@ -38,7 +38,7 @@ const mapDataToFileDiff = (
   );
 };
 
-// TODO(clinton): Write unit tests for this...
+// TODO(clinton): Write unit tests for this
 const mapPropDataToFileDiff = (
   fileDiffs: FileDiff[],
   allocatedHunks: Record<string, HunkInfo>,
@@ -57,20 +57,4 @@ const mapPropDataToFileDiff = (
   });
 };
 
-// TODO(clinton): Write unit tests for this...
-const mapPrIdsToFileDiff = (
-  fileDiffs: FileDiff[],
-  allocatedHunks: Record<string, HunkInfo>
-): FileDiff[] => {
-  return mapDataToFileDiff(fileDiffs, (lineGroupId): object => {
-    const isAllocated = has(allocatedHunks, lineGroupId);
-
-    return {
-      prBranchId: isAllocated
-        ? allocatedHunks[lineGroupId].prBranchId
-        : undefined,
-    };
-  });
-};
-
-export { mapPropDataToFileDiff, mapPrIdsToFileDiff };
+export { mapPropDataToFileDiff };
