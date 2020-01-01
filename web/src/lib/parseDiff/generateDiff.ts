@@ -72,11 +72,14 @@ const getFile = (file: File): string => {
 };
 
 const generateDiff = (diff: Diff): string => {
-  return diff
-    .map((file): string => {
-      return getFile(file);
-    })
-    .join('\n');
+  return (
+    diff
+      .map((file): string => {
+        return getFile(file);
+      })
+      // Appending '\n' to make the diff valid when doing a git apply
+      .join('\n') + '\n'
+  );
 };
 
 export { generateDiff, Diff };
