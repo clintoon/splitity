@@ -76,7 +76,10 @@ const convertLineGroupsToChunks = (
 
 const getDiff = (filesDiff: FileDiff[], lineGroupIds: Set<string>): Diff => {
   const filesDiffCpy = cloneDeep(filesDiff);
-  const transformedDiff = filesDiffCpy.map(
+
+  // TODO(clinton): Check if we need to get rid of files with no chunks.
+  // Watch out for edge cases such as renaming where it can split the PRs without renaming
+  return filesDiffCpy.map(
     (fileDiff, fileIndex): File => {
       const {
         chunks,
@@ -92,15 +95,6 @@ const getDiff = (filesDiff: FileDiff[], lineGroupIds: Set<string>): Diff => {
       };
     }
   );
-
-  // Because we don't want to have any files that have no changes in our diff patch
-  const noEmptyFilesWithNoChangeDiff = transformedDiff.filter(
-    (file): boolean => {
-      return file.chunks.length > 0;
-    }
-  );
-
-  return noEmptyFilesWithNoChangeDiff;
 };
 
 const transformToVanillaFileDiffsByPRs = (
