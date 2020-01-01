@@ -1,16 +1,50 @@
-import { Chunk, Change, File } from 'parse-diff';
+import { Chunk, Change, File, NormalChange } from 'parse-diff';
 import { last } from 'lodash';
 import { assert } from '@web/lib/assert';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, countBy } from 'lodash';
 import { FileDiffLineGroup, FileDiff, DiffChunk } from '../parseDiff';
 
 const isNormalLine = (line: Change): boolean => {
   return line.type === 'normal';
 };
 
+interface PartialLineGroup {
+  isHunk: boolean;
+  changes: Change[];
+}
+
+const fillRangeInfo = (
+  lineGroup: PartialLineGroup,
+  oldStart: number,
+  newStart: number
+): FileDiffLineGroup => {
+  const countsByType = countBy(lineGroup.changes, (change): string => {
+    return change.type;
+  });
+
+  const numAdditions = countsByType['add'] ?? 0;
+  const numDeletions = countsByType['del'] ?? 0;
+  const numNormal = countsByType['normal'] ?? 0;
+
+  return {
+    ...lineGroup,
+    oldRange: {
+      start: oldStart,
+      numLines: numDeletions + numNormal,
+    },
+    newRange: {
+      start: newStart,
+      numLines: numAdditions + numNormal,
+    },
+  };
+};
+
 const calculateHunks = (chunk: Chunk): FileDiffLineGroup[] => {
   const lineGroups: FileDiffLineGroup[] = [];
-  let currentBoundary: FileDiffLineGroup | undefined = undefined;
+  let currentBoundary: PartialLineGroup | undefined = undefined;
+
+  let newStart = chunk.newStart;
+  let oldStart = chunk.oldStart;
 
   chunk.changes.forEach((line): void => {
     if (currentBoundary === undefined) {
@@ -33,7 +67,14 @@ const calculateHunks = (chunk: Chunk): FileDiffLineGroup[] => {
       currentBoundary.changes.push(line);
     } else {
       // If doesn't match the last change, then the current lineGroup is done
-      lineGroups.push(currentBoundary);
+      const toAddLineGroup = fillRangeInfo(currentBoundary, newStart, oldStart);
+      lineGroups.push(toAddLineGroup);
+
+      // Need to update the counters
+      newStart += toAddLineGroup.newRange.numLines;
+      oldStart += toAddLineGroup.oldRange.numLines;
+
+      // Start the boundary
       currentBoundary = {
         isHunk: !isNormalLine(line),
         changes: [line],
@@ -42,7 +83,7 @@ const calculateHunks = (chunk: Chunk): FileDiffLineGroup[] => {
   });
 
   if (currentBoundary) {
-    lineGroups.push(currentBoundary);
+    lineGroups.push(fillRangeInfo(currentBoundary, newStart, oldStart));
     currentBoundary = undefined;
   }
 
