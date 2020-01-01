@@ -118,7 +118,7 @@ const fileDiffsToPatch = (
     filesDiff,
     allocatedHunks
   );
-  console.log(diffResult);
+  console.log(diffResult); // TODO(clinton): remove console.log
   return '';
 };
 
