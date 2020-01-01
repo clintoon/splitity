@@ -76,7 +76,7 @@ const convertLineGroupsToChunks = (
 
 const getDiff = (filesDiff: FileDiff[], lineGroupIds: Set<string>): Diff => {
   const filesDiffCpy = cloneDeep(filesDiff);
-  return filesDiffCpy.map(
+  const transformedDiff = filesDiffCpy.map(
     (fileDiff, fileIndex): File => {
       const {
         chunks,
@@ -92,6 +92,15 @@ const getDiff = (filesDiff: FileDiff[], lineGroupIds: Set<string>): Diff => {
       };
     }
   );
+
+  // Because we don't want to have any files that have no changes in our diff patch
+  const noEmptyFilesWithNoChangeDiff = transformedDiff.filter(
+    (file): boolean => {
+      return file.chunks.length > 0;
+    }
+  );
+
+  return noEmptyFilesWithNoChangeDiff;
 };
 
 const transformToVanillaFileDiffsByPRs = (
@@ -109,6 +118,7 @@ const transformToVanillaFileDiffsByPRs = (
   return diffs;
 };
 
+// TODO(clinton): Write unit tests. Edge cases to test: rename, delete, add files
 const fileDiffsToPatches = (
   filesDiff: FileDiff[],
   allocatedHunks: HunkAllocations
@@ -117,10 +127,13 @@ const fileDiffsToPatches = (
     filesDiff,
     allocatedHunks
   );
-  console.log(diffResult); // TODO(clinton): remove console.log
-  return diffResult.map((diff): string => {
+
+  const patches = diffResult.map((diff): string => {
     return generateDiff(diff);
   });
+
+  console.log('patches', patches); // TODO(clinton): remove console.log
+  return patches;
 };
 
 export { transformToVanillaFileDiffsByPRs, fileDiffsToPatches };
