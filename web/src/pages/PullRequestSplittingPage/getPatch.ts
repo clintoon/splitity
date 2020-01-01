@@ -1,11 +1,10 @@
 import { File, Chunk } from 'parse-diff';
 import { FileDiff } from '@web/lib/parseDiff/parseDiff';
+import { Diff, generateDiff } from '@web/lib/parseDiff/generateDiff';
 import { HunkAllocations } from './PullRequestSplittingPage';
 import { has, cloneDeep } from 'lodash';
 
 type AllocatedHunksByPRId = Record<number, Set<string>>;
-
-type Diff = File[];
 
 interface ConvertLineGroupsToChunksResult {
   chunks: Chunk[];
@@ -110,16 +109,18 @@ const transformToVanillaFileDiffsByPRs = (
   return diffs;
 };
 
-const fileDiffsToPatch = (
+const fileDiffsToPatches = (
   filesDiff: FileDiff[],
   allocatedHunks: HunkAllocations
-): string => {
+): string[] => {
   const diffResult = transformToVanillaFileDiffsByPRs(
     filesDiff,
     allocatedHunks
   );
   console.log(diffResult); // TODO(clinton): remove console.log
-  return '';
+  return diffResult.map((diff): string => {
+    return generateDiff(diff);
+  });
 };
 
-export { transformToVanillaFileDiffsByPRs, fileDiffsToPatch };
+export { transformToVanillaFileDiffsByPRs, fileDiffsToPatches };

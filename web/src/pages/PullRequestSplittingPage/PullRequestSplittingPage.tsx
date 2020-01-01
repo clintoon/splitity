@@ -15,7 +15,7 @@ import { showAlert } from '@web/lib/alert/alert';
 import { useHistory } from 'react-router-dom';
 import { History } from 'history';
 import { GithubRoutePath } from '@web/constants/routes';
-import { fileDiffsToPatch } from './getPatch';
+import { fileDiffsToPatches } from './getPatch';
 
 interface MatchProps {
   owner: string;
@@ -185,12 +185,12 @@ const PullRequestSplittingPage = ({
     if (PRDiff) {
       try {
         const backendApi = new BackendAPI();
-        const patch = fileDiffsToPatch(PRDiff, allocatedHunks);
+        const patches = fileDiffsToPatches(PRDiff, allocatedHunks);
         await backendApi.splitPullRequest({
           owner,
           repoName,
           pullRequestId: Number(pullRequestId),
-          patch,
+          patches,
         });
         history.replace(GithubRoutePath.AppRoot);
         showAlert(
