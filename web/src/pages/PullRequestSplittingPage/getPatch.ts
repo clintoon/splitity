@@ -120,13 +120,16 @@ const convertLineGroupsToChunks = (
   };
 };
 
+const isValidFileDiff = (file: File): boolean => {
+  // if file has no changes and is a delete or an add, then it is invalid
+  return !(file.chunks.length === 0 && (file.deleted || file.new));
+};
+
 const getDiff = (filesDiff: FileDiff[], lineGroupIds: Set<string>): Diff => {
   const filesDiffCpy = cloneDeep(filesDiff);
   let fileOffSet = 0;
 
-  // TODO(clinton): Check if we need to get rid of files with no chunks.
-  // Watch out for edge cases such as renaming where it can split the PRs without renaming
-  return filesDiffCpy.map(
+  const files = filesDiffCpy.map(
     (fileDiff, fileIndex): File => {
       const {
         chunks,
@@ -140,7 +143,6 @@ const getDiff = (filesDiff: FileDiff[], lineGroupIds: Set<string>): Diff => {
         fileOffSet
       );
 
-      console.log('fileOffset', fileOffSet);
       fileOffSet = updatedFileOffset;
 
       return {
@@ -151,6 +153,9 @@ const getDiff = (filesDiff: FileDiff[], lineGroupIds: Set<string>): Diff => {
       };
     }
   );
+
+  const validFiles = files.filter(isValidFileDiff);
+  return validFiles;
 };
 
 const transformToVanillaFileDiffsByPRs = (
