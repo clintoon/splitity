@@ -9,8 +9,6 @@ interface LineGroupRange {
 interface FileDiffLineGroup {
   isHunk: boolean;
   changes: Change[];
-  oldRange: LineGroupRange;
-  newRange: LineGroupRange;
 }
 
 interface DiffChunk extends Chunk {

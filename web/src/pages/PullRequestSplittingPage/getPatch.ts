@@ -1,16 +1,16 @@
 import { File, Chunk } from 'parse-diff';
-import { FileDiff } from '@web/lib/parseDiff/parseDiff';
+import { FileDiff, FileDiffLineGroup } from '@web/lib/parseDiff/parseDiff';
+import { Diff, generateDiff } from '@web/lib/parseDiff/generateDiff';
 import { HunkAllocations } from './PullRequestSplittingPage';
-import { has, cloneDeep } from 'lodash';
+import { has, cloneDeep, countBy } from 'lodash';
 
 type AllocatedHunksByPRId = Record<number, Set<string>>;
-
-type Diff = File[];
 
 interface ConvertLineGroupsToChunksResult {
   chunks: Chunk[];
   totalAdditions: number;
   totalDeletions: number;
+  updatedFileOffset: number;
 }
 
 const keyAllocatedHunkByPRId = (
@@ -30,31 +30,59 @@ const keyAllocatedHunkByPRId = (
   return dict;
 };
 
+interface GetLineGroupLineCountsResult {
+  numAdditions: number;
+  numDeletions: number;
+  numNormal: number;
+}
+
+const getLineGroupLineCounts = (
+  lineGroup: FileDiffLineGroup
+): GetLineGroupLineCountsResult => {
+  const countsByType = countBy(lineGroup.changes, (change): string => {
+    return change.type;
+  });
+
+  const numAdditions = countsByType['add'] ?? 0;
+  const numDeletions = countsByType['del'] ?? 0;
+  const numNormal = countsByType['normal'] ?? 0;
+
+  return {
+    numAdditions,
+    numDeletions,
+    numNormal,
+  };
+};
+
 const convertLineGroupsToChunks = (
   fileDiff: FileDiff,
   fileIndex: number,
-  lineGroupIds: Set<string>
+  lineGroupIds: Set<string>,
+  fileOffset: number
 ): ConvertLineGroupsToChunksResult => {
   const newChunks: Chunk[] = [];
   let totalAdditions = 0;
   let totalDeletions = 0;
 
+  let currentFileOffset = fileOffset;
+
   fileDiff.chunks.forEach((chunk, chunkIndex): void => {
+    let oldStartChunkPos = chunk.oldStart;
+    let newStartChunkPos = chunk.newStart;
+
     chunk.lineGroups.forEach((lineGroup, lineGroupIndex): void => {
       const lineGroupId = `${fileIndex} ${chunkIndex} ${lineGroupIndex}`;
-      if (!lineGroupIds.has(lineGroupId)) {
-        return;
-      }
+      const toAddLineGroup = lineGroupIds.has(lineGroupId);
+      const { changes } = lineGroup;
 
-      const { changes, oldRange, newRange } = lineGroup;
+      const { numAdditions, numDeletions, numNormal } = getLineGroupLineCounts(
+        lineGroup
+      );
 
-      const oldStart = oldRange.start;
-      const oldLines = oldRange.numLines;
-      const newStart = newRange.start;
-      const newLines = newRange.numLines;
-
-      totalAdditions += newLines;
-      totalDeletions += oldLines;
+      const oldStart = oldStartChunkPos + currentFileOffset;
+      const oldLines = numDeletions + numNormal;
+      const newStart = newStartChunkPos + currentFileOffset;
+      const newLines = numAdditions + numNormal;
 
       const newChunk = {
         content: `@@ -${oldStart},${oldLines} +${newStart},${newLines} @@`,
@@ -64,7 +92,23 @@ const convertLineGroupsToChunks = (
         newStart,
         newLines,
       };
-      newChunks.push(newChunk);
+
+      if (toAddLineGroup) {
+        totalAdditions += newLines;
+        totalDeletions += oldLines;
+
+        oldStartChunkPos += newLines;
+        newStartChunkPos += newLines;
+
+        newChunks.push(newChunk);
+      } else {
+        oldStartChunkPos += oldLines;
+        newStartChunkPos += oldLines;
+
+        // If you don't add to this diff, then you should need to offset the changes
+        // not being made
+        currentFileOffset = currentFileOffset + numDeletions - numAdditions;
+      }
     });
   });
 
@@ -72,18 +116,34 @@ const convertLineGroupsToChunks = (
     chunks: newChunks,
     totalAdditions,
     totalDeletions,
+    updatedFileOffset: currentFileOffset,
   };
+};
+
+const isValidFileDiff = (file: File): boolean => {
+  // if file has no changes and is a delete or an add, then it is invalid
+  return !(file.chunks.length === 0 && (file.deleted || file.new));
 };
 
 const getDiff = (filesDiff: FileDiff[], lineGroupIds: Set<string>): Diff => {
   const filesDiffCpy = cloneDeep(filesDiff);
-  return filesDiffCpy.map(
+  let fileOffSet = 0;
+
+  const files = filesDiffCpy.map(
     (fileDiff, fileIndex): File => {
       const {
         chunks,
         totalAdditions,
         totalDeletions,
-      } = convertLineGroupsToChunks(fileDiff, fileIndex, lineGroupIds);
+        updatedFileOffset,
+      } = convertLineGroupsToChunks(
+        fileDiff,
+        fileIndex,
+        lineGroupIds,
+        fileOffSet
+      );
+
+      fileOffSet = updatedFileOffset;
 
       return {
         ...fileDiff,
@@ -93,6 +153,9 @@ const getDiff = (filesDiff: FileDiff[], lineGroupIds: Set<string>): Diff => {
       };
     }
   );
+
+  const validFiles = files.filter(isValidFileDiff);
+  return validFiles;
 };
 
 const transformToVanillaFileDiffsByPRs = (
@@ -110,16 +173,22 @@ const transformToVanillaFileDiffsByPRs = (
   return diffs;
 };
 
-const fileDiffsToPatch = (
+// TODO(clinton): Write unit tests. Edge cases to test: rename, delete, add files
+const fileDiffsToPatches = (
   filesDiff: FileDiff[],
   allocatedHunks: HunkAllocations
-): string => {
+): string[] => {
   const diffResult = transformToVanillaFileDiffsByPRs(
     filesDiff,
     allocatedHunks
   );
-  console.log(diffResult); // TODO(clinton): remove console.log
-  return '';
+
+  const patches = diffResult.map((diff): string => {
+    return generateDiff(diff);
+  });
+
+  console.log('patches', patches); // TODO(clinton): remove console.log
+  return patches;
 };
 
-export { transformToVanillaFileDiffsByPRs, fileDiffsToPatch };
+export { transformToVanillaFileDiffsByPRs, fileDiffsToPatches };

@@ -6,7 +6,7 @@ interface SplitPullRequestOptions {
   owner: string;
   repoName: string;
   pullRequestId: number;
-  patch: string;
+  patches: string[];
 }
 
 interface SplitPullRequestResult {
@@ -32,13 +32,13 @@ class BackendAPI {
     owner,
     repoName,
     pullRequestId,
-    patch,
+    patches,
   }: SplitPullRequestOptions): Promise<SplitPullRequestResult> {
     const resp = await this.httpWithAuth({
       method: 'post',
       url: `/v1/repos/${owner}/${repoName}/pulls/${pullRequestId}/split`,
       data: {
-        patch,
+        patches,
       },
     });
 
