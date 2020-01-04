@@ -8,5 +8,7 @@ class GithubService
 
   def current_user
     @client.user
+  rescue Octokit::Unauthorized
+    nil
   end
 end
