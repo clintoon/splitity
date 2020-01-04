@@ -37,6 +37,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Update bundler to v2
+          command: bundle update --bundler
+      - run:
           name: Install dependencies
           command: bundle install --deployment --gemfile='backend/Gemfile'
       - run:
