@@ -36,6 +36,9 @@ jobs:
           BUNDLER_VERSION: 2.0.1
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - rails-bundle-v1-{{ checksum "Gemfile.lock" }}
       - run:
           name: Update bundler to v2
           command: |
@@ -47,6 +50,10 @@ jobs:
           command: |
             cd backend
             bundle install --deployment
+      - save_cache:
+          key: rails-bundle-v1-{{ checksum "Gemfile.lock" }}
+          paths:
+            - backend/vendor/bundle
       - run:
           name: Setup database
           command: |
