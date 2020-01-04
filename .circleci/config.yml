@@ -49,7 +49,7 @@ jobs:
           name: Install dependencies
           command: |
             cd backend
-            bundle install --deployment
+            bundle check || bundle install
       - save_cache:
           key: rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}
           paths:
@@ -67,7 +67,7 @@ jobs:
       - store_artifacts:
           path: backend/coverage
       - codecov/upload:
-          file: backend/coverage/*.json
+          file: backend/coverage/.resultset.json
           flags: backend,unit
 workflows:
   unit_tests:
