@@ -27,7 +27,7 @@ jobs:
           path: web/coverage
       - codecov/upload:
           file: web/coverage/*.json
-        flags: frontend,unit
+          flags: frontend,unit
   backend_build:
     working_directory: ~/split-my-prs
     docker:
