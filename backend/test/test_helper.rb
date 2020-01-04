@@ -1,6 +1,6 @@
 ENV['RAILS_ENV'] ||= 'test'
 
-if ENV['COVERAGE'] == 'true'
+if ENV['CI'] == 'true'
   require 'simplecov'
   SimpleCov.start 'rails'
 end
@@ -10,7 +10,7 @@ require 'rails/test_help'
 require 'minitest/autorun'
 
 class ActiveSupport::TestCase
-  if ENV['COVERAGE'] == 'true'
+  if ENV['CI'] == 'true'
     # TODO(clinton): Get rid of this once simplecov fix parallelization
     parallelize(workers: 1)
   else

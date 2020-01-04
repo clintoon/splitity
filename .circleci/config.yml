@@ -63,7 +63,7 @@ jobs:
           name: Run rails unit tests
           command: |
             cd backend
-            DISABLE_SPRING=1 COVERAGE=true bin/rails test
+            DISABLE_SPRING=1 CI=true bin/rails test
       - store_artifacts:
           path: backend/coverage
       - codecov/upload:
