@@ -36,7 +36,10 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
-          command: bundle install --deployment --gemfile='backend/Gemfile'
+          command: |
+            gem update --system
+            gem install bundler
+            bundle install --deployment --gemfile='backend/Gemfile'
       - run:
           name: Setup database
           command: backend/bin/rails db:setup
