@@ -30,6 +30,9 @@
     "editor.formatOnSave": true,
     "editor.formatOnSaveTimeout": 5000,
     "ruby.format": "rubocop",
-    "ruby.useLanguageServer": true
+    "ruby.useLanguageServer": true,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.detectIndentation": true
   }
 }
