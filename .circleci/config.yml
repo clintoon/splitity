@@ -29,7 +29,7 @@ jobs:
           file: web/coverage/*.json
           flags: frontend,unit
   backend_build:
-    working_directory: ~/split-my-prs
+    working_directory: ~/split-my-prs/backend
     docker:
       - image: circleci/ruby:2.5.1-node
         environment:
@@ -40,16 +40,16 @@ jobs:
           name: Update bundler to v2
           command: |
             sudo gem update --system
-            bundle update --bundler --gemfile='backend/Gemfile'
+            bundle update --bundler
       - run:
           name: Install dependencies
-          command: bundle install --deployment --gemfile='backend/Gemfile'
+          command: bundle install --deployment
       - run:
           name: Setup database
-          command: backend/bin/rails db:setup
+          command: bin/rails db:setup
       - run:
           name: Run rails unit tests
-          command: backend/bin/rails test
+          command: bin/rails test
 workflows:
   unit_tests:
     jobs:
