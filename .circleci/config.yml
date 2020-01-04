@@ -39,6 +39,7 @@ jobs:
       - run:
           name: Update bundler to v2
           command: |
+            pwd
             sudo gem update --system
             bundle update --bundler
       - run:
