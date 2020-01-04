@@ -27,5 +27,26 @@ jobs:
           path: web/coverage
       - codecov/upload:
           file: web/coverage/*.json
-          flags: frontend,unit
+        flags: frontend,unit
+  backend_build:
+    working_directory: ~/split-my-prs
+    docker:
+      - image: circleci/ruby:2.5.1
+    steps:
+      - checkout
+      - run:
+        name: Install dependencies
+        command: bundle install --deployment --gemfile='backend'
+      run:
+        name: Setup database
+        command: backend/bin/rails db:setup
+      run:
+        name: Run rails unit tests
+        command: backend/bin/rails test
+workflows:
+  version: 2.1
+    jobs:
+      - build
+      - backend_build
+
 
