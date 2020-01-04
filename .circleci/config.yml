@@ -64,6 +64,8 @@ jobs:
           command: |
             cd backend
             DISABLE_SPRING=1 COVERAGE=true bin/rails test
+      - store_artifacts:
+          path: backend/coverage
       - codecov/upload:
           file: backend/coverage/*.json
           flags: backend,unit
