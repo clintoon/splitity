@@ -18,7 +18,7 @@ class BackendAPI {
 
   public constructor() {
     const oAuthToken = getOAuthToken();
-    const auth = `token ${oAuthToken}`;
+    const auth = oAuthToken;
 
     this.httpWithAuth = axios.create({
       baseURL: backendConfig.backendApiUrl,
