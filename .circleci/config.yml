@@ -36,15 +36,15 @@ jobs:
           BUNDLER_VERSION: 2.0.1
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}
       - run:
           name: Update bundler to v2
           command: |
             cd backend
             sudo gem update --system
             bundle update --bundler
+      - restore_cache:
+          keys:
+            - rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}
       - run:
           name: Install dependencies
           command: |
