@@ -44,7 +44,7 @@ jobs:
           name: Run rails unit tests
           command: backend/bin/rails test
 workflows:
-  version: 2.1
-  jobs:
-    - build
-    - backend_build
+  unit_tests:
+    jobs:
+      - build
+      - backend_build
