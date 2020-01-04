@@ -45,8 +45,6 @@ jobs:
           command: backend/bin/rails test
 workflows:
   version: 2.1
-    jobs:
-      - build
-      - backend_build
-
-
+  jobs:
+    - build
+    - backend_build
