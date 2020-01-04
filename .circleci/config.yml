@@ -35,14 +35,14 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Install dependencies
-        command: bundle install --deployment --gemfile='backend'
+          name: Install dependencies
+          command: bundle install --deployment --gemfile='backend'
       run:
-        name: Setup database
-        command: backend/bin/rails db:setup
+          name: Setup database
+          command: backend/bin/rails db:setup
       run:
-        name: Run rails unit tests
-        command: backend/bin/rails test
+          name: Run rails unit tests
+          command: backend/bin/rails test
 workflows:
   version: 2.1
     jobs:
