@@ -28,4 +28,44 @@ jobs:
       - codecov/upload:
           file: web/coverage/*.json
           flags: frontend,unit
-
+  backend_build:
+    working_directory: ~/split-my-prs
+    docker:
+      - image: circleci/ruby:2.5.1-node
+        environment:
+          BUNDLER_VERSION: 2.0.1
+    steps:
+      - checkout
+      - run:
+          name: Update bundler to v2
+          command: |
+            cd backend
+            sudo gem update --system
+            bundle update --bundler
+      - restore_cache:
+          keys:
+            - rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}
+      - run:
+          name: Install dependencies
+          command: |
+            cd backend
+            bundle install --deployment
+      - save_cache:
+          key: rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}
+          paths:
+            - backend/vendor/bundle
+      - run:
+          name: Setup database
+          command: |
+            cd backend
+            bin/rails db:setup
+      - run:
+          name: Run rails unit tests
+          command: |
+            cd backend
+            bin/rails test
+workflows:
+  unit_tests:
+    jobs:
+      - build
+      - backend_build
