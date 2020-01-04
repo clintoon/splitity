@@ -37,10 +37,10 @@ jobs:
       - run:
           name: Install dependencies
           command: bundle install --deployment --gemfile='backend'
-      run:
+      - run:
           name: Setup database
           command: backend/bin/rails db:setup
-      run:
+      - run:
           name: Run rails unit tests
           command: backend/bin/rails test
 workflows:
