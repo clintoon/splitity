@@ -31,7 +31,7 @@ jobs:
   backend_build:
     working_directory: ~/split-my-prs
     docker:
-      - image: circleci/ruby:2.6.0
+      - image: circleci/ruby:2.6.0-node
         environment:
           BUNDLER_VERSION: 2.0.1
     steps:
