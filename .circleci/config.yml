@@ -20,7 +20,7 @@ jobs:
             - node_modules
             - web/node_modules
       - run:
-          name: Run jest unit tests and collect codecov coverage reports
+          name: Run jest unit tests
           command: yarn jest --collectCoverage=true --ci --maxWorkers=1
           working_directory: web
       - store_artifacts:
@@ -63,7 +63,10 @@ jobs:
           name: Run rails unit tests
           command: |
             cd backend
-            bin/rails test
+            DISABLE_SPRING=1 COVERAGE=true bin/rails test
+      - codecov/upload:
+          file: backend/coverage/*.json
+          flags: backend,unit
 workflows:
   unit_tests:
     jobs:
