@@ -39,8 +39,8 @@ jobs:
       - run:
           name: Update bundler to v2
           command: |
-            sudo gem update --system --gemfile='backend/Gemfile'
-            bundle update --bundler
+            sudo gem update --system
+            bundle update --bundler --gemfile='backend/Gemfile'
       - run:
           name: Install dependencies
           command: bundle install --deployment --gemfile='backend/Gemfile'
