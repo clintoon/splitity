@@ -10,12 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_05_084544) do
+ActiveRecord::Schema.define(version: 2020_01_05_094301) do
+
+  create_table "child_pull_requests", force: :cascade do |t|
+    t.integer "split_pull_request_jobs_id"
+    t.integer "child_pr_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["split_pull_request_jobs_id"], name: "index_child_pull_requests_on_split_pull_request_jobs_id"
+  end
 
   create_table "split_pull_request_jobs", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "splitted_pr_id", null: false
+    t.integer "parent_pr_id", null: false
     t.integer "split_initiated_by_user_id", null: false
     t.integer "status", default: 0, null: false
     t.string "repo_id", null: false

@@ -9,6 +9,18 @@ require_relative '../config/environment'
 require 'rails/test_help'
 require 'minitest/autorun'
 
+# Restores test database after each test
+DatabaseCleaner.strategy = :transaction
+class Minitest::Spec
+  before :each do
+    DatabaseCleaner.start
+  end
+
+  after :each do
+    DatabaseCleaner.clean
+  end
+end
+
 class ActiveSupport::TestCase
   if ENV['CI'] == 'true'
     # TODO(clinton): Get rid of this once simplecov fix parallelization
