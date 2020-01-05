@@ -61,6 +61,7 @@ class SplitPullRequestJobTest < ActiveSupport::TestCase
     split_pr_job.status = 'success'
     assert split_pr_job.success?
     assert_not split_pr_job.queued?
+    assert split_pr_job.valid?
   end
 
   test 'SplitPullRequestJob can set state to failed' do
@@ -73,5 +74,6 @@ class SplitPullRequestJobTest < ActiveSupport::TestCase
     split_pr_job.status = 'failed'
     assert split_pr_job.failed?
     assert_not split_pr_job.queued?
+    assert split_pr_job.valid?
   end
 end
