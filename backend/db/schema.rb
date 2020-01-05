@@ -10,15 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_05_034800) do
+ActiveRecord::Schema.define(version: 2020_01_05_084544) do
 
   create_table "split_pull_request_jobs", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "parent_pull_request_id", null: false
+    t.integer "splitted_pr_id", null: false
     t.integer "split_initiated_by_user_id", null: false
-    t.integer "repo_owner_user_id", null: false
     t.integer "status", default: 0, null: false
+    t.string "repo_id", null: false
   end
 
 end
