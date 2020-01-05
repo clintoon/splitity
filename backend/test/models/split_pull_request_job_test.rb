@@ -76,4 +76,42 @@ class SplitPullRequestJobTest < ActiveSupport::TestCase
     assert_not split_pr_job.queued?
     assert split_pr_job.valid?
   end
+
+  test 'SplitPullRequestJob can have multiple child pull requests' do
+    split_pr_job = SplitPullRequestJob.new(\
+      id: 1, \
+      parent_pr_id: 1,\
+      split_initiated_by_user_id: 1,\
+      repo_id: 'abc123'\
+    )
+
+    split_pr_job.save
+
+    child_pr1 = ChildPullRequest.new(child_pr_id: 1)
+    child_pr2 = ChildPullRequest.new(child_pr_id: 2)
+
+    split_pr_job.child_pull_requests << [child_pr1, child_pr2]
+
+    result = SplitPullRequestJob.last.child_pull_requests
+    assert result == [child_pr1, child_pr2]
+  end
+
+  test 'SplitPullRequestJob destroys associated child pull requests when destroyed' do
+    split_pr_job = SplitPullRequestJob.new(\
+      id: 1, \
+      parent_pr_id: 1,\
+      split_initiated_by_user_id: 1,\
+      repo_id: 'abc123'\
+    )
+
+    split_pr_job.save
+
+    child_pr1 = ChildPullRequest.new(child_pr_id: 1)
+    child_pr2 = ChildPullRequest.new(child_pr_id: 2)
+
+    split_pr_job.child_pull_requests << [child_pr1, child_pr2]
+
+    split_pr_job.destroy
+    assert_equal ChildPullRequest.count, 0
+  end
 end
