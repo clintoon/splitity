@@ -1,20 +1,22 @@
 require 'test_helper'
 
 class SplitPullRequestJobTest < ActiveSupport::TestCase
-  test 'valid SplitPullRequestJob' do
+  test 'valid SplitPullRequestJob with status queued' do
     split_pr_job = SplitPullRequestJob.new(\
       parent_pull_request_id: 1,\
       split_initiated_by_user_id: 1,\
-      repo_owner_user_id: 1
+      repo_owner_user_id: 1\
     )
-    assert split_pr_job.valid?, ''
+
+    assert split_pr_job.valid?
   end
 
   test 'invalid SplitPullRequestJob without parent_pull_request_id value' do
     split_pr_job = SplitPullRequestJob.new(\
       split_initiated_by_user_id: 1,\
-      repo_owner_user_id: 1
+      repo_owner_user_id: 1\
     )
+
     assert split_pr_job.invalid?
     assert_not_nil split_pr_job.errors[:parent_pull_request_id]
   end
@@ -22,8 +24,9 @@ class SplitPullRequestJobTest < ActiveSupport::TestCase
   test 'invalid SplitPullRequestJob without split_initiated_by_user_id value' do
     split_pr_job = SplitPullRequestJob.new(\
       parent_pull_request_id: 1,\
-      repo_owner_user_id: 1
+      repo_owner_user_id: 1\
     )
+
     assert split_pr_job.invalid?
     assert_not_nil split_pr_job.errors[:split_initiated_by_user_id]
   end
@@ -33,7 +36,18 @@ class SplitPullRequestJobTest < ActiveSupport::TestCase
       parent_pull_request_id: 1,\
       split_initiated_by_user_id: 1\
     )
+
     assert split_pr_job.invalid?
     assert_not_nil split_pr_job.errors[:repo_owner_user_id]
+  end
+
+  test 'SplitPullRequestJob by default is queued' do
+    split_pr_job = SplitPullRequestJob.new(\
+      parent_pull_request_id: 1,\
+      split_initiated_by_user_id: 1,\
+      repo_owner_user_id: 1\
+    )
+
+    assert split_pr_job.queued?
   end
 end
