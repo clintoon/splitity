@@ -1,0 +1,2 @@
+class SplitPullRequestJob < ApplicationRecord
+end
