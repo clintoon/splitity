@@ -1,0 +1,2 @@
+class ChildPullRequest < ApplicationRecord
+end
