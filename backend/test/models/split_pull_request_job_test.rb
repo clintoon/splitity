@@ -50,4 +50,28 @@ class SplitPullRequestJobTest < ActiveSupport::TestCase
 
     assert split_pr_job.queued?
   end
+
+  test 'SplitPullRequestJob can set state to success' do
+    split_pr_job = SplitPullRequestJob.new(\
+      parent_pull_request_id: 1,\
+      split_initiated_by_user_id: 1,\
+      repo_owner_user_id: 1\
+    )
+
+    split_pr_job.status = 'success'
+    assert split_pr_job.success?
+    assert_not split_pr_job.queued?
+  end
+
+  test 'SplitPullRequestJob can set state to failed' do
+    split_pr_job = SplitPullRequestJob.new(\
+      parent_pull_request_id: 1,\
+      split_initiated_by_user_id: 1,\
+      repo_owner_user_id: 1\
+    )
+
+    split_pr_job.status = 'failed'
+    assert split_pr_job.failed?
+    assert_not split_pr_job.queued?
+  end
 end
