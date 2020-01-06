@@ -22,6 +22,8 @@ class Minitest::Spec
 end
 
 class ActiveSupport::TestCase
+  include FactoryBot::Syntax::Methods
+
   if ENV['CI'] == 'true'
     # TODO(clinton): Get rid of this once simplecov fix parallelization
     parallelize(workers: 1)
