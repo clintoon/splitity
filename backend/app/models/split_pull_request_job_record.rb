@@ -1,5 +1,5 @@
 # Model for the info for split pull request jobs
-class SplitPullRequestJob < ApplicationRecord
+class SplitPullRequestJobRecord < ApplicationRecord
   enum status: { queued: 0, success: 1, failed: 2 }
 
   has_many :child_pull_requests, dependent: :destroy
