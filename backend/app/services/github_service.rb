@@ -7,8 +7,15 @@ class GithubService
   end
 
   def current_user
-    @client.user
+    data = @client.user
+    { id: data[:id] }
   rescue Octokit::Unauthorized
     nil
+  end
+
+  # Takes in an hash with keys :id or :name and :owner
+  def repository(params)
+    data = @client.repository(params)
+    { id: data[:id] }
   end
 end

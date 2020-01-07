@@ -27,7 +27,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     valid_access_token = 'abc123'
 
     mock = Minitest::Mock.new
-    mock.expect :current_user, true # TODO(clinton): this should return a user object instead of a boolean
+    mock.expect :current_user, id: 1
 
     GithubService.stub(:new, mock) do
       post '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',\
