@@ -3,7 +3,7 @@ require 'test_helper'
 class PullRequestsControllerTest < ActionDispatch::IntegrationTest
   test 'splitting PR returns an unauthenticated status when Access-Token header is not set' do
     post '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',\
-         params: { owner: 'clintoon', repo_name: 'test01', pull_request_id: '123' }
+         params: { patches: ['example patch'] }
     assert_response :unauthorized
   end
 
@@ -15,7 +15,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
 
     GithubService.stub(:new, mock) do
       post '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',\
-           params: { owner: 'clintoon', repo_name: 'test01', pull_request_id: '123' },\
+           params: { patches: ['example patch'] },\
            headers: { 'HTTP_ACCESS_TOKEN': invalid_access_token }
     end
 
@@ -28,10 +28,11 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
 
     mock = Minitest::Mock.new
     mock.expect :current_user, id: 1
+    mock.expect :repository, { id: 1 }, [{ name: 'test01', owner: 'clintoon' }]
 
     GithubService.stub(:new, mock) do
-      post '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',\
-           params: { owner: 'clintoon', repo_name: 'test01', pull_request_id: '123' },\
+      post '/v1/repos/clintoon/test01/pulls/123/split',\
+           params: { patches: ['example patch'] },\
            headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
     end
 
