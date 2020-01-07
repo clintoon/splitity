@@ -21,6 +21,8 @@ class PullRequestsController < ApplicationController
       repo_id: repo_id,
       pr_id: pr_id,
       initiated_by_user_id: user_id,
+      repo_owner: owner,
+      repo_name: repo_name,
       patches: patches
     )
 
