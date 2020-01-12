@@ -41,7 +41,8 @@ class SplitPullRequestJob < ApplicationJob
     github_app = GithubAppService.new
     installation_token = github_app.repo_installation_token(
       owner: repo_owner,
-      name: repo_name
+      name: repo_name,
+      id: repo_id
     )[:token]
 
     github = GithubService.new(access_token: installation_token)

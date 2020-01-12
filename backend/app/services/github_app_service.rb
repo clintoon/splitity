@@ -17,7 +17,7 @@ class GithubAppService
       "#{repo[:owner]}/#{repo[:name]}"
     )[:id]
     data = @client.create_app_installation_access_token(
-      installation_id
+      installation_id, repository_ids: [repo[:id]]
     )
     { token: data[:token] }
   end
