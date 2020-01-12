@@ -10,23 +10,24 @@ class PullRequestsController < ApplicationController
     github = GithubService.new(access_token: access_token)
     repo_id = github.repository(owner: owner, name: repo_name)[:id]
 
-    split_pr_job_record = SplitPullRequestJobRecord.new(
+    head :not_found if repo_id.nil?
+
+    split_pr_job_record = SplitPullRequestJobRecord.create(
       repo_id: repo_id,
       split_initiated_by_user_id: user_id,
       parent_pr_id: pr_id
     )
 
-    SplitPullRequestJob.perform_now(
+    SplitPullRequestJob.perform_later(
       job_id: split_pr_job_record.id,
       repo_id: repo_id,
       pr_id: pr_id,
-      initiated_by_user_id: user_id,
       repo_owner: owner,
       repo_name: repo_name,
-      patches: patches
+      patches: patches,
+      access_token: access_token
     )
 
-    split_pr_job_record.save!
     render json: { split_pull_request_job_id: split_pr_job_record.id }
   end
 end
