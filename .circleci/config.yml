@@ -40,7 +40,7 @@ jobs:
           name: Install dependencies & update bundler to v2
           command: |
             cd backend
-            sudo apt install cmake
+            sudo apt -y install cmake
             sudo gem update --system
             bundle update --bundler
       - restore_cache:
