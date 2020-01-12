@@ -35,10 +35,22 @@ class SplitPullRequestJob < ApplicationJob
       :job_id, :repo_id, :pr_id, :repo_name, :repo_owner, :patches
     )
 
-    github = GithubService.new(access_token: params[:access_token])
+    # TODO(clinton): get repo id (already done this)
+    # get the installation id of repo before this job (in the controller maybe)
+    # then check that the repo has not changed to ensure that the installation id is correct
+    github_app = GithubAppService.new
+    installation_token = github_app.repo_installation_token(
+      owner: repo_owner,
+      name: repo_name
+    )[:token]
+
+    github = GithubService.new(access_token: installation_token)
     pr_info = github.pull_request(repo_id, pr_id)
 
-    git_client_creds = Rugged::Credentials::UserPassword.new(username: params[:access_token], password: '')
+    git_client_creds = Rugged::Credentials::UserPassword.new(
+      username: repo_owner,
+      password: installation_token
+    )
 
     # For each of the diff
     # Clone the repo

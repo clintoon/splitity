@@ -3,12 +3,16 @@ require 'octokit'
 # To interact with the Github API
 class GithubService
   def initialize(params)
-    @client = Octokit::Client.new(access_token: params[:access_token])
+    @client = Octokit::Client.new(
+      access_token: params[:access_token],
+      client_id: Rails.application.credentials.github[:client_id],
+      client_secret: Rails.application.credentials.github[:client_secret]
+    )
   end
 
   def current_user
     data = @client.user
-    { id: data[:id] }
+    { id: data[:id], login: data[:login] }
   rescue Octokit::Unauthorized
     nil
   end
@@ -26,5 +30,10 @@ class GithubService
 
   def create_pull_request(repo, base, head, title, body = nil)
     @client.create_pull_request(repo, base, head, title, body)
+  end
+
+  def permission_level(repo, collaborator)
+    data = @client.permission_level(repo, collaborator)
+    { permission: data[:permission] }
   end
 end
