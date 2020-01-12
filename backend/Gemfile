@@ -27,6 +27,9 @@ gem 'bootsnap', '>= 1.4.2', require: false
 # Github Octokit API
 gem 'octokit', '~> 4.15'
 
+# Git client
+gem 'rugged', git: 'https://github.com/libgit2/rugged.git', submodules: true
+
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
 

@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/libgit2/rugged.git
+  revision: 683ae666ddce0d7183083b834162d81e91b03761
+  submodules: true
+  specs:
+    rugged (0.28.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -231,6 +238,7 @@ DEPENDENCIES
   rails (~> 6.0.2)
   rubocop (~> 0.78.0)
   rubocop-rails
+  rugged!
   simplecov
   solargraph
   spring
