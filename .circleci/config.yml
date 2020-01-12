@@ -37,9 +37,10 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Update bundler to v2
+          name: Install dependencies & update bundler to v2
           command: |
             cd backend
+            sudo apt install cmake
             sudo gem update --system
             bundle update --bundler
       - restore_cache:
