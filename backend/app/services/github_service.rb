@@ -18,8 +18,8 @@ class GithubService
   end
 
   # Takes in an hash with keys :id or :name and :owner
-  def repository(params)
-    data = @client.repository(params)
+  def repository(repo)
+    data = @client.repository(repo)
     { id: data[:id] }
   end
 

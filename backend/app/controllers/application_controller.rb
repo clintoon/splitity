@@ -18,15 +18,4 @@ class ApplicationController < ActionController::API
       head :internal_server_error
     end
   end
-
-  # Gets the write token of current for a repo if has write or admin permission
-  def user_write_permissions_required(repo)
-    return head :unauthorized if @current_user.nil?
-
-    access_token = request.headers[:HTTP_ACCESS_TOKEN]
-    github = GithubService.new(access_token: access_token)
-    permission = github.permission_level(repo, @current_user[:login])[:permission]
-
-    return head :unauthorized unless %w[write admin].include?(permission)
-  end
 end
