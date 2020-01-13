@@ -39,7 +39,7 @@
       "git add"
     ],
     "backend/{app,test}/**/*.rb": [
-      "rubocop --safe-autocorrect",
+      "rubocop --safe-auto-correct",
       "git add"
     ]
   }
