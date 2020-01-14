@@ -29,7 +29,8 @@ class GithubService
   end
 
   def create_pull_request(repo, base, head, title, body = nil)
-    @client.create_pull_request(repo, base, head, title, body)
+    data = @client.create_pull_request(repo, base, head, title, body)
+    { number: data[:number] }
   end
 
   def permission_level(repo, collaborator)

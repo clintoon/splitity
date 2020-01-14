@@ -32,6 +32,12 @@ end
 class SplitPullRequestJob < ApplicationJob
   queue_as :default
 
+  rescue_from(Exception) do |_exception|
+    params = arguments[0]
+    split_pr_job_record = SplitPullRequestJobRecord.find(params[:job_id])
+    split_pr_job_record.failed!
+  end
+
   def perform(*args)
     params = args[0]
 
@@ -92,18 +98,22 @@ class SplitPullRequestJob < ApplicationJob
       repos.push(repo)
     end
 
+    split_pr_job_record = SplitPullRequestJobRecord.find(params[:job_id])
+
     # For each of the diff
     # push and create a Pull Request
     repos.each_with_index do |repo, split_count|
       repo.push('origin', "refs/heads/splitity/pull-request-#{params[:pr_id]}/job-#{params[:job_id]}/split-#{split_count}", credentials: git_client_creds)
-      github.create_pull_request(
+      created_pr = github.create_pull_request(
         params[:repo_id],
         pr_info[:base_ref],
         "splitity/pull-request-#{params[:pr_id]}/job-#{params[:job_id]}/split-#{split_count}",
         "Split ##{params[:pr_id]} number #{split_count}"
       )
+      child_pr = ChildPullRequest.new(child_pr_id: created_pr[:number])
+      split_pr_job_record.child_pull_requests << [child_pr]
     end
 
-    # Create split pr record, set the job as success and save
+    split_pr_job_record.success!
   end
 end
