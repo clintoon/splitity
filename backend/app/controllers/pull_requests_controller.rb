@@ -40,8 +40,6 @@ class PullRequestsController < ApplicationController
     github = GithubService.new(access_token: access_token)
 
     permission = github.permission_level(repo, @current_user[:login])[:permission]
-    can_write = %w[write admin].include?(permission)
-
-    can_write
+    %w[write admin].include?(permission)
   end
 end
