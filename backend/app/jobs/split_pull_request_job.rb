@@ -89,7 +89,7 @@ class SplitPullRequestJob < ApplicationJob
       options[:tree] = repo.index.write_tree(repo)
       options[:author] = { email: 'support@splitity.com', name: 'Splitity', time: Time.now.utc }
       options[:committer] = { email: 'support@splitity.com', name: 'Splitity', time: Time.now.utc }
-      options[:message] = "Split PR ##{params[:pr_id]} number #{split_count}"
+      options[:message] = "Split PR ##{params[:pr_id]}"
       options[:parents] = repo.empty? ? [] : [repo.head.target].compact
       options[:update_ref] = 'HEAD'
 
