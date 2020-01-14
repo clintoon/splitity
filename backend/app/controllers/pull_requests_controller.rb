@@ -3,18 +3,21 @@ class PullRequestsController < ApplicationController
   before_action :login_required
 
   def split
-    user_write_repo_access_required(owner: params[:owner], name: params[:repo_name])
-
     github = GithubService.new(access_token: request.headers[:HTTP_ACCESS_TOKEN])
-    repo = github.repository(owner: params[:owner], name: params[:repo_name])
-
     github_app = GithubAppService.new
+
+    repo = github.repository(owner: params[:owner], name: params[:repo_name])
+    return head :not_found if repo[:id].nil?
+
+    can_write = user_write_repo_access?(owner: params[:owner], name: params[:repo_name])
+    return head :unauthorized unless can_write
+
     installation_id = github_app.repo_installation_id(
       owner: params[:owner],
       name: params[:repo_name]
     )
-    repo_id_unchanged_required({ owner: params[:owner],
-                                 name: params[:repo_name] }, repo[:id])
+    refetched_repo = github.repository(owner: params[:owner], name: params[:repo_name])
+    return head :forbidden unless refetched_repo[:id] == repo[:id]
 
     split_pr = SplitPullRequestService.new
     split_pr_job_id = split_pr.queue_job(
@@ -32,22 +35,13 @@ class PullRequestsController < ApplicationController
 
   private
 
-  def user_write_repo_access_required(repo)
+  def user_write_repo_access?(repo)
     access_token = request.headers[:HTTP_ACCESS_TOKEN]
     github = GithubService.new(access_token: access_token)
 
     permission = github.permission_level(repo, @current_user[:login])[:permission]
     can_write = %w[write admin].include?(permission)
 
-    return head :unauthorized unless can_write
-  end
-
-  def repo_id_unchanged_required(repo, id)
-    access_token = request.headers[:HTTP_ACCESS_TOKEN]
-    github = GithubService.new(access_token: access_token)
-
-    fetched_repo_id = github.repository(repo)[:id]
-    has_changed = fetched_repo_id != id
-    head :forbidden if has_changed && !fetched_repo_id.nil?
+    can_write
   end
 end
