@@ -18,7 +18,9 @@ def apply_patch(params)
 
   File.write(patch_path, params[:patch], mode: 'w')
 
-  stdout, stderr, status = Open3.capture3("git -C '#{git_repo_path}' apply '../patch.diff' --unidiff-zero")
+  cmd = "git -C '#{git_repo_path}' apply '../patch.diff' --unidiff-zero"
+  logger.info("apply_patch cmd: #{cmd}")
+  stdout, stderr, status = Open3.capture3(cmd)
   logger.info("apply_patch stdout: '#{stdout}'") unless stdout.empty?
 
   raise Exception, "apply_patch git apply fail with exit code with stderr: '#{stderr}'" unless status.success?
