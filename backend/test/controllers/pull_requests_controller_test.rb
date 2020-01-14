@@ -47,4 +47,77 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     assert_mock github_mock
     assert_mock github_app_mock
   end
+
+  test 'splitting PR returns an 200 OK when user has admin access' do
+    valid_access_token = 'abc123'
+
+    github_mock = Minitest::Mock.new
+    github_mock.expect :current_user, id: 1, login: 'clintoon'
+    github_mock.expect :repository, { id: 1 }, [{ name: 'test01', owner: 'clintoon' }]
+    github_mock.expect :permission_level, { permission: 'admin' }, [{ name: 'test01', owner: 'clintoon' }, 'clintoon']
+    github_mock.expect :repository, { id: 1 }, [{ name: 'test01', owner: 'clintoon' }]
+
+    github_app_mock = Minitest::Mock.new
+    github_app_mock.expect :repo_installation_id, 'installation_id123', [{ name: 'test01', owner: 'clintoon' }]
+
+    GithubAppService.stub(:new, github_app_mock) do
+      GithubService.stub(:new, github_mock) do
+        post '/v1/repos/clintoon/test01/pulls/123/split',\
+             params: { patches: ['example patch'] },\
+             headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
+      end
+    end
+
+    assert_response :success
+    assert_mock github_mock
+    assert_mock github_app_mock
+  end
+
+  test 'splitting PR should return unauthorized if user does not have write access' do
+    valid_access_token = 'abc123'
+
+    github_mock = Minitest::Mock.new
+    github_mock.expect :current_user, id: 1, login: 'clintoon'
+    github_mock.expect :repository, { id: 1 }, [{ name: 'test01', owner: 'clintoon' }]
+    github_mock.expect :permission_level, { permission: 'read' }, [{ name: 'test01', owner: 'clintoon' }, 'clintoon']
+
+    github_app_mock = Minitest::Mock.new
+
+    GithubAppService.stub(:new, github_app_mock) do
+      GithubService.stub(:new, github_mock) do
+        post '/v1/repos/clintoon/test01/pulls/123/split',\
+             params: { patches: ['example patch'] },\
+             headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
+      end
+    end
+
+    assert_response :unauthorized
+    assert_mock github_mock
+    assert_mock github_app_mock
+  end
+
+  test 'splitting PR should return forbidden if repo id has changed' do
+    valid_access_token = 'abc123'
+
+    github_mock = Minitest::Mock.new
+    github_mock.expect :current_user, id: 1, login: 'clintoon'
+    github_mock.expect :repository, { id: 1 }, [{ name: 'test01', owner: 'clintoon' }]
+    github_mock.expect :permission_level, { permission: 'write' }, [{ name: 'test01', owner: 'clintoon' }, 'clintoon']
+    github_mock.expect :repository, { id: 2 }, [{ name: 'test01', owner: 'clintoon' }]
+
+    github_app_mock = Minitest::Mock.new
+    github_app_mock.expect :repo_installation_id, 'installation_id123', [{ name: 'test01', owner: 'clintoon' }]
+
+    GithubAppService.stub(:new, github_app_mock) do
+      GithubService.stub(:new, github_mock) do
+        post '/v1/repos/clintoon/test01/pulls/123/split',\
+             params: { patches: ['example patch'] },\
+             headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
+      end
+    end
+
+    assert_response :forbidden
+    assert_mock github_mock
+    assert_mock github_app_mock
+  end
 end
