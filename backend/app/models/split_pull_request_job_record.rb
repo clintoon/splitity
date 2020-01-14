@@ -4,6 +4,7 @@ class SplitPullRequestJobRecord < ApplicationRecord
 
   has_many :child_pull_requests, dependent: :destroy
 
+  # TODO(clinton): rename pr_id into pr_number
   validates :parent_pr_id, presence: true
   validates :split_initiated_by_user_id, presence: true
   validates :repo_id, presence: true

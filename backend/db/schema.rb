@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_06_103137) do
+ActiveRecord::Schema.define(version: 2020_01_07_183720) do
 
   create_table "child_pull_requests", force: :cascade do |t|
     t.integer "child_pr_id", null: false
@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 2020_01_06_103137) do
     t.integer "parent_pr_id", null: false
     t.integer "split_initiated_by_user_id", null: false
     t.integer "status", default: 0, null: false
-    t.string "repo_id", null: false
+    t.integer "repo_id", null: false
   end
 
   add_foreign_key "child_pull_requests", "split_pull_request_job_records"

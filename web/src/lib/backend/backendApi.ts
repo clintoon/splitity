@@ -23,7 +23,7 @@ class BackendAPI {
     this.httpWithAuth = axios.create({
       baseURL: backendConfig.backendApiUrl,
       headers: {
-        Authorization: auth,
+        'Access-Token': auth,
       },
     });
   }

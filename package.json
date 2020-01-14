@@ -39,7 +39,7 @@
       "git add"
     ],
     "backend/{app,test}/**/*.rb": [
-      "rubocop -a",
+      "rubocop --fix-layout",
       "git add"
     ]
   }
