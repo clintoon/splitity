@@ -45,7 +45,7 @@ const FILE_DIFF_CHUNK_SEPARATOR_TESTID = 'file diff chunk separator';
 
 const getFilenameHeader = (filename: FilenameChange): string | undefined => {
   if (filename.from === filename.to) {
-    return filename.from || filename.from;
+    return filename.from;
   }
 
   if (!filename.from || !filename.to) {
