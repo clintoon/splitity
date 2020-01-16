@@ -56,7 +56,7 @@ interface RenderAppResult {
   history: MemoryHistory;
 }
 
-const currentUser = {
+const currentUserData = {
   email: EMAIL,
   emailVerified: EMAIL_VERIFIED,
   userId: USER_ID,
@@ -105,7 +105,7 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
 
   if (backFromAuthRedirect) {
     getRedirectResultSpy.mockResolvedValue({
-      currentUser,
+      currentUser: currentUserData,
       oAuthToken: AUTH_TOKEN_COOKIE,
     });
   } else {
@@ -122,7 +122,7 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
 
   const storeOptions = initialStoreAuthenticated
     ? {
-        auth: { currentUser: { ...currentUser, githubInstallationId } },
+        auth: { currentUser: { ...currentUserData, githubInstallationId } },
       }
     : undefined;
   const stores = mockStoreFactory(storeOptions);
