@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { match } from 'react-router-dom';
+import { match as routerMatch } from 'react-router-dom';
 import { GithubAPI } from '@web/lib/github/github';
 import { PullRequestInfoPage } from '@web/pages/PullRequestSplittingPage/PullRequestInfo';
 import styled from 'styled-components';
@@ -24,7 +24,7 @@ interface MatchProps {
 }
 
 interface PullRequestSplittingPageProps {
-  match: match<MatchProps>;
+  match: routerMatch<MatchProps>;
 }
 
 interface PRBranchData {
