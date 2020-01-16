@@ -8,6 +8,7 @@ end
 require_relative '../config/environment'
 require 'rails/test_help'
 require 'minitest/autorun'
+require 'mocha/minitest'
 
 # Restores test database after each test
 DatabaseCleaner.strategy = :transaction
@@ -24,13 +25,7 @@ end
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 
-  if ENV['CI'] == 'true'
-    # TODO(clinton): Get rid of this once simplecov fix parallelization
-    parallelize(workers: 1)
-  else
-    # Run tests in parallel with specified workers
-    parallelize(workers: :number_of_processors)
-  end
+  parallelize(workers: 1)
 
   # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
   fixtures :all

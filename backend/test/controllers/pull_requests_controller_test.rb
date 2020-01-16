@@ -13,11 +13,10 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     mock = Minitest::Mock.new
     mock.expect :current_user, nil
 
-    GithubService.stub(:new, mock) do
-      post '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',\
-           params: { patches: ['example patch'] },\
-           headers: { 'HTTP_ACCESS_TOKEN': invalid_access_token }
-    end
+    GithubService.stubs(:new).returns(mock)
+    post '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',\
+         params: { patches: ['example patch'] },\
+         headers: { 'HTTP_ACCESS_TOKEN': invalid_access_token }
 
     assert_response :unauthorized
     assert_mock mock
@@ -35,13 +34,12 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     github_app_mock = Minitest::Mock.new
     github_app_mock.expect :repo_installation_id, 'installation_id123', [{ name: 'test01', owner: 'clintoon' }]
 
-    GithubAppService.stub(:new, github_app_mock) do
-      GithubService.stub(:new, github_mock) do
-        post '/v1/repos/clintoon/test01/pulls/123/split',\
-             params: { patches: ['example patch'] },\
-             headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
-      end
-    end
+    GithubAppService.stubs(:new).returns(github_app_mock)
+    GithubService.stubs(:new).returns(github_mock)
+
+    post '/v1/repos/clintoon/test01/pulls/123/split',\
+         params: { patches: ['example patch'] },\
+         headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
 
     assert_response :success
     assert_mock github_mock
@@ -60,13 +58,12 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     github_app_mock = Minitest::Mock.new
     github_app_mock.expect :repo_installation_id, 'installation_id123', [{ name: 'test01', owner: 'clintoon' }]
 
-    GithubAppService.stub(:new, github_app_mock) do
-      GithubService.stub(:new, github_mock) do
-        post '/v1/repos/clintoon/test01/pulls/123/split',\
-             params: { patches: ['example patch'] },\
-             headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
-      end
-    end
+    GithubAppService.stubs(:new).returns(github_app_mock)
+    GithubService.stubs(:new).returns(github_mock)
+
+    post '/v1/repos/clintoon/test01/pulls/123/split',\
+         params: { patches: ['example patch'] },\
+         headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
 
     assert_response :success
     assert_mock github_mock
@@ -83,13 +80,12 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
 
     github_app_mock = Minitest::Mock.new
 
-    GithubAppService.stub(:new, github_app_mock) do
-      GithubService.stub(:new, github_mock) do
-        post '/v1/repos/clintoon/test01/pulls/123/split',\
-             params: { patches: ['example patch'] },\
-             headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
-      end
-    end
+    GithubAppService.stubs(:new).returns(github_app_mock)
+    GithubService.stubs(:new).returns(github_mock)
+
+    post '/v1/repos/clintoon/test01/pulls/123/split',\
+         params: { patches: ['example patch'] },\
+         headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
 
     assert_response :unauthorized
     assert_mock github_mock
@@ -108,13 +104,12 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     github_app_mock = Minitest::Mock.new
     github_app_mock.expect :repo_installation_id, 'installation_id123', [{ name: 'test01', owner: 'clintoon' }]
 
-    GithubAppService.stub(:new, github_app_mock) do
-      GithubService.stub(:new, github_mock) do
-        post '/v1/repos/clintoon/test01/pulls/123/split',\
-             params: { patches: ['example patch'] },\
-             headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
-      end
-    end
+    GithubAppService.stubs(:new).returns(github_app_mock)
+    GithubService.stubs(:new).returns(github_mock)
+
+    post '/v1/repos/clintoon/test01/pulls/123/split',\
+         params: { patches: ['example patch'] },\
+         headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
 
     assert_response :forbidden
     assert_mock github_mock
