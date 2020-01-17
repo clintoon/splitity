@@ -3458,14 +3458,13 @@
     storybook__addon-actions "*"
 
 "@types/storybook__addon-knobs@^5.0.3":
-  version "5.0.4"
-  resolved "https://registry.yarnpkg.com/@types/storybook__addon-knobs/-/storybook__addon-knobs-5.0.4.tgz#8d29b295459279a7a8e91cf2fffc99a3727258ea"
-  integrity sha512-B43R3SWGjQe/dyGpzjjCLloMBcxhHUtLOYv1EwIEiCBaZrz8h4ItdHA3yMX3GO6L6MyH9BVhNUUc9QzdfnyyjQ==
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@types/storybook__addon-knobs/-/storybook__addon-knobs-5.2.0.tgz#338e555dc6c0c4595f265d7ed7e2bcbb0eaa553d"
+  integrity sha512-Q1U5R1udWQ4Z5qJJkshGd2wxcTKM4n7HhNiSabZ8GKeme2B/oDTldqGUKEOqp0nIvWMb5eqinizxDx7NfEDlPg==
   dependencies:
-    "@types/react" "*"
-    "@types/storybook__react" "*"
+    storybook__addon-knobs "*"
 
-"@types/storybook__react@*", "@types/storybook__react@^4.0.2":
+"@types/storybook__react@^4.0.2":
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/@types/storybook__react/-/storybook__react-4.0.2.tgz#f36fb399574c662e79c1a0cf6e429b6ff730da40"
   integrity sha512-U/+J5qccRdKFryvHkk1a0IeZaSIZLCmTwAQhTSDGeC3SPNIYPus+EtunBqP49r870l8czbfxtjeC3IL9P66ngQ==
@@ -14412,6 +14411,11 @@ storybook__addon-actions@*:
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/storybook__addon-actions/-/storybook__addon-actions-0.0.4.tgz#aa6232c434644044a5ffb4cbe594c5c4c3d7171b"
   integrity sha512-5t/P2c1VoOzMiBghq4WQnJZGBJ9qpA0sxVI+ZySEOOM5RsVpaP/cPRdOeMr1RbyuXOp4zp16EhD6dlAgLdTQig==
+
+storybook__addon-knobs@*:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/storybook__addon-knobs/-/storybook__addon-knobs-0.0.4.tgz#a9965d85bf93341b8fa227105049d681f5e24676"
+  integrity sha512-MZogtup7usbyDsbT8fdPNwB3VGQVcBD+u1+LpgrEYB6U3TwG6PEDujTl2d0CXsC5DP4FxEbJN4CBPxNtXU7zRg==
 
 stream-browserify@^2.0.1:
   version "2.0.2"
