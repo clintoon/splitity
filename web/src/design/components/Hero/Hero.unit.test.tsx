@@ -12,6 +12,8 @@ const HERO_TITLE = 'hero title';
 const HERO_SUBTITLE = 'hero subtitle';
 const HERO_BUTTON_LABEL = 'hero label';
 
+const BODY_TESTID = 'hero body testid';
+
 interface RenderHeroOptions {
   backgroundColor: Color;
   buttonLabel?: string;
@@ -36,6 +38,7 @@ const renderHero = (options: RenderHeroOptions): RenderHeroResult => {
       subtitle={HERO_SUBTITLE}
       backgroundColor={backgroundColor}
       button={button}
+      body={<div data-testid={BODY_TESTID} />}
     />
   );
 
@@ -70,6 +73,13 @@ describe('<Hero/>', (): void => {
         backgroundColor: Color.Blue50,
       });
       expect(renderResult.container).not.toContainHTML('button');
+    });
+
+    it('does renders body', (): void => {
+      const { renderResult } = renderHero({
+        backgroundColor: Color.Blue50,
+      });
+      expect(renderResult.queryByTestId(BODY_TESTID)).not.toBe(null);
     });
   });
 
@@ -121,6 +131,14 @@ describe('<Hero/>', (): void => {
       });
       fireEvent.click(renderResult.getByTestId(BUTTON_TESTID));
       expect(onButtonClickMock).toHaveBeenCalled();
+    });
+
+    it('does renders body', (): void => {
+      const { renderResult } = renderHero({
+        backgroundColor: Color.Blue50,
+        buttonLabel: HERO_BUTTON_LABEL,
+      });
+      expect(renderResult.queryByTestId(BODY_TESTID)).not.toBe(null);
     });
   });
 });

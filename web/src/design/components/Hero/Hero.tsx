@@ -24,6 +24,7 @@ export interface HeroProps {
     label: string;
     onClick: (event: React.MouseEvent) => void;
   };
+  body: JSX.Element;
 }
 
 interface HeroWrapperProps {
@@ -37,11 +38,10 @@ const HeroWrapper = styled.div<HeroWrapperProps>`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
 `;
 
 const ContentWrapper = styled.div`
-  margin: 0;
+  margin: 80px 0 0 0;
 `;
 
 const ButtonWrapper = styled.div`
@@ -50,11 +50,16 @@ const ButtonWrapper = styled.div`
   justify-content: center;
 `;
 
+const BodyWrapper = styled.div`
+  margin: 40px 0 0 0;
+`;
+
 const Hero = ({
   title,
   subtitle,
   backgroundColor,
   button,
+  body,
 }: HeroProps): JSX.Element => {
   return (
     <HeroWrapper data-testid={HERO_TESTID} backgroundColor={backgroundColor}>
@@ -89,6 +94,7 @@ const Hero = ({
             </Button>
           </ButtonWrapper>
         )}
+        <BodyWrapper>{body}</BodyWrapper>
       </ContentWrapper>
     </HeroWrapper>
   );

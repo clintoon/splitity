@@ -4,6 +4,14 @@ import { Hero } from '@web/design/components/Hero/Hero';
 import { select, text } from '@storybook/addon-knobs';
 import { Color } from '@web/design/styles/color';
 import { noop } from 'lodash';
+import styled from 'styled-components';
+
+const BodyPlaceholder = styled.div`
+  background: ${Color.Gray400};
+  border-radius: 30px;
+  height: 540px;
+  width: 960px;
+`;
 
 storiesOf('Hero', module)
   .add(
@@ -17,6 +25,7 @@ storiesOf('Hero', module)
           Object.values(Color),
           Color.Blue50
         )}
+        body={<BodyPlaceholder />}
       />
     )
   )
@@ -35,6 +44,7 @@ storiesOf('Hero', module)
           label: text('buttonLabel', 'button label'),
           onClick: noop,
         }}
+        body={<BodyPlaceholder />}
       />
     )
   );
