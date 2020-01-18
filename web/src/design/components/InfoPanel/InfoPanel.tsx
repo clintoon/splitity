@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Text, TextStyle } from '@web/design/components/Text/Text';
+import { Text, TextStyle, TextAs } from '@web/design/components/Text/Text';
 
 interface ContainerProps {
   color: string;
@@ -41,7 +41,7 @@ const InfoPanel = ({
   return (
     <Container color={color}>
       <InfoSection>
-        <Text styleOf={TextStyle.Title2} margin="0 0 20px 0">
+        <Text styleOf={TextStyle.Title2} as={TextAs.H2} margin="0 0 20px 0">
           {title}
         </Text>
         {bulletPoints.map(
