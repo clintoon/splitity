@@ -5,7 +5,7 @@ import { handleSignIn } from '@web/lib/eventHandlers/auth';
 import ReactPlayer from 'react-player';
 import styled from 'styled-components';
 import { InfoPanel } from '@web/design/components/InfoPanel/InfoPanel';
-import DevProductivity from '../../design/svg/undraw_dev_productivity.svg';
+import DevProductivity from '@web/design/svg/undraw_dev_productivity.svg';
 
 const RoundedCorners = styled.div`
   border-radius: 25px;
