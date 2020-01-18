@@ -25,7 +25,7 @@ interface EnhancedBaseButtonProps {
 
 const buttonStyleOfMap = {
   primary: {
-    backgroundColor: Color.BlueA200,
+    backgroundColor: Color.BlueA100,
     fontColor: Color.Gray900,
   },
   secondary: {
