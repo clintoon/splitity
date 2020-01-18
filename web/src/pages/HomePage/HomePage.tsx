@@ -46,7 +46,7 @@ const HomePage = (): JSX.Element => {
           title="Why use Splitity?"
           bulletPoints={[
             'Help encourage good pull request culture within your team, and split big pull requests into atomic code reviews',
-            'Save the time and trouble with manually splitting your pull requests. Just click and go',
+            'Save the time and trouble without manually splitting your pull requests. Just click and go',
           ]}
           color={Color.Gray100}
           illustration={<DevProductivity viewBox="0 0 400 345" />}
