@@ -5,7 +5,7 @@ import { handleSignIn } from '@web/lib/eventHandlers/auth';
 import ReactPlayer from 'react-player';
 import styled from 'styled-components';
 import { InfoPanel } from '@web/design/components/InfoPanel/InfoPanel';
-import DevProductivity from '../../design/svg/undraw_dev_productivity_umsq.svg';
+import DevProductivity from '../../design/svg/undraw_dev_productivity.svg';
 
 const RoundedCorners = styled.div`
   border-radius: 25px;
@@ -49,9 +49,7 @@ const HomePage = (): JSX.Element => {
             'Save the time and trouble with manually splitting your pull requests. Just click and go',
           ]}
           color={Color.Gray100}
-          illustration={
-            <DevProductivity width={200} height={200} viewBox="0 0 200 200" />
-          }
+          illustration={<DevProductivity viewBox="0 0 400 345" />}
         />
       </InfoSection>
     </div>
