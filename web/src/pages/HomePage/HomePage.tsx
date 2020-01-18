@@ -13,7 +13,7 @@ const RoundedCorners = styled.div`
   z-index: 1;
 `;
 
-const InfoSection = styled.div`
+const WhySplititySection = styled.div`
   margin: 250px 0 0 0;
 `;
 
@@ -41,7 +41,7 @@ const HomePage = (): JSX.Element => {
           </RoundedCorners>
         }
       />
-      <InfoSection>
+      <WhySplititySection>
         <InfoPanel
           title="Why use Splitity?"
           bulletPoints={[
@@ -51,7 +51,7 @@ const HomePage = (): JSX.Element => {
           color={Color.Gray100}
           illustration={<DevProductivity viewBox="0 0 400 345" />}
         />
-      </InfoSection>
+      </WhySplititySection>
     </div>
   );
 };
