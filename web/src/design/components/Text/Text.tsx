@@ -45,6 +45,7 @@ export interface TextProps {
   textAlign?: TextAlign;
   color: Color;
   fontWeight: TextWeight;
+  className?: string;
 }
 
 interface TextBaseProps {
@@ -60,7 +61,7 @@ const textStyleMapping = {
     fontSize: '64px',
   },
   [TextStyle.Title2]: {
-    fontSize: '32px',
+    fontSize: '48px',
   },
   [TextStyle.Title3]: {
     fontSize: '28px',
@@ -163,6 +164,7 @@ const Text = ({
   textAlign,
   color,
   fontWeight,
+  className,
   children,
 }: TextProps): JSX.Element => {
   const BaseComponent = textTagTypeToComponentMap[as];
@@ -174,6 +176,7 @@ const Text = ({
       textAlign={textAlign}
       color={color}
       fontWeight={fontWeight}
+      className={className}
     >
       {children}
     </BaseComponent>

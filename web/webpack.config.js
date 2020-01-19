@@ -24,6 +24,17 @@ module.exports = {
         test: /\.tsx?$/,
         loader: 'ts-loader',
       },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: 'babel-loader',
+          },
+          {
+            loader: 'react-svg-loader',
+          },
+        ],
+      },
     ],
   },
   plugins: [new Dotenv()],

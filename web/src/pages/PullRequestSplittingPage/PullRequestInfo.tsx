@@ -25,7 +25,7 @@ const PullRequestInfoPage = ({
   return (
     <div>
       <TextGroup data-testid={PULL_REQUEST_INFO_TESTID}>
-        <Text styleOf={TextStyle.Title2}>{title}</Text>
+        <Text styleOf={TextStyle.Title3}>{title}</Text>
         <Text styleOf={TextStyle.Title6}>{`${owner}/${repoName}`}</Text>
       </TextGroup>
     </div>
