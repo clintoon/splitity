@@ -8,6 +8,7 @@ import { InfoPanel } from '@web/design/components/InfoPanel/InfoPanel';
 import DevProductivity from '@web/design/svg/undraw_dev_productivity.svg';
 import { InfoGrid } from '@web/design/components/InfoGrid/InfoGrid';
 import { Footer } from '@web/design/components/Footer/Footer';
+import { Pricing } from '@web/design/components/Pricing/Pricing';
 
 const RoundedCorners = styled.div`
   border-radius: 25px;
@@ -70,6 +71,21 @@ const HomePage = (): JSX.Element => {
         color={Color.White}
         illustration={<DevProductivity />}
       />
+      <Pricing
+        title="Pricing"
+        plans={[
+          {
+            head: 'Open source & personal accounts',
+            content: 'Public and personal account repos are free',
+            price: 0,
+          },
+          {
+            head: 'Organization accounts',
+            content: 'Unlimited repos on organization accounts',
+            price: 0,
+          },
+        ]}
+      />{' '}
       <Footer text="Copyright © 2020 Splitity Pty Ltd" />
     </div>
   );
