@@ -3,6 +3,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/setupTest.ts'],
   moduleNameMapper: {
+    '\\.(svg)$': '<rootDir>/__mocks__/SvgMock.ts',
     '^@web(.*)$': '<rootDir>/src$1',
   },
   clearMocks: true,
