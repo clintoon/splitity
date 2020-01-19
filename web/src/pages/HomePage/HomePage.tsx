@@ -70,7 +70,7 @@ const HomePage = (): JSX.Element => {
         color={Color.White}
         illustration={<DevProductivity />}
       />
-      <Footer text="Copyright © 2020 Splitity. All Rights Reserved" />
+      <Footer text="Copyright © 2020 Splitity Pty Ltd. All Rights Reserved" />
     </div>
   );
 };
