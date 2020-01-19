@@ -6,6 +6,7 @@ import ReactPlayer from 'react-player';
 import styled from 'styled-components';
 import { InfoPanel } from '@web/design/components/InfoPanel/InfoPanel';
 import DevProductivity from '@web/design/svg/undraw_dev_productivity.svg';
+import { InfoGrid } from '@web/design/components/InfoGrid/InfoGrid';
 
 const RoundedCorners = styled.div`
   border-radius: 25px;
@@ -13,8 +14,8 @@ const RoundedCorners = styled.div`
   z-index: 1;
 `;
 
-const WhySplititySection = styled.div`
-  margin: 250px 0 0 0;
+const HowItWorksSection = styled.div`
+  margin: 200px 0 0 0;
 `;
 
 const HomePage = (): JSX.Element => {
@@ -41,17 +42,33 @@ const HomePage = (): JSX.Element => {
           </RoundedCorners>
         }
       />
-      <WhySplititySection>
-        <InfoPanel
-          title="Why use Splitity?"
-          bulletPoints={[
-            'Split big pull requests into atomic code reviews and encourage good pull request practices within your team.',
-            'Save the time and trouble with doing it manually. Just click and go.',
-          ]}
+      <HowItWorksSection>
+        <InfoGrid
+          title="How it works?"
           color={Color.Gray100}
-          illustration={<DevProductivity />}
+          items={[
+            {
+              head: 'Allocate your changes across different pull requests.',
+              content:
+                'Use our easy to use interface to click and highlight code changes within and across your files into different pull requests',
+            },
+            {
+              head: 'Split',
+              content:
+                'When your ready, with the click of a button, we will automatically create the newly split pull requests',
+            },
+          ]}
         />
-      </WhySplititySection>
+      </HowItWorksSection>
+      <InfoPanel
+        title="Why use Splitity?"
+        bulletPoints={[
+          'Split big pull requests into atomic code reviews and encourage good pull request practices within your team.',
+          'Save the time and trouble with doing it manually. Just click and go.',
+        ]}
+        color={Color.White}
+        illustration={<DevProductivity />}
+      />
     </div>
   );
 };
