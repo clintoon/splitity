@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { InfoPanel } from '@web/design/components/InfoPanel/InfoPanel';
 import DevProductivity from '@web/design/svg/undraw_dev_productivity.svg';
 import { InfoGrid } from '@web/design/components/InfoGrid/InfoGrid';
+import { Footer } from '@web/design/components/Footer/Footer';
 
 const RoundedCorners = styled.div`
   border-radius: 25px;
@@ -69,6 +70,7 @@ const HomePage = (): JSX.Element => {
         color={Color.White}
         illustration={<DevProductivity />}
       />
+      <Footer text="Copyright © 2020 Splitity. All Rights Reserved" />
     </div>
   );
 };
