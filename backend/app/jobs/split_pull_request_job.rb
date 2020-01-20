@@ -12,7 +12,7 @@ def apply_patch(params)
     raise Exception, 'apply_patch params are not safe.'
   end
 
-  path_prefix = "tmp/splitity/repo-#{params[:repo_id]}/job-#{params[:job_id]}/pr-count-#{params[:split_count]}"
+  path_prefix = "tmp/splitity/split-pr-job/repo-#{params[:repo_id]}/job-#{params[:job_id]}/pr-count-#{params[:split_count]}"
   git_repo_path = "#{path_prefix}/repo"
   patch_path = "#{path_prefix}/patch.diff"
 
@@ -61,7 +61,7 @@ class SplitPullRequestJob < ApplicationJob
     repos = []
 
     params[:patches].each_with_index do |patch, split_count|
-      path_prefix = "tmp/splitity/repo-#{params[:repo_id]}/job-#{params[:job_id]}/pr-count-#{split_count}"
+      path_prefix = "tmp/splitity/split-pr-job/repo-#{params[:repo_id]}/job-#{params[:job_id]}/pr-count-#{split_count}"
       FileUtils.mkdir_p(path_prefix)
       git_clone_path = "#{path_prefix}/repo"
       repo = Rugged::Repository.clone_at(
@@ -89,7 +89,7 @@ class SplitPullRequestJob < ApplicationJob
       options[:tree] = repo.index.write_tree(repo)
       options[:author] = { email: 'support@splitity.com', name: 'Splitity', time: Time.now.utc }
       options[:committer] = { email: 'support@splitity.com', name: 'Splitity', time: Time.now.utc }
-      options[:message] = "Split PR ##{params[:pr_id]}"
+      options[:message] = "Split pull request from ##{params[:pr_id]}"
       options[:parents] = repo.empty? ? [] : [repo.head.target].compact
       options[:update_ref] = 'HEAD'
 
