@@ -27,7 +27,7 @@ const EMPTY_BODY_TESTID = 'empty body testid';
 
 const Container = styled.div`
   display: flex;
-  margin: 50px 0 0 0;
+  margin: 50px 0;
   justify-content: center;
 `;
 

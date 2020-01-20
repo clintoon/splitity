@@ -82,7 +82,7 @@ class GithubAPI {
     const resp = await this.graphqlWithAuth(
       `query CurrentUserRepos($first: Int = 5, $cursor: String = null, $states: [PullRequestState!]) {
         viewer {
-          pullRequests(first: $first, after: $cursor, states: $states) {
+          pullRequests(first: $first, after: $cursor, states: $states, orderBy: {direction: DESC, field: UPDATED_AT}) {
             pageInfo {
               hasNextPage,
               endCursor
