@@ -1,1 +1,1 @@
-# Split-my-prs
+# Splitity
