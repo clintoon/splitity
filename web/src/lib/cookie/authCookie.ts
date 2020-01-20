@@ -2,8 +2,7 @@ import Cookies from 'js-cookie';
 import { CookieName } from '@web/lib/cookie/constants';
 
 const setOAuthToken = (oAuthToken: string): void => {
-  // TODO(clinton): double check security implications
-  Cookies.set(CookieName.Auth, { oAuthToken });
+  Cookies.set(CookieName.Auth, { oAuthToken }, { sameSite: 'strict' });
 };
 
 const getOAuthToken = (): string | undefined => {
