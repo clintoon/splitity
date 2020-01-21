@@ -25,7 +25,7 @@ class GithubService
 
   def pull_request(repo, number)
     data = @client.pull_request(repo, number)
-    { head_ref: data[:head][:ref], base_ref: data[:base][:ref], base_sha: data[:base][:sha] }
+    { head_ref: data[:head][:ref], base_ref: data[:base][:ref], base_sha: data[:base][:sha], title: data[:title] }
   end
 
   def create_pull_request(repo, base, head, title, body = nil)
@@ -36,5 +36,10 @@ class GithubService
   def permission_level(repo, collaborator)
     data = @client.permission_level(repo, collaborator)
     { permission: data[:permission] }
+  end
+
+  def add_comment_on_issue(repo:, number:, comment:)
+    @client.add_comment(repo, number, comment)
+    nil
   end
 end

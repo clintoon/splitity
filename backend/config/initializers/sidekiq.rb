@@ -1,5 +1,5 @@
 if !Rails.application.credentials.redis.nil?
-  REDIS_URL = Rails.application.credentials.redis[:uri]
+  REDIS_URI = Rails.application.credentials.redis[:uri]
 
   Sidekiq.configure_server do |config|
     config.redis = { url: REDIS_URI }
