@@ -25,7 +25,7 @@ class GithubService
 
   def pull_request(repo, number)
     data = @client.pull_request(repo, number)
-    { head_ref: data[:head][:ref], base_ref: data[:base][:ref], base_sha: data[:base][:sha] }
+    { head_ref: data[:head][:ref], base_ref: data[:base][:ref], base_sha: data[:base][:sha], title: data[:title] }
   end
 
   def create_pull_request(repo, base, head, title, body = nil)

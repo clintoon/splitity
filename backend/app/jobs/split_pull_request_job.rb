@@ -61,6 +61,7 @@ class SplitPullRequestJob < ApplicationJob
     repos = []
 
     params[:patches].each_with_index do |patch, split_count|
+      split_count += 1
       path_prefix = "tmp/splitity/split-pr-job/repo-#{params[:repo_id]}/job-#{params[:job_id]}/pr-count-#{split_count}"
       FileUtils.mkdir_p(path_prefix)
       git_clone_path = "#{path_prefix}/repo"
@@ -103,12 +104,14 @@ class SplitPullRequestJob < ApplicationJob
     # For each of the diff
     # push and create a Pull Request
     repos.each_with_index do |repo, split_count|
+      split_count += 1
+
       repo.push('origin', "refs/heads/splitity/pull-request-#{params[:pr_id]}/job-#{params[:job_id]}/split-#{split_count}", credentials: git_client_creds)
       created_pr = github.create_pull_request(
         params[:repo_id],
         pr_info[:base_ref],
         "splitity/pull-request-#{params[:pr_id]}/job-#{params[:job_id]}/split-#{split_count}",
-        "Split ##{params[:pr_id]} number #{split_count}"
+        "#{pr_info[:title]} #{split_count}"
       )
       child_pr = ChildPullRequest.new(child_pr_id: created_pr[:number])
       split_pr_job_record.child_pull_requests << [child_pr]
