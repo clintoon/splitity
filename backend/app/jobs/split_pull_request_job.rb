@@ -89,7 +89,7 @@ class SplitPullRequestJob < ApplicationJob
       options[:tree] = repo.index.write_tree(repo)
       options[:author] = { email: 'support@splitity.com', name: 'Splitity', time: Time.now.utc }
       options[:committer] = { email: 'support@splitity.com', name: 'Splitity', time: Time.now.utc }
-      options[:message] = "Split pull request from ##{params[:pr_id]}"
+      options[:message] = 'Split pull request'
       options[:parents] = repo.empty? ? [] : [repo.head.target].compact
       options[:update_ref] = 'HEAD'
 
@@ -113,6 +113,13 @@ class SplitPullRequestJob < ApplicationJob
       child_pr = ChildPullRequest.new(child_pr_id: created_pr[:number])
       split_pr_job_record.child_pull_requests << [child_pr]
     end
+
+    github.add_comment_on_issue(
+      repo: params[:repo_id],
+      number: params[:pr_id],
+      comment: "This PR has been split into:
+#{split_pr_job_record.child_pull_requests.map { |child_pr| "* ##{child_pr.child_pr_id}" }.join("\n")}"
+    )
 
     split_pr_job_record.success!
   end
