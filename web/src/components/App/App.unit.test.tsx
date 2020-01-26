@@ -25,11 +25,14 @@ import { BUTTON_TESTID } from '@web/design/components/Button/Button';
 import { handleSignIn } from '@web/lib/eventHandlers/auth';
 import { GithubAPI } from '@web/lib/github/github';
 import { CurrentUser } from '@web/stores/authStore';
+import * as Tracking from '@web/lib/analytics/tracking';
+import { noop } from 'lodash';
 
 jest.mock('@web/lib/firebase/auth');
 jest.mock('@web/lib/cookie/authCookie');
 jest.mock('@web/lib/eventHandlers/auth');
 jest.mock('@web/lib/github/github');
+jest.mock('@web/lib/analytics/tracking');
 
 const AUTH_TOKEN_COOKIE = 'auth-token-cookie';
 const EMAIL = 'clinton@gmail.com';
@@ -51,12 +54,15 @@ interface RenderAppOptions {
   backFromAuthRedirect: boolean;
   authCookieToken?: string | null;
   githubAppInstalled?: boolean;
+  isNewUser?: boolean;
 }
 
 interface RenderAppResult {
   renderResult: RenderResult;
   stores: StoreType;
   history: MemoryHistory;
+  aliasSpy: jest.SpyInstance;
+  identifySpy: jest.SpyInstance;
 }
 
 const currentUserData = {
@@ -72,7 +78,11 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
     backFromAuthRedirect,
     initialStoreAuthenticated,
     authCookieToken,
+    isNewUser,
   } = options;
+
+  const aliasSpy = jest.spyOn(Tracking, 'alias').mockImplementation(noop);
+  const identifySpy = jest.spyOn(Tracking, 'identify').mockImplementation(noop);
 
   const onAuthStateChangedSpy = jest.spyOn(
     FirebaseAuth.prototype,
@@ -110,7 +120,7 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
     getRedirectResultSpy.mockResolvedValue({
       currentUser: currentUserData,
       oAuthToken: AUTH_TOKEN_COOKIE,
-      isNewUser: false,
+      isNewUser: Boolean(isNewUser),
     });
   } else {
     getRedirectResultSpy.mockResolvedValue(null);
@@ -150,6 +160,8 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
     renderResult,
     stores,
     history,
+    aliasSpy,
+    identifySpy,
   };
 };
 
@@ -178,18 +190,6 @@ describe('<App/>', (): void => {
   });
 
   describe('initial user state', (): void => {
-    it('login user if user is logged in', async (): Promise<void> => {
-      const { stores } = renderApp({
-        initialRoute: RoutePath.Root,
-        isAuthenticated: true,
-        initialStoreAuthenticated: false,
-        backFromAuthRedirect: false,
-      });
-      await wait((): void => {
-        expect(stores.auth.getCurrentUser()).not.toBe(null);
-      });
-    });
-
     it('clear user from store and cookie if not logged in', async (): Promise<
       void
     > => {
@@ -281,7 +281,7 @@ describe('<App/>', (): void => {
       });
     });
 
-    it('stores githubInstalltionId when user has installed github app', async (): Promise<
+    it('stores githubInstallationId when user has installed github app', async (): Promise<
       void
     > => {
       const { stores } = renderApp({
@@ -299,7 +299,7 @@ describe('<App/>', (): void => {
       });
     });
 
-    it('githubInstalltionId is null when user has not installed github app', async (): Promise<
+    it('githubInstallationId is null when user has not installed github app', async (): Promise<
       void
     > => {
       const { stores } = renderApp({
@@ -312,6 +312,34 @@ describe('<App/>', (): void => {
       await wait((): void => {
         const currentUser = stores.auth.getCurrentUser();
         expect((currentUser as CurrentUser).githubInstallationId).toBe(null);
+      });
+    });
+
+    it('calls alias when is new user', async (): Promise<void> => {
+      const { aliasSpy } = renderApp({
+        initialRoute: RoutePath.Root,
+        isAuthenticated: false,
+        backFromAuthRedirect: true,
+        initialStoreAuthenticated: false,
+        githubAppInstalled: false,
+        isNewUser: true,
+      });
+      await wait((): void => {
+        expect(aliasSpy).toBeCalled();
+      });
+    });
+
+    it('calls identify when is not new user', async (): Promise<void> => {
+      const { identifySpy } = renderApp({
+        initialRoute: RoutePath.Root,
+        isAuthenticated: false,
+        backFromAuthRedirect: true,
+        initialStoreAuthenticated: false,
+        githubAppInstalled: false,
+        isNewUser: false,
+      });
+      await wait((): void => {
+        expect(identifySpy).toBeCalled();
       });
     });
   });
