@@ -5,7 +5,7 @@ import { User, Unsubscribe } from 'firebase';
 export interface CurrentUser {
   email: string;
   emailVerified: boolean;
-  userId: string;
+  userId: number;
 }
 
 interface RedirectResult {

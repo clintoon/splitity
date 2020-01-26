@@ -4,14 +4,14 @@ import { types } from 'mobx-state-tree';
 export interface CurrentUser {
   email: string;
   emailVerified: boolean;
-  userId: string;
+  userId: number;
   githubInstallationId: number | null;
 }
 
 const CurrentUserModel = types.model({
   email: types.string,
   emailVerified: types.boolean,
-  userId: types.string,
+  userId: types.number,
   githubInstallationId: types.maybeNull(types.number),
 });
 

@@ -10,7 +10,7 @@ const currentUserFactory = (
   return {
     email: 'clintonfeng@gmail.com',
     emailVerified: false,
-    userId: 'abc123',
+    userId: 123,
     githubInstallationId: options ? options.githubInstallationId : null,
   };
 };

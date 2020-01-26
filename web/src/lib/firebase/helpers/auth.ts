@@ -12,12 +12,16 @@ const transformRedirectResult = (
   return {
     email: result.user.email as string,
     emailVerified: result.user.emailVerified as boolean,
-    userId: result.user.uid as string,
+    userId: Number((result.user.providerData[0] as ProviderData).uid),
   };
 };
 
 interface TransformFirebaseUser {
   user: User;
+}
+
+interface ProviderData {
+  uid: string;
 }
 
 const transformFirebaseUser = ({
@@ -26,7 +30,7 @@ const transformFirebaseUser = ({
   return {
     email: user.email as string,
     emailVerified: user.emailVerified as boolean,
-    userId: user.uid as string,
+    userId: Number((user.providerData[0] as ProviderData).uid),
   };
 };
 

@@ -12,7 +12,6 @@ import { handleSignIn } from '@web/lib/eventHandlers/auth';
 
 const NAVBAR_SIGNIN_TESTID = 'navbar-signin';
 const NAVBAR_SIGN_OUT_TESTID = 'navbar-signout';
-const NAVBAR_ADD_REPOS_TESTID = 'navbar-add-repos';
 
 const renderNotAuthenticatedNavbar = (): JSX.Element => {
   return (
@@ -68,5 +67,4 @@ export {
   WrappedNavbar as NavbarForTest,
   NAVBAR_SIGNIN_TESTID,
   NAVBAR_SIGN_OUT_TESTID,
-  NAVBAR_ADD_REPOS_TESTID,
 };

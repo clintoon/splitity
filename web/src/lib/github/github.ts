@@ -30,11 +30,6 @@ export interface PullRequestPageInfo {
   endCursor: string | null;
 }
 
-interface CurrentUserPullRequestsResult {
-  pageInfo: PullRequestPageInfo;
-  nodes: PullRequest[];
-}
-
 interface GetPullRequestInfo {
   pullRequestId: number;
   repoName: string;
@@ -76,14 +71,25 @@ class GithubAPI {
     });
   }
 
-  public async getAppInstallationId(): Promise<number | null> {
-    // TODO(clinton): handle the case of multiple installations
+  public async getAppInstallationId(userId: number): Promise<number | null> {
+    // TODO(clinton): handle the case of multiple installations (more than 100)
     const installations = await this.restWithAuth.apps.listInstallationsForAuthenticatedUser();
     if (installations.data.total_count === 0) {
       return null;
     }
 
-    return installations.data.installations[0].id;
+    const userInstallations = installations.data.installations.filter(
+      installation => {
+        console.log(installation.account.login, ' ', userId);
+        return installation.account.id === userId;
+      }
+    );
+
+    if (userInstallations.length === 0) {
+      return null;
+    }
+
+    return userInstallations[0].id;
   }
 
   public async getPullRequestInfo({
