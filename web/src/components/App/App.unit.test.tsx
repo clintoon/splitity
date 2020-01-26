@@ -343,7 +343,7 @@ describe('<App/>', (): void => {
         isNewUser: true,
       });
       await wait((): void => {
-        expect(trackSpy).toBeCalledWith(TrackingEvent.signUp);
+        expect(trackSpy).toBeCalledWith(TrackingEvent.signUpCompleted);
       });
     });
 

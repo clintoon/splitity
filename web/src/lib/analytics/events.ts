@@ -1,5 +1,5 @@
 enum TrackingEvent {
-  signUp = 'sign_up',
+  signUpCompleted = 'sign_up_completed',
 }
 
 export { TrackingEvent };

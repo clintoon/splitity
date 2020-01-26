@@ -36,7 +36,7 @@ const useSignInRedirectResult = (
 
         if (result.isNewUser) {
           alias(result.currentUser.userId.toString());
-          track(TrackingEvent.signUp);
+          track(TrackingEvent.signUpCompleted);
         } else {
           identify(result.currentUser.userId.toString());
         }
