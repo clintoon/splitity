@@ -79,8 +79,7 @@ class GithubAPI {
     }
 
     const userInstallations = installations.data.installations.filter(
-      installation => {
-        console.log(installation.account.login, ' ', userId);
+      (installation): boolean => {
         return installation.account.id === userId;
       }
     );
