@@ -17,4 +17,8 @@ const track = (event: string, properties?: object): void => {
   mixpanel.track(event, properties);
 };
 
-export { identify, alias, track, initializeTracking };
+const resetTracking = (): void => {
+  mixpanel.reset();
+};
+
+export { identify, alias, track, initializeTracking, resetTracking };
