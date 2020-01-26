@@ -8,7 +8,7 @@ import {
 } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { mock, when, instance } from 'ts-mockito';
-import { User, Unsubscribe } from 'firebase';
+import { User, Unsubscribe, UserInfo } from 'firebase';
 import { Router } from 'react-router';
 
 import { App, APP_LOADING } from '@web/components/App/App';
@@ -34,12 +34,15 @@ jest.mock('@web/lib/github/github');
 const AUTH_TOKEN_COOKIE = 'auth-token-cookie';
 const EMAIL = 'clinton@gmail.com';
 const EMAIL_VERIFIED = false;
-const USER_ID = 'abc123';
+const USER_ID = 123;
 const GITHUB_INSTALLATION_ID = 123;
 const userMock = mock<User>();
 when(userMock.email).thenReturn(EMAIL);
 when(userMock.emailVerified).thenReturn(EMAIL_VERIFIED);
-when(userMock.uid).thenReturn(USER_ID);
+
+const providerDataMock = mock<UserInfo>();
+when(providerDataMock.uid).thenReturn(USER_ID.toString());
+when(userMock.providerData).thenReturn([instance(providerDataMock)]);
 
 interface RenderAppOptions {
   initialRoute: string;

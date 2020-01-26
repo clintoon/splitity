@@ -1,5 +1,5 @@
 import { mock, when, instance } from 'ts-mockito';
-import { User, auth } from 'firebase';
+import { User, auth, UserInfo } from 'firebase';
 import {
   transformRedirectResult,
   transformFirebaseUser,
@@ -15,7 +15,10 @@ describe('auth', (): void => {
     const userMock: User = mock<User>();
     when(userMock.email).thenReturn('email');
     when(userMock.emailVerified).thenReturn(true);
-    when(userMock.uid).thenReturn('uid');
+
+    const providerDataMock = mock<UserInfo>();
+    when(providerDataMock.uid).thenReturn('123');
+    when(userMock.providerData).thenReturn([instance(providerDataMock)]);
 
     it('returns undefined when result.user is undefined', (): void => {
       expect(
@@ -36,7 +39,7 @@ describe('auth', (): void => {
         Object {
           "email": "email",
           "emailVerified": true,
-          "userId": "uid",
+          "userId": 123,
         }
       `);
     });
@@ -46,7 +49,10 @@ describe('auth', (): void => {
     const userMock: User = mock<User>();
     when(userMock.email).thenReturn('email');
     when(userMock.emailVerified).thenReturn(true);
-    when(userMock.uid).thenReturn('uid');
+
+    const providerDataMock = mock<UserInfo>();
+    when(providerDataMock.uid).thenReturn('123');
+    when(userMock.providerData).thenReturn([instance(providerDataMock)]);
 
     it('returns the correct output', (): void => {
       expect(
@@ -57,7 +63,7 @@ describe('auth', (): void => {
         Object {
           "email": "email",
           "emailVerified": true,
-          "userId": "uid",
+          "userId": 123,
         }
       `);
     });

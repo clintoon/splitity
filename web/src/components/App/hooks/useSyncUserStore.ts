@@ -20,12 +20,14 @@ const useSyncUserStore = (store: StoreType): boolean => {
           throw Error('Error: logged in but cannot find oAuthToken');
         }
 
+        const currentUser = transformFirebaseUser({ user });
         const githubApi = new GithubAPI();
-        githubApi.getAppInstallationId().then((githubInstallationId): void => {
-          const currentUser = transformFirebaseUser({ user });
-          store.auth.signInUser({ ...currentUser, githubInstallationId });
-          setFetchingResult(false);
-        });
+        githubApi
+          .getAppInstallationId(currentUser.userId)
+          .then((githubInstallationId): void => {
+            store.auth.signInUser({ ...currentUser, githubInstallationId });
+            setFetchingResult(false);
+          });
       } else {
         store.auth.signOutUser();
         clearAuthCookie();

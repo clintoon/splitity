@@ -1,71 +1,120 @@
 import React from 'react';
-import { RenderResult, render } from '@testing-library/react';
-import { GithubDashboard } from '@web/pages/GithubDashboard/GithubDashboard';
-import { mockStoreFactory, TestStoreProvider } from '@web/testing/mockStore';
+import { GithubDashboard } from './GithubDashboard';
+import { RenderResult, render, within } from '@testing-library/react';
+import { TestStoreProvider, mockStoreFactory } from '@web/testing/mockStore';
+import { GithubAPI } from '@web/lib/github/github';
 import { currentUserFactory } from '@web/testing/mockCurrentUser';
-import { INSTALL_APP_NOTICE_TESTID } from '@web/pages/GithubDashboard/InstallAppNotice';
-import { PULL_REQUEST_SELECTION } from '@web/pages/GithubDashboard/PullRequestSelection';
-import { Router } from 'react-router';
-import { createMemoryHistory, History } from 'history';
-import { GithubRoutePath } from '@web/constants/routes';
+import {
+  SETTINGS_SECTION_INSTALL_APP_TESTID,
+  SETTINGS_SECTION_MANAGE_APP_TESTID,
+} from './SettingsSection';
+import { BUTTON_TESTID } from '@web/design/components/Button/Button';
+import * as OpenPage from '@web/lib/actions/openPage';
+import { Simulate } from 'react-dom/test-utils';
+import { noop } from 'lodash';
 
 jest.mock('@web/lib/github/github');
 
-const GITHUB_INSTALLATION_ID = 123;
-
-interface SetupGithubDashboardOptions {
-  installedGithubApp: boolean;
-}
-
-interface SetupGithubDashboardResult {
+interface RenderGithubDashboardResult {
   renderResult: RenderResult;
-  history: History;
+  onAddReposClickSpy: jest.SpyInstance;
+  onInstallGithubAppSpy: jest.SpyInstance;
 }
 
-const setupGithubDashboard = (
-  options: SetupGithubDashboardOptions
-): SetupGithubDashboardResult => {
-  const githubInstallationId = options.installedGithubApp
-    ? GITHUB_INSTALLATION_ID
-    : null;
+interface RenderGithubDashboardOptions {
+  hasInstalledGithubApp: boolean;
+}
 
+const renderGithubDashboard = ({
+  hasInstalledGithubApp,
+}: RenderGithubDashboardOptions): RenderGithubDashboardResult => {
+  jest
+    .spyOn(GithubAPI.prototype, 'getAppInstallationId')
+    .mockResolvedValue(hasInstalledGithubApp ? 123 : null);
+
+  const onAddReposClickSpy = jest
+    .spyOn(OpenPage, 'onAddReposClick')
+    .mockImplementation(noop);
+  const onInstallGithubAppSpy = jest
+    .spyOn(OpenPage, 'onInstallGithubApp')
+    .mockImplementation(noop);
+
+  const currentUserData = currentUserFactory();
   const storeOptions = {
-    auth: { currentUser: currentUserFactory({ githubInstallationId }) },
+    auth: {
+      currentUser: {
+        ...currentUserData,
+        githubInstallationId: hasInstalledGithubApp ? 123 : null,
+      },
+    },
   };
-
   const stores = mockStoreFactory(storeOptions);
 
-  const history = createMemoryHistory({
-    initialEntries: [GithubRoutePath.AppRoot],
-  });
-
   const renderResult = render(
-    <Router history={history}>
-      <TestStoreProvider stores={stores}>
-        <GithubDashboard />
-      </TestStoreProvider>
-    </Router>
+    <TestStoreProvider stores={stores}>
+      <GithubDashboard />
+    </TestStoreProvider>
   );
 
-  return { renderResult, history };
+  return { renderResult, onAddReposClickSpy, onInstallGithubAppSpy };
 };
 
-describe('GithubDashboard', (): void => {
-  it('displays install app notice when user has not installed github app', (): void => {
-    const { renderResult } = setupGithubDashboard({
-      installedGithubApp: false,
+describe('<GithubDashboard/>', (): void => {
+  it('displays the install app button when app is not installed', (): void => {
+    const { renderResult } = renderGithubDashboard({
+      hasInstalledGithubApp: false,
     });
 
-    expect(renderResult.queryByTestId(INSTALL_APP_NOTICE_TESTID)).not.toBe(
+    const installAppContainer = renderResult.getByTestId(
+      SETTINGS_SECTION_INSTALL_APP_TESTID
+    );
+    expect(within(installAppContainer).queryByTestId(BUTTON_TESTID)).not.toBe(
       null
     );
   });
 
-  it('displays pull requests selection when user has installed github app', (): void => {
-    const { renderResult } = setupGithubDashboard({
-      installedGithubApp: true,
+  it('install app button triggers the opening of github install app page', (): void => {
+    const { renderResult, onInstallGithubAppSpy } = renderGithubDashboard({
+      hasInstalledGithubApp: false,
     });
 
-    expect(renderResult.queryByTestId(PULL_REQUEST_SELECTION)).not.toBe(null);
+    const installAppContainer = renderResult.getByTestId(
+      SETTINGS_SECTION_INSTALL_APP_TESTID
+    );
+    const installAppButton = within(installAppContainer).getByTestId(
+      BUTTON_TESTID
+    );
+
+    Simulate.click(installAppButton);
+    expect(onInstallGithubAppSpy).toBeCalled();
+  });
+
+  it('displays the manage app button when app is not installed', (): void => {
+    const { renderResult } = renderGithubDashboard({
+      hasInstalledGithubApp: true,
+    });
+
+    const manageAppContainer = renderResult.getByTestId(
+      SETTINGS_SECTION_MANAGE_APP_TESTID
+    );
+    expect(within(manageAppContainer).queryByTestId(BUTTON_TESTID)).not.toBe(
+      null
+    );
+  });
+
+  it('manage app button triggers the github app configure page', (): void => {
+    const { renderResult, onAddReposClickSpy } = renderGithubDashboard({
+      hasInstalledGithubApp: true,
+    });
+
+    const manageAppContainer = renderResult.getByTestId(
+      SETTINGS_SECTION_MANAGE_APP_TESTID
+    );
+    const manageAppButton = within(manageAppContainer).getByTestId(
+      BUTTON_TESTID
+    );
+
+    Simulate.click(manageAppButton);
+    expect(onAddReposClickSpy).toBeCalledWith(123);
   });
 });

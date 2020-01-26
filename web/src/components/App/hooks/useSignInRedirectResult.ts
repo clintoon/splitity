@@ -23,7 +23,9 @@ const useSignInRedirectResult = (
         setOAuthToken(result.oAuthToken);
 
         const githubApi = new GithubAPI();
-        const githubInstallationId = await githubApi.getAppInstallationId();
+        const githubInstallationId = await githubApi.getAppInstallationId(
+          result.currentUser.userId
+        );
 
         store.auth.signInUser({ ...result.currentUser, githubInstallationId });
 
