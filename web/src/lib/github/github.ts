@@ -76,38 +76,6 @@ class GithubAPI {
     });
   }
 
-  public async getCurrentUserPullRequests(
-    options?: GetCurrentUserReposOptions
-  ): Promise<CurrentUserPullRequestsResult | null> {
-    const resp = await this.graphqlWithAuth(
-      `query CurrentUserRepos($first: Int = 5, $cursor: String = null, $states: [PullRequestState!]) {
-        viewer {
-          pullRequests(first: $first, after: $cursor, states: $states, orderBy: {direction: DESC, field: UPDATED_AT}) {
-            pageInfo {
-              hasNextPage,
-              endCursor
-            }
-            nodes {
-              title,
-              number,
-              repository {
-                url,
-                nameWithOwner
-              }
-            }
-          }
-        }
-      }`,
-      {
-        first: options && options.first,
-        cursor: options && options.cursor,
-        states: options && options.states,
-      }
-    );
-
-    return resp && (resp.viewer.pullRequests as CurrentUserPullRequestsResult);
-  }
-
   public async getAppInstallationId(): Promise<number | null> {
     // TODO(clinton): handle the case of multiple installations
     const installations = await this.restWithAuth.apps.listInstallationsForAuthenticatedUser();
