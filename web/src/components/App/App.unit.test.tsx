@@ -110,6 +110,7 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
     getRedirectResultSpy.mockResolvedValue({
       currentUser: currentUserData,
       oAuthToken: AUTH_TOKEN_COOKIE,
+      isNewUser: false,
     });
   } else {
     getRedirectResultSpy.mockResolvedValue(null);
@@ -125,7 +126,12 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
 
   const storeOptions = initialStoreAuthenticated
     ? {
-        auth: { currentUser: { ...currentUserData, githubInstallationId } },
+        auth: {
+          currentUser: {
+            ...currentUserData,
+            githubInstallationId,
+          },
+        },
       }
     : undefined;
   const stores = mockStoreFactory(storeOptions);

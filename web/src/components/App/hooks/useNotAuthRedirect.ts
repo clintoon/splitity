@@ -10,7 +10,7 @@ const useNotAuthRedirect = (history: History): void => {
     const auth = new FirebaseAuth(firebaseApp);
     const unsubscribe = auth.onAuthStateChanged((user: User | null): void => {
       if (!user) {
-        // Redirect to homepage when in github app routes
+        // Redirect to homepage when in github app routes and not logged in
         const path = history.location.pathname;
         if (
           path.toLowerCase().match(/^\/gh$/) ||

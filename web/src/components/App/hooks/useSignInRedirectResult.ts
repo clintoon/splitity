@@ -27,7 +27,10 @@ const useSignInRedirectResult = (
           result.currentUser.userId
         );
 
-        store.auth.signInUser({ ...result.currentUser, githubInstallationId });
+        store.auth.signInUser({
+          ...result.currentUser,
+          githubInstallationId,
+        });
 
         history.push(GithubRoutePath.AppRoot);
       }
