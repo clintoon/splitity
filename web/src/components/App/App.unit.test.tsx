@@ -27,6 +27,7 @@ import { GithubAPI } from '@web/lib/github/github';
 import { CurrentUser } from '@web/stores/authStore';
 import * as Tracking from '@web/lib/analytics/tracking';
 import { noop } from 'lodash';
+import { TrackingEvent } from '@web/lib/analytics/events';
 
 jest.mock('@web/lib/firebase/auth');
 jest.mock('@web/lib/cookie/authCookie');
@@ -63,6 +64,7 @@ interface RenderAppResult {
   history: MemoryHistory;
   aliasSpy: jest.SpyInstance;
   identifySpy: jest.SpyInstance;
+  trackSpy: jest.SpyInstance;
 }
 
 const currentUserData = {
@@ -83,6 +85,7 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
 
   const aliasSpy = jest.spyOn(Tracking, 'alias').mockImplementation(noop);
   const identifySpy = jest.spyOn(Tracking, 'identify').mockImplementation(noop);
+  const trackSpy = jest.spyOn(Tracking, 'track').mockImplementation(noop);
 
   const onAuthStateChangedSpy = jest.spyOn(
     FirebaseAuth.prototype,
@@ -162,6 +165,7 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
     history,
     aliasSpy,
     identifySpy,
+    trackSpy,
   };
 };
 
@@ -326,6 +330,20 @@ describe('<App/>', (): void => {
       });
       await wait((): void => {
         expect(aliasSpy).toBeCalled();
+      });
+    });
+
+    it('calls track "sign_up" when is new user', async (): Promise<void> => {
+      const { trackSpy } = renderApp({
+        initialRoute: RoutePath.Root,
+        isAuthenticated: false,
+        backFromAuthRedirect: true,
+        initialStoreAuthenticated: false,
+        githubAppInstalled: false,
+        isNewUser: true,
+      });
+      await wait((): void => {
+        expect(trackSpy).toBeCalledWith(TrackingEvent.signUp);
       });
     });
 

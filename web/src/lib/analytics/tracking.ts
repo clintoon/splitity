@@ -13,7 +13,7 @@ const alias = (userId: string): void => {
   mixpanel.alias(userId);
 };
 
-const track = (event: string, properties: object): void => {
+const track = (event: string, properties?: object): void => {
   mixpanel.track(event, properties);
 };
 

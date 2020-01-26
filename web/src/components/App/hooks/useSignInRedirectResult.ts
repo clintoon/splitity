@@ -7,7 +7,8 @@ import { StoreType } from '@web/stores/storeProvider';
 import { setOAuthToken } from '@web/lib/cookie/authCookie';
 import { GithubRoutePath } from '@web/constants/routes';
 import { GithubAPI } from '@web/lib/github/github';
-import { identify, alias } from '@web/lib/analytics/tracking';
+import { identify, alias, track } from '@web/lib/analytics/tracking';
+import { TrackingEvent } from '@web/lib/analytics/events';
 
 const useSignInRedirectResult = (
   store: StoreType,
@@ -35,6 +36,7 @@ const useSignInRedirectResult = (
 
         if (result.isNewUser) {
           alias(result.currentUser.userId.toString());
+          track(TrackingEvent.signUp);
         } else {
           identify(result.currentUser.userId.toString());
         }
