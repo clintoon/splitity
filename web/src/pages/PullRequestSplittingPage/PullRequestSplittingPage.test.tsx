@@ -41,6 +41,8 @@ import { BackendAPI } from '@web/lib/backend/backendApi';
 import { GithubRoutePath } from '@web/constants/routes';
 import { showAlert } from '@web/lib/alert/alert';
 import { logError } from '@web/lib/logger';
+import { track } from '@web/lib/analytics/tracking';
+import { TrackingEvent } from '@web/lib/analytics/events';
 
 jest.mock('@web/lib/github/github');
 jest.mock('@web/lib/backend/backendApi');
@@ -171,6 +173,16 @@ const getPRBranchChip = (
 };
 
 describe('<PullRequestSplittingPage />', (): void => {
+  it('calls the onLoadSplitPRPage tracking event on mount', async (): Promise<
+    void
+  > => {
+    renderPullRequestSplittingPage({});
+
+    await wait((): void => {
+      expect(track).toBeCalledWith(TrackingEvent.onLoadSplitPRPage);
+    });
+  });
+
   describe('PullRequestInfo', (): void => {
     it('displays PullRequestInfo', async (): Promise<void> => {
       const { renderResult } = renderPullRequestSplittingPage({});
@@ -655,6 +667,7 @@ describe('<PullRequestSplittingPage />', (): void => {
         expect(showAlert as jest.Mock).toBeCalledWith(
           'An job to split the PR was added to the queue. Please wait for the pull requests to be created in the github repo.'
         );
+        expect(track).toHaveBeenCalledWith(TrackingEvent.onSplitPRSuccess);
       });
     });
 
