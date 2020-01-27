@@ -16,6 +16,8 @@ import { useHistory } from 'react-router-dom';
 import { History } from 'history';
 import { GithubRoutePath } from '@web/constants/routes';
 import { fileDiffsToPatches } from './getPatch';
+import { track } from '@web/lib/analytics/tracking';
+import { TrackingEvent } from '@web/lib/analytics/events';
 
 interface MatchProps {
   owner: string;
@@ -43,6 +45,12 @@ interface HunkInfo {
 }
 
 type HunkAllocations = Record<string, HunkInfo>;
+
+const useCallPageLoadTracking = (): void => {
+  useEffect((): void => {
+    track(TrackingEvent.onLoadSplitPRPage);
+  });
+};
 
 const useGetPRTitle = (
   owner: string,
@@ -103,6 +111,8 @@ const PRSplitSection = styled.div`
 const PullRequestSplittingPage = ({
   match,
 }: PullRequestSplittingPageProps): JSX.Element => {
+  useCallPageLoadTracking();
+
   const { owner, repoName, pullRequestId } = match.params;
   const title = useGetPRTitle(owner, repoName, Number(pullRequestId));
   const PRDiff = useGetPRDiff(owner, repoName, Number(pullRequestId));
@@ -193,6 +203,7 @@ const PullRequestSplittingPage = ({
           pullRequestId: Number(pullRequestId),
           patches,
         });
+        track(TrackingEvent.onSplitPRSuccess);
         history.replace(GithubRoutePath.AppRoot);
         showAlert(
           'An job to split the PR was added to the queue. Please wait for the pull requests to be created in the github repo.'

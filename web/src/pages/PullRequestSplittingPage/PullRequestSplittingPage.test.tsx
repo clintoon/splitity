@@ -46,6 +46,7 @@ jest.mock('@web/lib/github/github');
 jest.mock('@web/lib/backend/backendApi');
 jest.mock('@web/lib/logger');
 jest.mock('@web/lib/alert/alert');
+jest.mock('@web/lib/analytics/tracking');
 
 const TITLE = '[TICKET-123] Update readme';
 const OWNER = 'clintoon';
