@@ -65,6 +65,7 @@ interface RenderAppResult {
   aliasSpy: jest.SpyInstance;
   identifySpy: jest.SpyInstance;
   trackSpy: jest.SpyInstance;
+  resetTrackingSpy: jest.SpyInstance;
 }
 
 const currentUserData = {
@@ -86,6 +87,9 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
   const aliasSpy = jest.spyOn(Tracking, 'alias').mockImplementation(noop);
   const identifySpy = jest.spyOn(Tracking, 'identify').mockImplementation(noop);
   const trackSpy = jest.spyOn(Tracking, 'track').mockImplementation(noop);
+  const resetTrackingSpy = jest
+    .spyOn(Tracking, 'resetTracking')
+    .mockImplementation(noop);
 
   const onAuthStateChangedSpy = jest.spyOn(
     FirebaseAuth.prototype,
@@ -166,6 +170,7 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
     aliasSpy,
     identifySpy,
     trackSpy,
+    resetTrackingSpy,
   };
 };
 
@@ -570,6 +575,27 @@ describe('<App/>', (): void => {
           expect(FirebaseAuth.prototype.signOut).toHaveBeenCalled();
           expect(history.location.pathname).toBe(RoutePath.Root);
         });
+      });
+    });
+
+    it('logout button calls reset tracking when pressed', async (): Promise<
+      void
+    > => {
+      const { renderResult, resetTrackingSpy } = renderApp({
+        initialRoute: GithubRoutePath.AppRoot,
+        isAuthenticated: true,
+        backFromAuthRedirect: false,
+        initialStoreAuthenticated: false,
+      });
+
+      await wait((): void => {
+        const signOut = renderResult.getByTestId(NAVBAR_SIGN_OUT_TESTID);
+        const signOutButton = within(signOut).getByTestId(BUTTON_TESTID);
+        fireEvent.click(signOutButton);
+      });
+
+      await wait((): void => {
+        expect(resetTrackingSpy).toBeCalled();
       });
     });
   });
