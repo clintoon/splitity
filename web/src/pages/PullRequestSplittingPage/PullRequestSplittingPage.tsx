@@ -194,7 +194,6 @@ const PullRequestSplittingPage = ({
 
     if (PRDiff) {
       try {
-        console.log('PRDiff', PRDiff); // TODO(clinton): remove console.log
         const backendApi = new BackendAPI();
         const patches = fileDiffsToPatches(PRDiff, allocatedHunks);
         await backendApi.splitPullRequest({
