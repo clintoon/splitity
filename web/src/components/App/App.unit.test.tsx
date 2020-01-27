@@ -25,8 +25,12 @@ import { BUTTON_TESTID } from '@web/design/components/Button/Button';
 import { handleSignIn } from '@web/lib/eventHandlers/auth';
 import { GithubAPI } from '@web/lib/github/github';
 import { CurrentUser } from '@web/stores/authStore';
-import * as Tracking from '@web/lib/analytics/tracking';
-import { noop } from 'lodash';
+import {
+  track,
+  identify,
+  alias,
+  resetTracking,
+} from '@web/lib/analytics/tracking';
 import { TrackingEvent } from '@web/lib/analytics/events';
 
 jest.mock('@web/lib/firebase/auth');
@@ -62,10 +66,6 @@ interface RenderAppResult {
   renderResult: RenderResult;
   stores: StoreType;
   history: MemoryHistory;
-  aliasSpy: jest.SpyInstance;
-  identifySpy: jest.SpyInstance;
-  trackSpy: jest.SpyInstance;
-  resetTrackingSpy: jest.SpyInstance;
 }
 
 const currentUserData = {
@@ -83,13 +83,6 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
     authCookieToken,
     isNewUser,
   } = options;
-
-  const aliasSpy = jest.spyOn(Tracking, 'alias').mockImplementation(noop);
-  const identifySpy = jest.spyOn(Tracking, 'identify').mockImplementation(noop);
-  const trackSpy = jest.spyOn(Tracking, 'track').mockImplementation(noop);
-  const resetTrackingSpy = jest
-    .spyOn(Tracking, 'resetTracking')
-    .mockImplementation(noop);
 
   const onAuthStateChangedSpy = jest.spyOn(
     FirebaseAuth.prototype,
@@ -167,10 +160,6 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
     renderResult,
     stores,
     history,
-    aliasSpy,
-    identifySpy,
-    trackSpy,
-    resetTrackingSpy,
   };
 };
 
@@ -325,7 +314,7 @@ describe('<App/>', (): void => {
     });
 
     it('calls alias when is new user', async (): Promise<void> => {
-      const { aliasSpy } = renderApp({
+      renderApp({
         initialRoute: RoutePath.Root,
         isAuthenticated: false,
         backFromAuthRedirect: true,
@@ -334,12 +323,12 @@ describe('<App/>', (): void => {
         isNewUser: true,
       });
       await wait((): void => {
-        expect(aliasSpy).toBeCalled();
+        expect(alias).toBeCalled();
       });
     });
 
     it('calls track "sign_up" when is new user', async (): Promise<void> => {
-      const { trackSpy } = renderApp({
+      renderApp({
         initialRoute: RoutePath.Root,
         isAuthenticated: false,
         backFromAuthRedirect: true,
@@ -348,12 +337,12 @@ describe('<App/>', (): void => {
         isNewUser: true,
       });
       await wait((): void => {
-        expect(trackSpy).toBeCalledWith(TrackingEvent.signUpCompleted);
+        expect(track).toBeCalledWith(TrackingEvent.signUpCompleted);
       });
     });
 
     it('calls identify when is not new user', async (): Promise<void> => {
-      const { identifySpy } = renderApp({
+      renderApp({
         initialRoute: RoutePath.Root,
         isAuthenticated: false,
         backFromAuthRedirect: true,
@@ -362,7 +351,7 @@ describe('<App/>', (): void => {
         isNewUser: false,
       });
       await wait((): void => {
-        expect(identifySpy).toBeCalled();
+        expect(identify).toBeCalled();
       });
     });
   });
@@ -581,7 +570,7 @@ describe('<App/>', (): void => {
     it('logout button calls reset tracking when pressed', async (): Promise<
       void
     > => {
-      const { renderResult, resetTrackingSpy } = renderApp({
+      const { renderResult } = renderApp({
         initialRoute: GithubRoutePath.AppRoot,
         isAuthenticated: true,
         backFromAuthRedirect: false,
@@ -595,7 +584,7 @@ describe('<App/>', (): void => {
       });
 
       await wait((): void => {
-        expect(resetTrackingSpy).toBeCalled();
+        expect(resetTracking).toBeCalled();
       });
     });
   });
