@@ -187,7 +187,6 @@ const fileDiffsToPatches = (
     return generateDiff(diff);
   });
 
-  console.log('patches', patches); // TODO(clinton): remove console.log
   return patches;
 };
 

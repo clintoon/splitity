@@ -14,12 +14,12 @@ const Content = styled.div`
   flex-basis: 700px;
 `;
 
-const GithubDashboard = (): JSX.Element => {
+const GithubDashboard = (): JSX.Element | null => {
   const store = useStore();
   const currentUser = store.auth.getCurrentUser();
 
   if (!currentUser) {
-    throw Error('GithubDashboard: user is not logged in');
+    return null;
   }
   const { githubInstallationId } = currentUser;
 

@@ -7,6 +7,8 @@ import { StoreType } from '@web/stores/storeProvider';
 import { setOAuthToken } from '@web/lib/cookie/authCookie';
 import { GithubRoutePath } from '@web/constants/routes';
 import { GithubAPI } from '@web/lib/github/github';
+import { identify, alias, track } from '@web/lib/analytics/tracking';
+import { TrackingEvent } from '@web/lib/analytics/events';
 
 const useSignInRedirectResult = (
   store: StoreType,
@@ -27,7 +29,17 @@ const useSignInRedirectResult = (
           result.currentUser.userId
         );
 
-        store.auth.signInUser({ ...result.currentUser, githubInstallationId });
+        store.auth.signInUser({
+          ...result.currentUser,
+          githubInstallationId,
+        });
+
+        if (result.isNewUser) {
+          alias(result.currentUser.userId.toString());
+          track(TrackingEvent.signUpCompleted);
+        } else {
+          identify(result.currentUser.userId.toString());
+        }
 
         history.push(GithubRoutePath.AppRoot);
       }

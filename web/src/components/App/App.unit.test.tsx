@@ -25,11 +25,19 @@ import { BUTTON_TESTID } from '@web/design/components/Button/Button';
 import { handleSignIn } from '@web/lib/eventHandlers/auth';
 import { GithubAPI } from '@web/lib/github/github';
 import { CurrentUser } from '@web/stores/authStore';
+import {
+  track,
+  identify,
+  alias,
+  resetTracking,
+} from '@web/lib/analytics/tracking';
+import { TrackingEvent } from '@web/lib/analytics/events';
 
 jest.mock('@web/lib/firebase/auth');
 jest.mock('@web/lib/cookie/authCookie');
 jest.mock('@web/lib/eventHandlers/auth');
 jest.mock('@web/lib/github/github');
+jest.mock('@web/lib/analytics/tracking');
 
 const AUTH_TOKEN_COOKIE = 'auth-token-cookie';
 const EMAIL = 'clinton@gmail.com';
@@ -51,6 +59,7 @@ interface RenderAppOptions {
   backFromAuthRedirect: boolean;
   authCookieToken?: string | null;
   githubAppInstalled?: boolean;
+  isNewUser?: boolean;
 }
 
 interface RenderAppResult {
@@ -72,6 +81,7 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
     backFromAuthRedirect,
     initialStoreAuthenticated,
     authCookieToken,
+    isNewUser,
   } = options;
 
   const onAuthStateChangedSpy = jest.spyOn(
@@ -110,6 +120,7 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
     getRedirectResultSpy.mockResolvedValue({
       currentUser: currentUserData,
       oAuthToken: AUTH_TOKEN_COOKIE,
+      isNewUser: Boolean(isNewUser),
     });
   } else {
     getRedirectResultSpy.mockResolvedValue(null);
@@ -125,7 +136,12 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
 
   const storeOptions = initialStoreAuthenticated
     ? {
-        auth: { currentUser: { ...currentUserData, githubInstallationId } },
+        auth: {
+          currentUser: {
+            ...currentUserData,
+            githubInstallationId,
+          },
+        },
       }
     : undefined;
   const stores = mockStoreFactory(storeOptions);
@@ -172,18 +188,6 @@ describe('<App/>', (): void => {
   });
 
   describe('initial user state', (): void => {
-    it('login user if user is logged in', async (): Promise<void> => {
-      const { stores } = renderApp({
-        initialRoute: RoutePath.Root,
-        isAuthenticated: true,
-        initialStoreAuthenticated: false,
-        backFromAuthRedirect: false,
-      });
-      await wait((): void => {
-        expect(stores.auth.getCurrentUser()).not.toBe(null);
-      });
-    });
-
     it('clear user from store and cookie if not logged in', async (): Promise<
       void
     > => {
@@ -275,7 +279,7 @@ describe('<App/>', (): void => {
       });
     });
 
-    it('stores githubInstalltionId when user has installed github app', async (): Promise<
+    it('stores githubInstallationId when user has installed github app', async (): Promise<
       void
     > => {
       const { stores } = renderApp({
@@ -293,7 +297,7 @@ describe('<App/>', (): void => {
       });
     });
 
-    it('githubInstalltionId is null when user has not installed github app', async (): Promise<
+    it('githubInstallationId is null when user has not installed github app', async (): Promise<
       void
     > => {
       const { stores } = renderApp({
@@ -306,6 +310,48 @@ describe('<App/>', (): void => {
       await wait((): void => {
         const currentUser = stores.auth.getCurrentUser();
         expect((currentUser as CurrentUser).githubInstallationId).toBe(null);
+      });
+    });
+
+    it('calls alias when is new user', async (): Promise<void> => {
+      renderApp({
+        initialRoute: RoutePath.Root,
+        isAuthenticated: false,
+        backFromAuthRedirect: true,
+        initialStoreAuthenticated: false,
+        githubAppInstalled: false,
+        isNewUser: true,
+      });
+      await wait((): void => {
+        expect(alias).toBeCalled();
+      });
+    });
+
+    it('calls track "sign_up" when is new user', async (): Promise<void> => {
+      renderApp({
+        initialRoute: RoutePath.Root,
+        isAuthenticated: false,
+        backFromAuthRedirect: true,
+        initialStoreAuthenticated: false,
+        githubAppInstalled: false,
+        isNewUser: true,
+      });
+      await wait((): void => {
+        expect(track).toBeCalledWith(TrackingEvent.signUpCompleted);
+      });
+    });
+
+    it('calls identify when is not new user', async (): Promise<void> => {
+      renderApp({
+        initialRoute: RoutePath.Root,
+        isAuthenticated: false,
+        backFromAuthRedirect: true,
+        initialStoreAuthenticated: false,
+        githubAppInstalled: false,
+        isNewUser: false,
+      });
+      await wait((): void => {
+        expect(identify).toBeCalled();
       });
     });
   });
@@ -518,6 +564,27 @@ describe('<App/>', (): void => {
           expect(FirebaseAuth.prototype.signOut).toHaveBeenCalled();
           expect(history.location.pathname).toBe(RoutePath.Root);
         });
+      });
+    });
+
+    it('logout button calls reset tracking when pressed', async (): Promise<
+      void
+    > => {
+      const { renderResult } = renderApp({
+        initialRoute: GithubRoutePath.AppRoot,
+        isAuthenticated: true,
+        backFromAuthRedirect: false,
+        initialStoreAuthenticated: false,
+      });
+
+      await wait((): void => {
+        const signOut = renderResult.getByTestId(NAVBAR_SIGN_OUT_TESTID);
+        const signOutButton = within(signOut).getByTestId(BUTTON_TESTID);
+        fireEvent.click(signOutButton);
+      });
+
+      await wait((): void => {
+        expect(resetTracking).toBeCalled();
       });
     });
   });

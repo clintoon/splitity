@@ -9,6 +9,7 @@ import { RoutePath } from '@web/constants/routes';
 import { useStore } from '@web/stores/useStore';
 import { observer } from 'mobx-react-lite';
 import { handleSignIn } from '@web/lib/eventHandlers/auth';
+import { resetTracking } from '@web/lib/analytics/tracking';
 
 const NAVBAR_SIGNIN_TESTID = 'navbar-signin';
 const NAVBAR_SIGN_OUT_TESTID = 'navbar-signout';
@@ -33,6 +34,7 @@ const renderAuthenticatedNavbar = (history: History): JSX.Element => {
     // This triggers the useUpdateNotAuthenticated hook
     // which will clear the cookies and store
     await auth.signOut();
+    resetTracking();
     history.push(RoutePath.Root);
   };
 

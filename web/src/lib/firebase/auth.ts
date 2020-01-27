@@ -11,6 +11,7 @@ export interface CurrentUser {
 interface RedirectResult {
   currentUser: CurrentUser;
   oAuthToken: string;
+  isNewUser: boolean;
 }
 
 interface AuthCredentialJSON {
@@ -46,7 +47,11 @@ class FirebaseAuth {
     const oAuthToken = (result.credential.toJSON() as AuthCredentialJSON)
       .oauthAccessToken;
 
-    return { currentUser, oAuthToken };
+    return {
+      currentUser,
+      oAuthToken,
+      isNewUser: Boolean(result.additionalUserInfo?.isNewUser),
+    };
   }
 
   public onAuthStateChanged(

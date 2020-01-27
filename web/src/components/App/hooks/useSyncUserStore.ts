@@ -18,8 +18,8 @@ const useSyncUserStore = (store: StoreType): boolean => {
         const oAuthToken = getOAuthToken();
         if (!oAuthToken) {
           throw Error('Error: logged in but cannot find oAuthToken');
+          // TODO(clinton): Sign out instead of throwing error and crashing
         }
-
         const currentUser = transformFirebaseUser({ user });
         const githubApi = new GithubAPI();
         githubApi

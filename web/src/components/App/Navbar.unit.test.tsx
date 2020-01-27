@@ -61,7 +61,7 @@ describe('<Navbar/>', (): void => {
     expect(signinButton).not.toBe(null);
   });
 
-  it('displays the login button when user is not logged in', (): void => {
+  it('displays the sign out button when user is logged in', (): void => {
     const { renderResult } = renderNavbar({
       initialRoute: GithubRoutePath.AppRoot,
       userLoggedIn: true,
