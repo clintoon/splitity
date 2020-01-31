@@ -11,8 +11,6 @@ class GithubEventsController < ApplicationController
         repo: params[:repository],
         installation: params[:installation]
       )
-    else
-      head :not_found
     end
   end
 
