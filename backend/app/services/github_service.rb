@@ -42,4 +42,8 @@ class GithubService
     @client.add_comment(repo, number, comment)
     nil
   end
+
+  def create_issue_comment_reaction(repo, issue_comment_id, reaction)
+    @client.create_issue_comment_reaction(repo, issue_comment_id, reaction)
+  end
 end

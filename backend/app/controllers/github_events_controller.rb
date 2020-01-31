@@ -8,7 +8,8 @@ class GithubEventsController < ApplicationController
         action: request.request_parameters[:action],
         issue: params[:issue],
         comment: params[:comment],
-        repo: params[:repository]
+        repo: params[:repository],
+        installation: params[:installation]
       )
     else
       head :not_found
@@ -22,7 +23,7 @@ class GithubEventsController < ApplicationController
     action == 'created' && issue.key?(:pull_request) && comment[:body].strip.starts_with?('@splitity split')
   end
 
-  def handle_issue_comment_event(action:, issue:, comment:, repo:)
+  def handle_issue_comment_event(action:, issue:, comment:, repo:, installation:)
     return unless split_pull_request_comment?(
       action: action,
       issue: issue,
@@ -32,6 +33,8 @@ class GithubEventsController < ApplicationController
     repo_owner = repo[:owner][:login]
     repo_name = repo[:name]
     pr_id = issue[:number]
+    repo_id = repo[:id]
+    installation_id = installation[:id]
 
     web_url = Rails.application.credentials.frontend_web[:url]
 
@@ -40,7 +43,12 @@ class GithubEventsController < ApplicationController
     issue_comment_id = comment[:id]
 
     # Start job to comment and thumbs up the comment
-
-    puts link, issue_comment_id
+    CommentSplitPullRequestLinkJob.perform_later(
+      pr_id: pr_id,
+      link: link,
+      repo_id: repo_id,
+      installation_id: installation_id,
+      issue_comment_id: issue_comment_id
+    )
   end
 end
