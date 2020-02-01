@@ -51,6 +51,5 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   # Add ngrok to the Host Authorization whitelist
-  # TODO(clinton): Consider using a whitelabel domain instead
   config.hosts << '.ngrok.io'
 end
