@@ -3,7 +3,6 @@ class GithubEventsController < ApplicationController
 
   def notify
     event_type = request.headers['X-Github-Event']
-    # TODO(clinton): verify that this request is from github (use secret)
     case event_type
     when 'issue_comment'
       handle_issue_comment_event(
