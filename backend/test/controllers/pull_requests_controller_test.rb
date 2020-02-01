@@ -2,8 +2,10 @@ require 'test_helper'
 
 class PullRequestsControllerTest < ActionDispatch::IntegrationTest
   test 'splitting PR returns an unauthenticated status when Access-Token header is not set' do
-    post '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',\
-         params: { patches: ['example patch'] }
+    post(
+      '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',
+      params: { patches: ['example patch'] }
+    )
     assert_response :unauthorized
   end
 
@@ -14,9 +16,11 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     mock.expect :current_user, nil
 
     GithubService.stubs(:new).returns(mock)
-    post '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',\
-         params: { patches: ['example patch'] },\
-         headers: { 'HTTP_ACCESS_TOKEN': invalid_access_token }
+    post(
+      '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',
+      params: { patches: ['example patch'] },
+      headers: { 'HTTP_ACCESS_TOKEN': invalid_access_token }
+    )
 
     assert_response :unauthorized
     assert_mock mock
@@ -37,9 +41,11 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     GithubAppService.stubs(:new).returns(github_app_mock)
     GithubService.stubs(:new).returns(github_mock)
 
-    post '/v1/repos/clintoon/test01/pulls/123/split',\
-         params: { patches: ['example patch'] },\
-         headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
+    post(
+      '/v1/repos/clintoon/test01/pulls/123/split',
+      params: { patches: ['example patch'] },\
+      headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
+    )
 
     assert_response :success
     assert_mock github_mock
@@ -61,9 +67,11 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     GithubAppService.stubs(:new).returns(github_app_mock)
     GithubService.stubs(:new).returns(github_mock)
 
-    post '/v1/repos/clintoon/test01/pulls/123/split',\
-         params: { patches: ['example patch'] },\
-         headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
+    post(
+      '/v1/repos/clintoon/test01/pulls/123/split',
+      params: { patches: ['example patch'] },
+      headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
+    )
 
     assert_response :success
     assert_mock github_mock
@@ -83,9 +91,11 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     GithubAppService.stubs(:new).returns(github_app_mock)
     GithubService.stubs(:new).returns(github_mock)
 
-    post '/v1/repos/clintoon/test01/pulls/123/split',\
-         params: { patches: ['example patch'] },\
-         headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
+    post(
+      '/v1/repos/clintoon/test01/pulls/123/split',
+      params: { patches: ['example patch'] },
+      headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
+    )
 
     assert_response :unauthorized
     assert_mock github_mock
@@ -107,9 +117,11 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     GithubAppService.stubs(:new).returns(github_app_mock)
     GithubService.stubs(:new).returns(github_mock)
 
-    post '/v1/repos/clintoon/test01/pulls/123/split',\
-         params: { patches: ['example patch'] },\
-         headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
+    post(
+      '/v1/repos/clintoon/test01/pulls/123/split',
+      params: { patches: ['example patch'] },
+      headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
+    )
 
     assert_response :forbidden
     assert_mock github_mock

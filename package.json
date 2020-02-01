@@ -39,7 +39,7 @@
       "git add"
     ],
     "backend/{app,test}/**/*.rb": [
-      "rubocop --fix-layout",
+      "rubocop --safe-auto-correct --fail-level F",
       "git add"
     ]
   }
