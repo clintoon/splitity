@@ -8,7 +8,7 @@ import {
 } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { mock, when, instance } from 'ts-mockito';
-import { User, Unsubscribe, UserInfo } from 'firebase';
+import { User, Unsubscribe, UserInfo } from 'firebase/app';
 import { Router } from 'react-router';
 
 import { App, APP_LOADING } from '@web/components/App/App';

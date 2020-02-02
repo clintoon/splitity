@@ -1,5 +1,5 @@
 import { mock, when, instance } from 'ts-mockito';
-import { User, auth, UserInfo } from 'firebase';
+import { User, auth, UserInfo } from 'firebase/app';
 import {
   transformRedirectResult,
   transformFirebaseUser,
