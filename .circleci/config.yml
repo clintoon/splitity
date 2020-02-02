@@ -37,7 +37,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies & update bundler to v2
+          name: Install dependencies
           command: |
             cd backend
             sudo apt-get update
