@@ -38,6 +38,7 @@ jest.mock('@web/lib/cookie/authCookie');
 jest.mock('@web/lib/eventHandlers/auth');
 jest.mock('@web/lib/github/github');
 jest.mock('@web/lib/analytics/tracking');
+jest.mock('react-player');
 
 const AUTH_TOKEN_COOKIE = 'auth-token-cookie';
 const EMAIL = 'clinton@gmail.com';

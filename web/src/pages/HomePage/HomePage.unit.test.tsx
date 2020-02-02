@@ -6,6 +6,7 @@ import { BUTTON_TESTID } from '@web/design/components/Button/Button';
 import { handleSignIn } from '@web/lib/eventHandlers/auth';
 
 jest.mock('@web/lib/eventHandlers/auth');
+jest.mock('react-player');
 
 describe('<HomePage/>', (): void => {
   it('renders <Hero/>', (): void => {
