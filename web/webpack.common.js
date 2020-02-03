@@ -1,7 +1,5 @@
 const path = require('path');
 const Dotenv = require('dotenv-webpack');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-  .BundleAnalyzerPlugin;
 
 module.exports = {
   entry: './src/index.tsx',
@@ -36,5 +34,5 @@ module.exports = {
       },
     ],
   },
-  plugins: [new Dotenv(), new BundleAnalyzerPlugin()],
+  plugins: [new Dotenv()],
 };
