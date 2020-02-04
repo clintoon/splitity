@@ -12,4 +12,5 @@ module.exports = merge(common, {
     historyApiFallback: true,
     hot: true,
   },
+  plugins: [new Dotenv()],
 });
