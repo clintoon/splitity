@@ -5,3 +5,4 @@
 **/*.pem
 **/*.env
 **/*.key
+web/public/bundle.js
