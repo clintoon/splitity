@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splitity
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: splitity
+  template:
+    metadata:
+      labels:
+        app: splitity
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: splitity
+          image: clintoon/splitity-web:2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: REACT_APP_FIREBASE_KEY
+              value: "AIzaSyCg1Oqq7zDgg-AjYHiKnmJ7teAHMTZnTrY"
+            - name: REACT_APP_FIREBASE_DOMAIN
+              value: "split-my-prs-dev.firebaseapp.com"
+            - name: REACT_APP_FIREBASE_DATABASE_URL
+              value: "https://split-my-prs-dev.firebaseio.com"
+            - name: REACT_APP_FIREBASE_PROJECT_ID
+              value: "split-my-prs-dev"
+            - name: REACT_APP_FIREBASE_STORAGE_BUCKET
+              value: "split-my-prs-dev.appspot.com"
+            - name: REACT_APP_FIREBASE_SENDER_ID
+              value: "283161176367"
+            - name: REACT_APP_FIREBASE_APP_ID
+              value: "1:283161176367:web:ab88ba6d8bb3ef41"
+            - name: GITHUB_APP_NAME
+              value: "splitity-dev"
+            - name: BACKEND_API_URL
+              value: "http://localhost:3000"
+            - name: MIXPANEL_TOKEN
+              value: "a12b05aba387db293bd47594086a5965"
