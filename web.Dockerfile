@@ -7,7 +7,8 @@ COPY yarn.lock /yarn.lock
 COPY package.json /package.json
 
 RUN yarn install
+RUN yarn build
 
 EXPOSE 8080
 
-CMD yarn build && yarn serve
+CMD yarn serve
