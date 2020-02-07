@@ -69,8 +69,34 @@ jobs:
       - codecov/upload:
           file: backend/coverage/.resultset.json
           flags: backend,unit
+  build_dev_web:
+    working_directory: ~/split-my-prs
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build and push Web Docker image
+          command: |
+            TAG="dev-${CIRCLE_BUILD_NUM}"
+
+            docker build --file "web.Dockerfile" --build-arg \
+            REACT_APP_FIREBASE_KEY="${REACT_APP_FIREBASE_KEY}" \
+            REACT_APP_FIREBASE_DOMAIN="${REACT_APP_FIREBASE_DOMAIN}" \
+            REACT_APP_FIREBASE_PROJECT_ID="${REACT_APP_FIREBASE_PROJECT_ID}" \
+            REACT_APP_FIREBASE_APP_ID="${REACT_APP_FIREBASE_APP_ID}" \
+            GITHUB_APP_NAME="${GITHUB_APP_NAME}" \
+            BACKEND_API_URL="${BACKEND_API_URL}" \
+            MIXPANEL_TOKEN="${MIXPANEL_TOKEN}" \
+            --tag "$DOCKER_LOGIN/splitity-web:$TAG" .
+
+            docker login -username "$DOCKER_LOGIN" --password "$DOCKER_PASSWORD"
+            docker push "$DOCKER_LOGIN/splitity-web:$TAG"
 workflows:
   unit_tests:
     jobs:
       - build
       - backend_build
+      - build_dev_web:
+          context: splitity-dev-web
