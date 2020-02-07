@@ -3,7 +3,7 @@ orbs:
   codecov: codecov/codecov@1.0.5
 jobs:
   build:
-    working_directory: ~/split-my-prs
+    working_directory: ~/splitity
     docker:
       - image: circleci/node:10
     steps:
@@ -29,7 +29,7 @@ jobs:
           file: web/coverage/*.json
           flags: frontend,unit
   backend_build:
-    working_directory: ~/split-my-prs
+    working_directory: ~/splitity
     docker:
       - image: circleci/ruby:2.7.0-node
         environment:
