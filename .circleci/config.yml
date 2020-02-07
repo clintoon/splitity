@@ -79,15 +79,17 @@ jobs:
       - run:
           name: Build Web Docker image
           command: >-
-            docker build --file "web.Dockerfile" --build-arg
-            REACT_APP_FIREBASE_KEY="${REACT_APP_FIREBASE_KEY}"
-            REACT_APP_FIREBASE_DOMAIN="${REACT_APP_FIREBASE_DOMAIN}"
-            REACT_APP_FIREBASE_PROJECT_ID="${REACT_APP_FIREBASE_PROJECT_ID}"
-            REACT_APP_FIREBASE_APP_ID="${REACT_APP_FIREBASE_APP_ID}"
-            GITHUB_APP_NAME="${GITHUB_APP_NAME}"
-            BACKEND_API_URL="${BACKEND_API_URL}"
-            MIXPANEL_TOKEN="${MIXPANEL_TOKEN}"
-            --tag "$DOCKER_LOGIN/splitity-web:dev-${CIRCLE_BUILD_NUM}" .
+            docker build
+            --file "web.Dockerfile"
+            --tag "$DOCKER_LOGIN/splitity-web:dev-${CIRCLE_BUILD_NUM}"
+            --build-arg REACT_APP_FIREBASE_KEY="${REACT_APP_FIREBASE_KEY}"
+            --build-arg REACT_APP_FIREBASE_DOMAIN="${REACT_APP_FIREBASE_DOMAIN}"
+            --build-arg REACT_APP_FIREBASE_PROJECT_ID="${REACT_APP_FIREBASE_PROJECT_ID}"
+            --build-arg REACT_APP_FIREBASE_APP_ID="${REACT_APP_FIREBASE_APP_ID}"
+            --build-arg GITHUB_APP_NAME="${GITHUB_APP_NAME}"
+            --build-arg BACKEND_API_URL="${BACKEND_API_URL}"
+            --build-arg MIXPANEL_TOKEN="${MIXPANEL_TOKEN}"
+            .
       - run:
           name: Login to docker hub
           command: docker login -username "$DOCKER_LOGIN" --password "$DOCKER_PASSWORD"
