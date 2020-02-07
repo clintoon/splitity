@@ -97,8 +97,7 @@ jobs:
           command: echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_LOGIN" --password-stdin
       - run:
           name: Push Web Docker image
-          command: |
-            docker push "$DOCKER_LOGIN/splitity-web:dev-${CIRCLE_BUILD_NUM}"
+          command: docker push "$DOCKER_LOGIN/splitity-web:dev-${CIRCLE_BUILD_NUM}"
 workflows:
   unit_tests:
     jobs:
