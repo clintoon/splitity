@@ -73,6 +73,8 @@ jobs:
     working_directory: ~/split-my-prs
     docker:
       - image: circleci/node:10
+    environment:
+      DOCKER_LOGIN: clintoon
     steps:
       - checkout
       - setup_remote_docker
