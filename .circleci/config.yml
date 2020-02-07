@@ -28,7 +28,7 @@ jobs:
       - codecov/upload:
           file: web/coverage/*.json
           flags: frontend,unit
-  backend_build:
+  backend_unit_tests:
     working_directory: ~/splitity
     docker:
       - image: circleci/ruby:2.7.0-node
@@ -100,6 +100,6 @@ workflows:
   unit_tests:
     jobs:
       - build
-      - backend_build
+      - backend_unit_tests
       - build_dev_web:
           context: splitity-dev-web
