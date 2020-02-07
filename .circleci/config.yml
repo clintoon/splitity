@@ -70,7 +70,7 @@ jobs:
           file: backend/coverage/.resultset.json
           flags: backend,unit
   build_dev_web:
-    working_directory: ~/split-my-prs
+    working_directory: ~/splitity
     docker:
       - image: circleci/node:10
     steps:
