@@ -1,6 +1,5 @@
-import { auth } from 'firebase';
+import { auth, User } from 'firebase/app';
 import { CurrentUser } from '@web/lib/firebase/auth';
-import { User } from 'firebase';
 
 const transformRedirectResult = (
   result: auth.UserCredential

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { User } from 'firebase';
+import { User } from 'firebase/app';
 
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import { firebaseApp } from '@web/lib/firebase/firebase';

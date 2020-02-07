@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { History } from 'history';
-import { User } from 'firebase';
+import { User } from 'firebase/app';
 import { FirebaseAuth } from '@web/lib/firebase/auth';
 import { firebaseApp } from '@web/lib/firebase/firebase';
 import { RoutePath } from '@web/constants/routes';

@@ -1,0 +1,8 @@
+.git
+*Dockerfile*
+*docker-compose*
+**/node_modules
+**/*.pem
+**/*.env
+**/*.key
+web/public/bundle.js

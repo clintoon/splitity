@@ -1,10 +1,7 @@
 const path = require('path');
-
 const Dotenv = require('dotenv-webpack');
 
 module.exports = {
-  mode: 'development',
-  devtool: 'inline-source-map',
   entry: './src/index.tsx',
   output: {
     filename: 'bundle.js',
@@ -36,14 +33,5 @@ module.exports = {
         ],
       },
     ],
-  },
-  plugins: [new Dotenv()],
-  devServer: {
-    contentBase: path.resolve(__dirname, 'public'),
-    port: 8080,
-    compress: true,
-    historyApiFallback: true,
-    hot: true,
-    open: true,
   },
 };

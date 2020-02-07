@@ -31,19 +31,17 @@ jobs:
   backend_build:
     working_directory: ~/split-my-prs
     docker:
-      - image: circleci/ruby:2.5.1-node
+      - image: circleci/ruby:2.7.0-node
         environment:
           BUNDLER_VERSION: 2.0.1
     steps:
       - checkout
       - run:
-          name: Install dependencies & update bundler to v2
+          name: Install dependencies
           command: |
             cd backend
             sudo apt-get update
             sudo apt -y install cmake
-            sudo gem update --system
-            bundle update --bundler
       - restore_cache:
           keys:
             - rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}

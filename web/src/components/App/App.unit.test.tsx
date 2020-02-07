@@ -8,7 +8,7 @@ import {
 } from '@testing-library/react';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { mock, when, instance } from 'ts-mockito';
-import { User, Unsubscribe, UserInfo } from 'firebase';
+import { User, Unsubscribe, UserInfo } from 'firebase/app';
 import { Router } from 'react-router';
 
 import { App, APP_LOADING } from '@web/components/App/App';
@@ -38,6 +38,7 @@ jest.mock('@web/lib/cookie/authCookie');
 jest.mock('@web/lib/eventHandlers/auth');
 jest.mock('@web/lib/github/github');
 jest.mock('@web/lib/analytics/tracking');
+jest.mock('react-player');
 
 const AUTH_TOKEN_COOKIE = 'auth-token-cookie';
 const EMAIL = 'clinton@gmail.com';

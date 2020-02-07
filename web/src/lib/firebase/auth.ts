@@ -1,6 +1,5 @@
-import { app, auth } from 'firebase';
+import { app, auth, User, Unsubscribe } from 'firebase/app';
 import { transformRedirectResult } from '@web/lib/firebase/helpers/auth';
-import { User, Unsubscribe } from 'firebase';
 
 export interface CurrentUser {
   email: string;

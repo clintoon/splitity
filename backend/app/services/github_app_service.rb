@@ -5,9 +5,9 @@ require 'octokit'
 # Interact with github on behalf of the app (not the user)
 class GithubAppService
   def initialize
-    gh_pem_path = 'config/github-app.pem'
     app_id = Rails.application.credentials.github[:app_id]
-    jwt = generate_jwt(pem_path: gh_pem_path, app_id: app_id)
+    private_pem = Rails.application.credentials.github[:private_key]
+    jwt = generate_jwt(private_pem: private_pem, app_id: app_id)
     @client = Octokit::Client.new(bearer_token: jwt)
   end
 
@@ -28,8 +28,7 @@ class GithubAppService
   private
 
   def generate_jwt(params)
-    private_pem = File.read(params[:pem_path])
-    private_key = OpenSSL::PKey::RSA.new(private_pem)
+    private_key = OpenSSL::PKey::RSA.new(params[:private_pem])
 
     payload = {
       # issued at time
