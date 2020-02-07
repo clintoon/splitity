@@ -92,7 +92,7 @@ jobs:
             .
       - run:
           name: Login to docker hub
-          command: docker login -username "$DOCKER_LOGIN" --password "$DOCKER_PASSWORD"
+          command: echo "$DOCKER_PASSWORD" | docker login -username "$DOCKER_LOGIN" --password-stdin
       - run:
           name: Push Web Docker image
           command: |
