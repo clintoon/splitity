@@ -81,7 +81,7 @@ jobs:
           command: >-
             docker build
             --file "web.Dockerfile"
-            --tag "$DOCKER_LOGIN/splitity-web:dev-${CIRCLE_BUILD_NUM}"
+            --tag "$DOCKER_LOGIN/splitity-web:dev-${CIRCLE_BRANCH}${CIRCLE_SHA1}"
             --build-arg REACT_APP_FIREBASE_KEY="${REACT_APP_FIREBASE_KEY}"
             --build-arg REACT_APP_FIREBASE_DOMAIN="${REACT_APP_FIREBASE_DOMAIN}"
             --build-arg REACT_APP_FIREBASE_PROJECT_ID="${REACT_APP_FIREBASE_PROJECT_ID}"
@@ -95,7 +95,7 @@ jobs:
           command: echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_LOGIN" --password-stdin
       - run:
           name: Push Web Docker image
-          command: docker push "$DOCKER_LOGIN/splitity-web:dev-${CIRCLE_BUILD_NUM}"
+          command: docker push "$DOCKER_LOGIN/splitity-web:dev-${CIRCLE_BRANCH}${CIRCLE_SHA1}"
 workflows:
   unit_tests:
     jobs:
