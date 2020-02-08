@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: splitity
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: splitity
@@ -16,7 +16,7 @@ spec:
         - name: regcred
       containers:
         - name: splitity
-          image: clintoon/splitity-web:1
+          image: clintoon/splitity-web:dev-1837
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
