@@ -8,11 +8,11 @@ provider "digitalocean" {
 resource "digitalocean_kubernetes_cluster" "splitity-k8s-cluster" {
   name    = "${local.environment}-web-k8s-cluster"
   region  = "nyc1"
-  version = "1.16.2-do.3"
+  version = "1.16.6-do.0"
 
   node_pool {
     name       = "autoscale-worker-pool"
-    size       = "s-1vcpu-1gb"
+    size       = "s-1vcpu-2gb"
     auto_scale = true
     min_nodes  = 1
     max_nodes  = 5
