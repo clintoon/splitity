@@ -42,7 +42,7 @@ jobs:
           command: |
             cd backend
             sudo apt-get update
-            sudo apt -y install cmake
+            sudo apt-get -y install cmake
       - restore_cache:
           keys:
             - rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}
@@ -108,9 +108,10 @@ jobs:
       - run:
           name: Setup
           command: |
-            apt-get install -y kubectl
+            sudo apt-get update
+            sudo apt-get install -y kubectl
             curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
-            snap install doctl
+            sudo snap install doctl
             doctl auth login --access_token "$DIGITAL_OCEAN_ACCESS_TOKEN"
             doctl kubernetes cluster kubeconfig "splitity-${BUILD_ENV}-k8s-cluster"
       - run:
