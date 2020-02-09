@@ -140,7 +140,7 @@ workflows:
       - build_web:
           context: splitity-dev-web
           requires:
-            - build_web
+            - hold
       - deploy_web:
           context: splitity-dev-web
           requires:
