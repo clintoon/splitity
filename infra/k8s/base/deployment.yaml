@@ -16,7 +16,7 @@ spec:
         - name: regcred
       containers:
         - name: splitity
-          image: clintoon/splitity-web:latest
+          image: splitity/splitity-web:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

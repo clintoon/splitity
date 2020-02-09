@@ -8,8 +8,8 @@ patchesStrategicMerge:
   - service.yaml
 
 images:
-  - name: clintoon/splitity-web
-    newName: clintoon/dev-splitity-web
+  - name: splitity/splitity-web
+    newName: splitity/dev-splitity-web
     newTag: latest
 
 nameSuffix: -dev

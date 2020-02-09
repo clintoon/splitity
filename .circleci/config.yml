@@ -28,6 +28,7 @@ jobs:
       - codecov/upload:
           file: web/coverage/*.json
           flags: frontend,unit
+
   backend_unit_tests:
     working_directory: ~/splitity
     docker:
@@ -69,10 +70,11 @@ jobs:
       - codecov/upload:
           file: backend/coverage/.resultset.json
           flags: backend,unit
-  build_dev_web:
+
+  build_web:
     working_directory: ~/splitity
     docker:
-      - image: circleci/node:10
+      - image: ubuntu:18.04
     steps:
       - checkout
       - setup_remote_docker
@@ -81,7 +83,7 @@ jobs:
           command: >-
             docker build
             --file "web.Dockerfile"
-            --tag "$DOCKER_LOGIN/splitity-web:dev-${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
+            --tag "splitity/${BUILD_ENV}-splitity-web:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
             --build-arg REACT_APP_FIREBASE_KEY="${REACT_APP_FIREBASE_KEY}"
             --build-arg REACT_APP_FIREBASE_DOMAIN="${REACT_APP_FIREBASE_DOMAIN}"
             --build-arg REACT_APP_FIREBASE_PROJECT_ID="${REACT_APP_FIREBASE_PROJECT_ID}"
@@ -95,11 +97,47 @@ jobs:
           command: echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_LOGIN" --password-stdin
       - run:
           name: Push Web Docker image
-          command: docker push "$DOCKER_LOGIN/splitity-web:dev-${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
+          command: docker push "splitity/${BUILD_ENV}-splitity-web:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
+
+  deploy_web:
+    working_directory: ~/splitity
+    docker:
+      - image: ubuntu:18.04
+    steps:
+      - checkout
+      - run:
+          name: Setup
+          command: |
+            apt-get install -y kubectl
+            curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+            snap install doctl
+            doctl auth login --access_token "$DO_ACCESS_TOKEN}"
+            doctl kubernetes cluster kubeconfig "$DO_K8_CLUSTER"
+      - run:
+          name: Setup K8s secrets
+          command: |
+            kubectl create secret docker-registry regcred --docker-username="$DOCKER_LOGIN" --docker-password="$DOCKER_PASSWORD"
+      - run:
+          name: Update image tag
+          command: |
+            cd splitity/infra/k8s/dev
+            kustomize edit set image "splitity/splitity-web=splitity/${BUILD_ENV}-splitity-web:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
+      - run:
+          name: Deploy to K8s cluster
+          command: |
+            cd splitity/infra/k8s/dev
+            kubectl apply -k .
+
 workflows:
   unit_tests:
     jobs:
       - build
       - backend_unit_tests
-      - build_dev_web:
+  deploy_dev:
+    jobs:
+      - build_web:
           context: splitity-dev-web
+      - deploy_web:
+          context: splitity-dev-web
+          requires:
+            - build_web
