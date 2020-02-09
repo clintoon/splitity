@@ -112,7 +112,7 @@ jobs:
             curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
             snap install doctl
             doctl auth login --access_token "$DIGITAL_OCEAN_ACCESS_TOKEN"
-            doctl kubernetes cluster kubeconfig "$DIGITAL_OCEAN_K8_CLUSTER_NAME"
+            doctl kubernetes cluster kubeconfig "splitity-${BUILD_ENV}-k8s-cluster"
       - run:
           name: Setup K8s secrets
           command: |

@@ -6,7 +6,7 @@ provider "digitalocean" {
 }
 
 resource "digitalocean_kubernetes_cluster" "splitity-k8s-cluster" {
-  name    = "splitity-${local.environment}-web-k8s-cluster"
+  name    = "splitity-${local.environment}-k8s-cluster"
   region  = "nyc1"
   version = "1.16.6-do.0"
 
