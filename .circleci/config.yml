@@ -123,7 +123,7 @@ jobs:
       - run:
           name: Setup K8s secrets
           command: |
-            kubectl create secret docker-registry regcred --docker-username="$DOCKER_LOGIN" --docker-password="$DOCKER_PASSWORD"
+            kubectl create secret docker-registry regcred --docker-username="$DOCKER_LOGIN" --docker-password="$DOCKER_PASSWORD" --dry-run -o yaml | kubectl apply -f -
       - run:
           name: Update image tag
           command: |
