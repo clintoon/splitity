@@ -135,8 +135,12 @@ workflows:
       - backend_unit_tests
   deploy_dev:
     jobs:
+      - hold:
+          type: approval
       - build_web:
           context: splitity-dev-web
+          requires:
+            - build_web
       - deploy_web:
           context: splitity-dev-web
           requires:
