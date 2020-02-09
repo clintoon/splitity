@@ -5,6 +5,7 @@ orbs:
 jobs:
   build:
     working_directory: ~/splitity
+    resource_class: small
     docker:
       - image: circleci/node:10
     steps:
@@ -32,6 +33,7 @@ jobs:
 
   backend_unit_tests:
     working_directory: ~/splitity
+    resource_class: small
     docker:
       - image: circleci/ruby:2.7.0-node
         environment:
@@ -74,6 +76,7 @@ jobs:
 
   build_web:
     working_directory: ~/splitity
+    resource_class: small
     docker:
       - image: circleci/node:lts
     steps:
@@ -103,6 +106,7 @@ jobs:
 
   deploy_web:
     working_directory: ~/splitity
+    resource_class: small
     docker:
       - image: circleci/node:lts
     steps:
