@@ -9,7 +9,7 @@ patchesStrategicMerge:
 
 images:
   - name: clintoon/splitity-web
-    newName: clintoon/splitity-web-dev
+    newName: clintoon/dev-splitity-web
     newTag: latest
 
 nameSuffix: -dev
