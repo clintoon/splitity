@@ -108,6 +108,8 @@ jobs:
       - run:
           name: Setup
           command: |
+            sudo apt-get update
+            sudo apt-get -y install snapd
             sudo snap install kubectl --classic
             curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
             sudo snap install doctl
