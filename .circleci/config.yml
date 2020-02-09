@@ -103,14 +103,12 @@ jobs:
   deploy_web:
     working_directory: ~/splitity
     docker:
-      - image: circleci/node:lts
+      - image: ubuntu:18.04
     steps:
       - checkout
       - run:
           name: Setup
           command: |
-            sudo apt-get update
-            sudo apt-get -y install snapd
             sudo snap install kubectl --classic
             curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
             sudo snap install doctl
