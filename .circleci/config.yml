@@ -74,7 +74,7 @@ jobs:
   build_web:
     working_directory: ~/splitity
     docker:
-      - image: ubuntu:18.04
+      - image: circleci/node:lts
     steps:
       - checkout
       - setup_remote_docker
@@ -102,7 +102,7 @@ jobs:
   deploy_web:
     working_directory: ~/splitity
     docker:
-      - image: ubuntu:18.04
+      - image: circleci/node:lts
     steps:
       - checkout
       - run:
