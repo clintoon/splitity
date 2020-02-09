@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: splitity
+  name: splitity-web
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: splitity
+      app: splitity-web
   template:
     metadata:
       labels:
-        app: splitity
+        app: splitity-web
     spec:
       imagePullSecrets:
         - name: regcred
       containers:
-        - name: splitity
+        - name: splitity-web
           image: splitity/splitity-web:latest
           imagePullPolicy: Always
           ports:
