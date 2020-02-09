@@ -102,6 +102,7 @@ jobs:
           command: docker push "splitity/${BUILD_ENV}-splitity-web:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
 
   deploy_web:
+    working_directory: ~/splitity
     docker:
       - image: circleci/node:lts
     steps:
@@ -117,6 +118,7 @@ jobs:
       - run:
           name: Setup kubectl cluster config
           command: |
+            doctl auth init --access-token $DIGITAL_OCEAN_ACCESS_TOKEN
             doctl kubernetes cluster kubeconfig save "splitity-${BUILD_ENV}-k8s-cluster"
       - run:
           name: Setup K8s secrets
@@ -125,13 +127,13 @@ jobs:
       - run:
           name: Update image tag
           command: |
-            cd splitity/infra/k8s/dev
+            cd infra/k8s/overlays/dev
             kustomize edit set image "splitity/splitity-web=splitity/${BUILD_ENV}-splitity-web:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
       - run:
           name: Deploy to K8s cluster
           command: |
-            cd splitity/infra/k8s/dev
-            kubectl apply -k .
+            cd infra/k8s/overlays/dev
+            kustomize build . | kubectl apply -f -
 
 workflows:
   unit_tests:
