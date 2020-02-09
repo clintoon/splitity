@@ -102,7 +102,6 @@ jobs:
           command: docker push "splitity/${BUILD_ENV}-splitity-web:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
 
   deploy_web:
-    working_directory: ~/splitity
     docker:
       - image: circleci/node:lts
     steps:
