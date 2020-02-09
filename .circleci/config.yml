@@ -111,7 +111,7 @@ jobs:
             apt-get install -y kubectl
             curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
             snap install doctl
-            doctl auth login --access_token "$DO_ACCESS_TOKEN}"
+            doctl auth login --access_token "$DIGITAL_OCEAN_ACCESS_TOKEN"
             doctl kubernetes cluster kubeconfig "$DO_K8_CLUSTER"
       - run:
           name: Setup K8s secrets
