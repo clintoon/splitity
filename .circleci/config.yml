@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   codecov: codecov/codecov@1.0.5
+  kubernetes: circleci/kubernetes@0.11.0
 jobs:
   build:
     working_directory: ~/splitity
@@ -106,24 +107,19 @@ jobs:
       - image: circleci/node:lts
     steps:
       - checkout
+      - kube-orb/install
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
           name: Install packages
           command: |
-            sudo apt-get update && sudo apt-get install -y apt-transport-https
-            curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-            echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
-            sudo apt-get update
-            sudo apt-get install -y kubectl
-
             curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
             sudo mv kustomize /bin
       - run:
-          name: Setup kubectl config
+          name: Setup kubectl cluster config
           command: |
             docker pull digitalocean/doctl:latest
-            docker run --rm --interactive --tty --env=DIGITALOCEAN_ACCESS_TOKEN="$DIGITAL_OCEAN_ACCESS_TOKEN" digitalocean/doctl kubernetes cluster kubeconfig "splitity-${BUILD_ENV}-k8s-cluster"
+            docker run --rm --interactive --tty --env=DIGITALOCEAN_ACCESS_TOKEN="$DIGITAL_OCEAN_ACCESS_TOKEN" digitalocean/doctl kubernetes cluster kubeconfig save "splitity-${BUILD_ENV}-k8s-cluster"
       - run:
           name: Setup K8s secrets
           command: |
