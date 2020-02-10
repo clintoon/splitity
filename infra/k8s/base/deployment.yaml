@@ -20,3 +20,37 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splitity-backend-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: splitity-backend-api
+  template:
+    metadata:
+      labels:
+        app: splitity-backend-api
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: splitity-backend-api
+          image: splitity/splitity-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: RAILS_MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backend
+                  key: rails_master_key
+            - name: RAILS_ENV
+              valueFrom:
+                secretKeyRef:
+                  name: backend
+                  key: rails_env
