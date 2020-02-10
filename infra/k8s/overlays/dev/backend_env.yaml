@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splitity-backend-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: splitity-backend-api
+          env:
+            - name: RAILS_ENV
+              value: development

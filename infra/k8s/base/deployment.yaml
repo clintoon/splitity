@@ -49,8 +49,3 @@ spec:
                 secretKeyRef:
                   name: backend
                   key: rails_master_key
-            - name: RAILS_ENV
-              valueFrom:
-                secretKeyRef:
-                  name: backend
-                  key: rails_env
