@@ -21,7 +21,7 @@ resource "digitalocean_kubernetes_cluster" "splitity-k8s-cluster" {
   tags = ["splitity-${local.environment}"]
 }
 
-resource "digitalocean_database_cluster" "postgres-cluster" {
+resource "digitalocean_database_cluster" "splitity-postgres-cluster" {
   name       = "splitity-${local.environment}-postgres-cluster"
   engine     = "pg"
   version    = "12"
@@ -32,7 +32,7 @@ resource "digitalocean_database_cluster" "postgres-cluster" {
   tags = ["splitity-${local.environment}"]
 }
 
-resource "digitalocean_database_cluster" "redis-cluster" {
+resource "digitalocean_database_cluster" "splitity-redis-cluster" {
   name       = "splitity-${local.environment}-redis-cluster"
   engine     = "redis"
   size       = "db-s-1vcpu-1gb"
