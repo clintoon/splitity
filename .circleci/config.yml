@@ -151,15 +151,17 @@ jobs:
           name: Setup K8s secrets
           command: |
             kubectl create secret docker-registry regcred --docker-username="$DOCKER_LOGIN" --docker-password="$DOCKER_PASSWORD" --dry-run -o yaml | kubectl apply -f -
+            kubectl create secret generic backend --from-literal=rails_master_key=$RAILS_MASTER_KEY --dry-run -o yaml | kubectl apply -f -
       - run:
           name: Update image tag
           command: |
-            cd infra/k8s/overlays/dev
+            cd infra/k8s/overlays/$BUILD_ENV
             kustomize edit set image "splitity/splitity-web=splitity/${BUILD_ENV}-splitity-web:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
+            kustomize edit set image "splitity/splitity-backend=splitity/splitity-backend:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
       - run:
           name: Deploy to K8s cluster
           command: |
-            cd infra/k8s/overlays/dev
+            cd infra/k8s/overlays/$BUILD_ENV
             kustomize build . | kubectl apply -f -
 
 workflows:
@@ -167,7 +169,7 @@ workflows:
     jobs:
       - build
       - backend_unit_tests
-  deploy_dev:
+  deploy_production:
     jobs:
       - hold:
           type: approval

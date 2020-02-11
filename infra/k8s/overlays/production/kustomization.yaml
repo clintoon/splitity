@@ -9,10 +9,10 @@ patchesStrategicMerge:
 
 images:
   - name: splitity/splitity-web
-    newName: splitity/dev-splitity-web
+    newName: splitity/production-splitity-web
     newTag: latest
   - name: splitity/splitity-backend
     newName: splitity/splitity-backend
     newTag: latest
 
-nameSuffix: -dev
+nameSuffix: -production
