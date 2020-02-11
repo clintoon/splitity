@@ -25,6 +25,7 @@ production:
   pool: 5
   host: private-db-postgresql.db.splitity.com
   port: 25060
+  sslmode: enabled
   database: defaultdb
   username: doadmin
   password: <%= ENV['POSTGRES_PASSWORD'] %>
