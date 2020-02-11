@@ -49,3 +49,31 @@ spec:
                 secretKeyRef:
                   name: backend
                   key: rails_master_key
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splitity-backend-sidekiq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: splitity-backend-sidekiq
+  template:
+    metadata:
+      labels:
+        app: splitity-backend-sidekiq
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - name: splitity-backend-sidekiq
+          image: splitity/splitity-backend:latest
+          imagePullPolicy: Always
+          command: ["bundle", "exec", "sidekiq"]
+          env:
+            - name: RAILS_MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backend
+                  key: rails_master_key

@@ -10,3 +10,16 @@ spec:
           env:
             - name: RAILS_ENV
               value: production
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splitity-backend-sidekiq
+spec:
+  template:
+    spec:
+      containers:
+        - name: splitity-backend-sidekiq
+          env:
+            - name: RAILS_ENV
+              value: production
