@@ -104,6 +104,29 @@ jobs:
           name: Push Web Docker image
           command: docker push "splitity/${BUILD_ENV}-splitity-web:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
 
+  build_backend:
+    working_directory: ~/splitity
+    resource_class: small
+    docker:
+      - image: circleci/node:lts
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build Web Docker image
+          command: >-
+            docker build
+            --file "backend.Dockerfile"
+            --tag "splitity/splitity-backend:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
+            .
+      - run:
+          name: Login to docker hub
+          command: echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_LOGIN" --password-stdin
+      - run:
+          name: Push Web Docker image
+          command: docker push "splitity/splitity-backend:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
+
   deploy:
     working_directory: ~/splitity
     resource_class: small
@@ -149,10 +172,15 @@ workflows:
       - hold:
           type: approval
       - build_web:
-          context: splitity-dev-web
+          context: prod-splitity-web
           requires:
             - hold
-      - deploy_web:
-          context: splitity-dev-web
+      - build_backend:
+          context: prod-splitity-web
           requires:
-            - build
+            - hold
+      - deploy:
+          context: prod-splitity-web
+          requires:
+            - build_web
+            - build_backend
