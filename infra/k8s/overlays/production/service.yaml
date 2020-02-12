@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: splitity-web
   annotations:
-    service.beta.kubernetes.io/do-loadbalancer-certificate-id: "57fe8a03-7c65-4c8c-8409-4ab9520453dd"
+    service.beta.kubernetes.io/do-loadbalancer-certificate-id: "709c8b37-62c2-4210-9b03-1660634bd356"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: splitity-backend-api
   annotations:
-    service.beta.kubernetes.io/do-loadbalancer-certificate-id: "57fe8a03-7c65-4c8c-8409-4ab9520453dd"
+    service.beta.kubernetes.io/do-loadbalancer-certificate-id: "709c8b37-62c2-4210-9b03-1660634bd356"
