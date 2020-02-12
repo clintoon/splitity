@@ -25,7 +25,7 @@ production:
   pool: 5
   host: <%= Rails.application.credentials.dig(:postgres, :host) %>
   port: <%= Rails.application.credentials.dig(:postgres, :port) %>
-  sslmode: enabled
+  sslmode: require
   database: defaultdb
   username: doadmin
   password: <%= Rails.application.credentials.dig(:postgres, :password) %>
