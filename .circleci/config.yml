@@ -217,7 +217,7 @@ workflows:
           requires:
             - build_web
             - build_backend
-      - deploy:
+      - deploy_k8s:
           context: prod-splitity-web
           requires:
             - migrate_postgres
