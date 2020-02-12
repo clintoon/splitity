@@ -23,8 +23,8 @@ test:
 production:
   adapter: postgresql
   pool: 5
-  host: private-db-postgresql.db.splitity.com
-  port: 25060
+  host: <%= ENV['POSTGRES_HOST'] %>
+  port: <%= ENV['POSTGRES_PORT'] %>
   sslmode: enabled
   database: defaultdb
   username: doadmin
