@@ -24,7 +24,6 @@ resource "digitalocean_kubernetes_cluster" "splitity-k8s-cluster" {
 resource "digitalocean_database_cluster" "splitity-postgres-cluster" {
   name       = "splitity-${local.environment}-postgres-cluster"
   engine     = "pg"
-  version    = "12"
   size       = "db-s-1vcpu-1gb"
   region     = "nyc1"
   node_count = 1
@@ -37,6 +36,7 @@ resource "digitalocean_database_cluster" "splitity-redis-cluster" {
   engine     = "redis"
   size       = "db-s-1vcpu-1gb"
   region     = "nyc1"
+  version    = "5.0.6"
   node_count = 1
 
   tags = ["splitity-${local.environment}"]
