@@ -140,6 +140,7 @@ jobs:
             cd backend
             sudo apt-get update
             sudo apt-get -y install cmake
+            sudo apt-get -y install libpq-dev
       - restore_cache:
           keys:
             - rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}

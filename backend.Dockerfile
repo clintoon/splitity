@@ -15,6 +15,7 @@ RUN apt-get install -y pkg-config
 RUN apt-get install -y git
 
 RUN apt-get install -y libsqlite3-dev
+RUN apt-get install -y libpq-dev
 
 RUN gem install bundler:2.1.4
 RUN bundle install
