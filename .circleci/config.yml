@@ -156,7 +156,7 @@ jobs:
           name: Setup database
           command: |
             cd backend
-            rails db:migrate
+            RAILS_ENV=$BUILD_ENV rails db:migrate
 
   deploy_k8s:
     working_directory: ~/splitity
