@@ -127,7 +127,38 @@ jobs:
           name: Push Web Docker image
           command: docker push "splitity/splitity-backend:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
 
-  deploy:
+  migrate_postgres:
+    working_directory: ~/splitity
+    resource_class: small
+    docker:
+      - image: circleci/ruby:2.7.0-node
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            cd backend
+            sudo apt-get update
+            sudo apt-get -y install cmake
+      - restore_cache:
+          keys:
+            - rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}
+      - run:
+          name: Install dependencies
+          command: |
+            cd backend
+            bundle check || bundle install
+      - save_cache:
+          key: rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}
+          paths:
+            - backend/vendor/bundle
+      - run:
+          name: Setup database
+          command: |
+            cd backend
+            rails db:migrate
+
+  deploy_k8s:
     working_directory: ~/splitity
     resource_class: small
     docker:
@@ -181,8 +212,12 @@ workflows:
           context: prod-splitity-web
           requires:
             - hold
-      - deploy:
+      - migrate_postgres:
           context: prod-splitity-web
           requires:
             - build_web
             - build_backend
+      - deploy:
+          context: prod-splitity-web
+          requires:
+            - migrate_postgres

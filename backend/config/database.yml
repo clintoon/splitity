@@ -23,9 +23,9 @@ test:
 production:
   adapter: postgresql
   pool: 5
-  host: <%= ENV['POSTGRES_HOST'] %>
-  port: <%= ENV['POSTGRES_PORT'] %>
+  host: <%= Rails.application.credentials.dig(:postgres, :host) %>
+  port: <%= Rails.application.credentials.dig(:postgres, :port) %>
   sslmode: enabled
   database: defaultdb
   username: doadmin
-  password: <%= ENV['POSTGRES_PASSWORD'] %>
+  password: <%= Rails.application.credentials.dig(:postgres, :password) %>
