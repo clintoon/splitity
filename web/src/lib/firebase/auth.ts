@@ -2,8 +2,6 @@ import { app, auth, User, Unsubscribe } from 'firebase/app';
 import { transformRedirectResult } from '@web/lib/firebase/helpers/auth';
 
 export interface CurrentUser {
-  email: string;
-  emailVerified: boolean;
   userId: number;
 }
 
