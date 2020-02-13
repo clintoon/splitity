@@ -81,8 +81,7 @@ jobs:
       - image: circleci/node:lts
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - setup_remote_docker
       - run:
           name: Build Web Docker image
           command: >-
@@ -111,8 +110,7 @@ jobs:
       - image: circleci/node:lts
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - setup_remote_docker
       - run:
           name: Build Web Docker image
           command: >-
