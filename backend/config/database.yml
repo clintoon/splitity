@@ -21,5 +21,11 @@ test:
   database: db/test.sqlite3
 
 production:
-  <<: *default
-  database: db/production.sqlite3
+  adapter: postgresql
+  pool: 5
+  host: <%= Rails.application.credentials.dig(:postgres, :host) %>
+  port: <%= Rails.application.credentials.dig(:postgres, :port) %>
+  sslmode: require
+  database: defaultdb
+  username: doadmin
+  password: <%= Rails.application.credentials.dig(:postgres, :password) %>

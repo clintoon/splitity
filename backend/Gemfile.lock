@@ -122,6 +122,7 @@ GEM
     parallel (1.19.1)
     parser (2.7.0.2)
       ast (~> 2.4.0)
+    pg (1.2.2)
     public_suffix (4.0.2)
     puma (4.3.1)
       nio4r (~> 2.0)
@@ -241,6 +242,7 @@ DEPENDENCIES
   listen (>= 3.0.5, < 3.3)
   mocha
   octokit (~> 4.15)
+  pg
   puma (~> 4.3)
   rack-cors
   rails (~> 6.0.2)

@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: splitity-web
+  labels:
+    app: splitity-web
+  annotations:
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-algorithm: "round_robin"
+    service.beta.kubernetes.io/do-loadbalancer-tls-ports: "443"
+    service.beta.kubernetes.io/do-loadbalancer-redirect-http-to-https: "true"
+spec:
+  type: LoadBalancer
+  selector:
+    app: splitity-web
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: splitity-backend-api
+  labels:
+    app: splitity-backend-api
+  annotations:
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
+    service.beta.kubernetes.io/do-loadbalancer-algorithm: "round_robin"
+    service.beta.kubernetes.io/do-loadbalancer-tls-ports: "443"
+    service.beta.kubernetes.io/do-loadbalancer-redirect-http-to-https: "true"
+spec:
+  type: LoadBalancer
+  selector:
+    app: splitity-backend-api
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 3000
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 3000

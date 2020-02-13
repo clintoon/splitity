@@ -1,9 +1,11 @@
 version: 2.1
 orbs:
   codecov: codecov/codecov@1.0.5
+  kube-orb: circleci/kubernetes@0.11.0
 jobs:
   build:
-    working_directory: ~/split-my-prs
+    working_directory: ~/splitity
+    resource_class: small
     docker:
       - image: circleci/node:10
     steps:
@@ -28,8 +30,10 @@ jobs:
       - codecov/upload:
           file: web/coverage/*.json
           flags: frontend,unit
-  backend_build:
-    working_directory: ~/split-my-prs
+
+  backend_unit_tests:
+    working_directory: ~/splitity
+    resource_class: small
     docker:
       - image: circleci/ruby:2.7.0-node
         environment:
@@ -41,7 +45,7 @@ jobs:
           command: |
             cd backend
             sudo apt-get update
-            sudo apt -y install cmake
+            sudo apt-get -y install cmake
       - restore_cache:
           keys:
             - rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}
@@ -69,8 +73,152 @@ jobs:
       - codecov/upload:
           file: backend/coverage/.resultset.json
           flags: backend,unit
+
+  build_web:
+    working_directory: ~/splitity
+    resource_class: small
+    docker:
+      - image: circleci/node:lts
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build Web Docker image
+          command: >-
+            docker build
+            --file "web.Dockerfile"
+            --tag "splitity/${BUILD_ENV}-splitity-web:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
+            --build-arg REACT_APP_FIREBASE_KEY="${REACT_APP_FIREBASE_KEY}"
+            --build-arg REACT_APP_FIREBASE_DOMAIN="${REACT_APP_FIREBASE_DOMAIN}"
+            --build-arg REACT_APP_FIREBASE_PROJECT_ID="${REACT_APP_FIREBASE_PROJECT_ID}"
+            --build-arg REACT_APP_FIREBASE_APP_ID="${REACT_APP_FIREBASE_APP_ID}"
+            --build-arg GITHUB_APP_NAME="${GITHUB_APP_NAME}"
+            --build-arg BACKEND_API_URL="${BACKEND_API_URL}"
+            --build-arg MIXPANEL_TOKEN="${MIXPANEL_TOKEN}"
+            .
+      - run:
+          name: Login to docker hub
+          command: echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_LOGIN" --password-stdin
+      - run:
+          name: Push Web Docker image
+          command: docker push "splitity/${BUILD_ENV}-splitity-web:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
+
+  build_backend:
+    working_directory: ~/splitity
+    resource_class: small
+    docker:
+      - image: circleci/node:lts
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build Web Docker image
+          command: >-
+            docker build
+            --file "backend.Dockerfile"
+            --tag "splitity/splitity-backend:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
+            .
+      - run:
+          name: Login to docker hub
+          command: echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_LOGIN" --password-stdin
+      - run:
+          name: Push Web Docker image
+          command: docker push "splitity/splitity-backend:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
+
+  migrate_postgres:
+    working_directory: ~/splitity
+    resource_class: small
+    docker:
+      - image: circleci/ruby:2.7.0-node
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            cd backend
+            sudo apt-get update
+            sudo apt-get -y install cmake
+            sudo apt-get -y install libpq-dev
+      - restore_cache:
+          keys:
+            - rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}
+      - run:
+          name: Install dependencies
+          command: |
+            cd backend
+            bundle check || bundle install
+      - save_cache:
+          key: rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}
+          paths:
+            - backend/vendor/bundle
+      - run:
+          name: Setup database
+          command: |
+            cd backend
+            RAILS_ENV=$BUILD_ENV rails db:migrate
+
+  deploy_k8s:
+    working_directory: ~/splitity
+    resource_class: small
+    docker:
+      - image: circleci/node:lts
+    steps:
+      - checkout
+      - kube-orb/install
+      - run:
+          name: Install packages
+          command: |
+            curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+            sudo mv kustomize /bin
+            curl -sL https://github.com/digitalocean/doctl/releases/download/v1.38.0/doctl-1.38.0-linux-amd64.tar.gz | tar -xzv
+            sudo mv doctl /bin
+      - run:
+          name: Setup kubectl cluster config
+          command: |
+            doctl auth init --access-token $DIGITAL_OCEAN_ACCESS_TOKEN
+            doctl kubernetes cluster kubeconfig save "splitity-${BUILD_ENV}-k8s-cluster"
+      - run:
+          name: Setup K8s secrets
+          command: |
+            kubectl create secret docker-registry regcred --docker-username="$DOCKER_LOGIN" --docker-password="$DOCKER_PASSWORD" --dry-run -o yaml | kubectl apply -f -
+            kubectl create secret generic backend --from-literal=rails_master_key=$RAILS_MASTER_KEY --dry-run -o yaml | kubectl apply -f -
+      - run:
+          name: Update image tag
+          command: |
+            cd infra/k8s/overlays/$BUILD_ENV
+            kustomize edit set image "splitity/splitity-web=splitity/${BUILD_ENV}-splitity-web:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
+            kustomize edit set image "splitity/splitity-backend=splitity/splitity-backend:${CIRCLE_BRANCH}-${CIRCLE_SHA1:0:7}"
+      - run:
+          name: Deploy to K8s cluster
+          command: |
+            cd infra/k8s/overlays/$BUILD_ENV
+            kustomize build . | kubectl apply -f -
+
 workflows:
   unit_tests:
     jobs:
       - build
-      - backend_build
+      - backend_unit_tests
+  deploy_production:
+    jobs:
+      - hold:
+          type: approval
+      - build_web:
+          context: prod-splitity-web
+          requires:
+            - hold
+      - build_backend:
+          context: prod-splitity-web
+          requires:
+            - hold
+      - migrate_postgres:
+          context: prod-splitity-web
+          requires:
+            - build_web
+            - build_backend
+      - deploy_k8s:
+          context: prod-splitity-web
+          requires:
+            - migrate_postgres
