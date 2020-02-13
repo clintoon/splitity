@@ -8,8 +8,6 @@ const currentUserFactory = (
   options?: CurrentUserFactoryOptions
 ): CurrentUser => {
   return {
-    email: 'clintonfeng@gmail.com',
-    emailVerified: false,
     userId: 123,
     githubInstallationId: options ? options.githubInstallationId : null,
   };

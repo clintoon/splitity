@@ -13,8 +13,6 @@ describe('auth', (): void => {
     });
 
     const userMock: User = mock<User>();
-    when(userMock.email).thenReturn('email');
-    when(userMock.emailVerified).thenReturn(true);
 
     const providerDataMock = mock<UserInfo>();
     when(providerDataMock.uid).thenReturn('123');
@@ -37,8 +35,6 @@ describe('auth', (): void => {
         })
       ).toMatchInlineSnapshot(`
         Object {
-          "email": "email",
-          "emailVerified": true,
           "userId": 123,
         }
       `);
@@ -47,8 +43,6 @@ describe('auth', (): void => {
 
   describe('transformFirebaseUser', (): void => {
     const userMock: User = mock<User>();
-    when(userMock.email).thenReturn('email');
-    when(userMock.emailVerified).thenReturn(true);
 
     const providerDataMock = mock<UserInfo>();
     when(providerDataMock.uid).thenReturn('123');
@@ -61,8 +55,6 @@ describe('auth', (): void => {
         })
       ).toMatchInlineSnapshot(`
         Object {
-          "email": "email",
-          "emailVerified": true,
           "userId": 123,
         }
       `);

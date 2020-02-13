@@ -40,17 +40,17 @@ describe('authStore', (): void => {
     });
 
     describe('updateUser', (): void => {
-      const updatedEmailVerified = true;
+      const githubInstallationId = 123;
 
       it('correctly updates currentUser state', (): void => {
         const mockCurrentUser = currentUserFactory();
         const authStore = AuthModel.create({ currentUser: mockCurrentUser });
         authStore.updateUser({
-          emailVerified: updatedEmailVerified,
+          githubInstallationId,
         });
         const expectedUser = {
-          ...omit(mockCurrentUser, ['emailVerified']),
-          emailVerified: updatedEmailVerified,
+          ...omit(mockCurrentUser, ['githubInstallationId']),
+          githubInstallationId: githubInstallationId,
         };
         expect(authStore.getCurrentUser()).toEqual(expectedUser);
       });
@@ -58,7 +58,7 @@ describe('authStore', (): void => {
       it('currentUser is null when called when currentUser is not set', (): void => {
         const authStore = AuthModel.create({ currentUser: null });
         authStore.updateUser({
-          emailVerified: updatedEmailVerified,
+          githubInstallationId,
         });
         expect(authStore.getCurrentUser()).toBe(null);
       });
