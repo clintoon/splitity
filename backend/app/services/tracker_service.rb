@@ -1,8 +1,9 @@
 require 'mixpanel-ruby'
 
-class TrackingService
+class TrackerService
   def initialize(user_id)
-    @tracker = Mixpanel::Tracker.new(PROJECT_TOKEN)
+    project_token = Rails.application.credentials.mixpanel[:token]
+    @tracker = Mixpanel::Tracker.new(project_token)
     @user_id = user_id
   end
 
