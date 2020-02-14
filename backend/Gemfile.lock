@@ -183,6 +183,8 @@ GEM
     sawyer (0.8.2)
       addressable (>= 2.3.5)
       faraday (> 0.8, < 2.0)
+    sentry-raven (1.1.0)
+      faraday (>= 0.7.6)
     sidekiq (6.0.4)
       connection_pool (>= 2.2.2)
       rack (>= 2.0.0)
@@ -252,6 +254,7 @@ DEPENDENCIES
   rubocop (~> 0.79.0)
   rubocop-rails
   rugged!
+  sentry-raven
   sidekiq
   simplecov
   solargraph
