@@ -77,7 +77,7 @@
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
-    "serve": "serve ./public --listen 8080",
+    "serve": "serve ./public --listen 8080 --single",
     "storybook": "start-storybook --config-dir storybook --port 9009"
   }
 }
