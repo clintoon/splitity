@@ -38,7 +38,8 @@ module Backend
 
     # Sentry
     Raven.configure do |config|
-      config.dsn = Rails.application.credentials.dig(:sentry, :dsn)
+      sentry_dsn = Rails.application.credentials.dig(:sentry, :dsn)
+      config.dsn = sentry_dsn unless sentry_dsn.nil?
     end
   end
 end
