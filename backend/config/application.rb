@@ -35,5 +35,11 @@ module Backend
     config.api_only = true
 
     config.active_job.queue_adapter = :sidekiq
+
+    # Sentry
+    Raven.configure do |config|
+      sentry_dsn = Rails.application.credentials.dig(:sentry, :dsn)
+      config.dsn = sentry_dsn unless sentry_dsn.nil?
+    end
   end
 end
