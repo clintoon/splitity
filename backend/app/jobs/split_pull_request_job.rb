@@ -32,13 +32,13 @@ class SplitPullRequestJob < ApplicationJob
     File.write(patch_path, params[:patch], mode: 'w')
 
     cmd = "git -C '#{git_repo_path}' apply '../patch.diff' --unidiff-zero"
-    Rails.logger.info("apply_patch cmd: #{cmd}")
+    logger.info("apply_patch cmd: #{cmd}")
     stdout, stderr, status = Open3.capture3(cmd)
-    Rails.logger.info("apply_patch stdout: '#{stdout}'") unless stdout.empty?
+    logger.info("apply_patch stdout: '#{stdout}'") unless stdout.empty?
 
     raise ApplyPatchErrors, "apply_patch git apply fail with exit code with stderr: '#{stderr}'" unless status.success?
 
-    Rails.logger.warn("apply_patch git apply success with stderr: '#{stderr}'") unless stderr.empty?
+    logger.warn("apply_patch git apply success with stderr: '#{stderr}'") unless stderr.empty?
   end
 
   def perform(*args)
