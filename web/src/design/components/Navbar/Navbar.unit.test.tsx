@@ -5,7 +5,7 @@ import {
   NAVBAR_LEFT_ITEMS_TESTID,
 } from '@web/design/components/Navbar/Navbar';
 import { render, RenderResult } from '@testing-library/react';
-import { logError } from '@web/lib/logger';
+import { logger } from '@web/lib/logger';
 
 jest.mock('@web/lib/logger');
 
@@ -46,12 +46,12 @@ describe('<Navbar/>', (): void => {
   it('logs error message when passed item without an key', (): void => {
     // eslint-disable-next-line react/jsx-key
     render(<Navbar rightItems={[<div />]} />);
-    expect(logError).toHaveBeenCalled();
+    expect(logger.error).toHaveBeenCalled();
   });
 
   it('does not logs error message when passed item with key', (): void => {
     render(<Navbar rightItems={[<div key="1" />]} />);
-    expect(logError).not.toHaveBeenCalled();
+    expect(logger.error).not.toHaveBeenCalled();
   });
 
   describe('render multiple items on each side', (): void => {

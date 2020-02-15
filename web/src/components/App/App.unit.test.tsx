@@ -207,7 +207,7 @@ describe('<App/>', (): void => {
     it('throw error when user is logged in but authCookie is not set', async (): Promise<
       void
     > => {
-      // Mocking logError to not dump error to console
+      // Mocking console.error to not dump error to console
       const consoleErrSpy = jest.spyOn(console, 'error');
       consoleErrSpy.mockImplementation((): void => {});
 

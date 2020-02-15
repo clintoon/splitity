@@ -40,7 +40,7 @@ import { Router } from 'react-router-dom';
 import { BackendAPI } from '@web/lib/backend/backendApi';
 import { GithubRoutePath } from '@web/constants/routes';
 import { showAlert } from '@web/lib/alert/alert';
-import { logError } from '@web/lib/logger';
+import { logger } from '@web/lib/logger';
 import { track } from '@web/lib/analytics/tracking';
 import { TrackingEvent } from '@web/lib/analytics/events';
 
@@ -718,8 +718,8 @@ describe('<PullRequestSplittingPage />', (): void => {
         expect(showAlert as jest.Mock).toBeCalledWith(
           'Unable to split PR. Please try again.'
         );
-        expect(logError as jest.Mock).toBeCalledWith(
-          'Error: unable to split PR Error: splitPullRequest error'
+        expect(logger.info).toBeCalledWith(
+          'Unable to split PR Error: splitPullRequest error'
         );
       });
     });
