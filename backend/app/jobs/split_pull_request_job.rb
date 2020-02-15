@@ -3,39 +3,42 @@ require 'fileutils'
 require 'open3'
 require 'time'
 
-def apply_patch(params)
-  # !!! IMPORTANT !!!
-  # We must ensure that the params which are exposed in the shell command are safe.
-  # In this case, ensure that they are integers.
-  unless params[:repo_id].is_a?(Integer) && params[:job_id].is_a?(Integer) \
-                                      && params[:split_count].is_a?(Integer)
-    raise Exception, 'apply_patch params are not safe.'
-  end
-
-  path_prefix = "tmp/splitity/split-pr-job/repo-#{params[:repo_id]}/job-#{params[:job_id]}/pr-count-#{params[:split_count]}"
-  git_repo_path = "#{path_prefix}/repo"
-  patch_path = "#{path_prefix}/patch.diff"
-
-  File.write(patch_path, params[:patch], mode: 'w')
-
-  cmd = "git -C '#{git_repo_path}' apply '../patch.diff' --unidiff-zero"
-  logger.info("apply_patch cmd: #{cmd}")
-  stdout, stderr, status = Open3.capture3(cmd)
-  logger.info("apply_patch stdout: '#{stdout}'") unless stdout.empty?
-
-  raise Exception, "apply_patch git apply fail with exit code with stderr: '#{stderr}'" unless status.success?
-
-  logger.warn("apply_patch git apply success with stderr: '#{stderr}'") unless stderr.empty?
-end
-
 # Job to split a PR
 class SplitPullRequestJob < ApplicationJob
   queue_as :default
 
-  rescue_from(Exception) do |_exception|
+  class ApplyPatchError < StandardError; end
+
+  rescue_from(Exception) do |exception|
+    Raven.capture_exception(exception)
     params = arguments[0]
     split_pr_job_record = SplitPullRequestJobRecord.find(params[:job_id])
     split_pr_job_record.failed!
+  end
+
+  def apply_patch(params)
+    # !!! IMPORTANT !!!
+    # We must ensure that the params which are exposed in the shell command are safe.
+    # In this case, ensure that they are integers.
+    unless params[:repo_id].is_a?(Integer) && params[:job_id].is_a?(Integer) \
+                                        && params[:split_count].is_a?(Integer)
+      raise ApplyPatchError, 'apply_patch params are not safe.'
+    end
+
+    path_prefix = "tmp/splitity/split-pr-job/repo-#{params[:repo_id]}/job-#{params[:job_id]}/pr-count-#{params[:split_count]}"
+    git_repo_path = "#{path_prefix}/repo"
+    patch_path = "#{path_prefix}/patch.diff"
+
+    File.write(patch_path, params[:patch], mode: 'w')
+
+    cmd = "git -C '#{git_repo_path}' apply '../patch.diff' --unidiff-zero"
+    logger.info("apply_patch cmd: #{cmd}")
+    stdout, stderr, status = Open3.capture3(cmd)
+    logger.info("apply_patch stdout: '#{stdout}'") unless stdout.empty?
+
+    raise ApplyPatchErrors, "apply_patch git apply fail with exit code with stderr: '#{stderr}'" unless status.success?
+
+    logger.warn("apply_patch git apply success with stderr: '#{stderr}'") unless stderr.empty?
   end
 
   def perform(*args)
