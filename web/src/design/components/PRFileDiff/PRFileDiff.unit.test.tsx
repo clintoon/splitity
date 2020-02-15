@@ -26,6 +26,8 @@ import {
 import { FILE_DIFF_LINE_TESTID } from '@web/design/components/PRFileDiff/internal/Line';
 import { parseDiff, FileDiff } from '@web/lib/parseDiff/parseDiff';
 
+jest.mock('@web/lib/logger');
+
 const FILE_DIFF_ID = '1';
 
 interface RenderFileDiffResult {
@@ -91,7 +93,7 @@ describe('<PRFileDiff/>', (): void => {
     });
 
     it('throws error when to filename is missing', async (): Promise<void> => {
-      // Mocking logError to not dump error to console
+      // Mocking console.error to not dump error to console
       const consoleErrSpy = jest.spyOn(console, 'error');
       consoleErrSpy.mockImplementation((): void => {});
 
@@ -113,7 +115,7 @@ describe('<PRFileDiff/>', (): void => {
     it('throws error when from filename is missing', async (): Promise<
       void
     > => {
-      // Mocking logError to not dump error to console
+      // Mocking console.error to not dump error to console
       const consoleErrSpy = jest.spyOn(console, 'error');
       consoleErrSpy.mockImplementation((): void => {});
 

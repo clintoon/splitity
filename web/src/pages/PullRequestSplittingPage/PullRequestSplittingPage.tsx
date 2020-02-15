@@ -10,7 +10,7 @@ import { filter, has, cloneDeep, keyBy, pickBy, size } from 'lodash';
 import { parseDiff, FileDiff } from '@web/lib/parseDiff/parseDiff';
 import { mapPropDataToFileDiff } from './mapDataToFileDiffs';
 import { BackendAPI } from '@web/lib/backend/backendApi';
-import { logError } from '@web/lib/logger';
+import { logger } from '@web/lib/logger';
 import { showAlert } from '@web/lib/alert/alert';
 import { useHistory } from 'react-router-dom';
 import { History } from 'history';
@@ -208,7 +208,7 @@ const PullRequestSplittingPage = ({
           'An job to split the PR was added to the queue. Please wait for the pull requests to be created in the github repo.'
         );
       } catch (error) {
-        logError(`Error: unable to split PR ${error}`);
+        logger.info(`Unable to split PR ${error}`);
         showAlert('Unable to split PR. Please try again.');
       }
     }

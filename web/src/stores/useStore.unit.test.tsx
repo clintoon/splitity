@@ -4,7 +4,7 @@ import { StoreType, StoreProvider } from '@web/stores/storeProvider';
 
 describe('useStore', (): void => {
   it('shows an exception when not wrapped in <StoreProvider />', (): void => {
-    // Mocking logError to not dump error to console
+    // Mocking console.error to not dump error to console
     const consoleErrSpy = jest.spyOn(console, 'error');
     consoleErrSpy.mockImplementation((): void => {});
 

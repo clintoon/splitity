@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Color } from '@web/design/styles/color';
-import { logError } from '@web/lib/logger';
+import { logger } from '@web/lib/logger';
 
 const NAVBAR_TESTID = 'navbar';
 const NAVBAR_RIGHT_ITEMS_TESTID = 'navbar-right-items';
@@ -48,7 +48,7 @@ const renderItems = (items?: JSX.Element[]): JSX.Element[] | null => {
   return items.map(
     (item): JSX.Element => {
       if (item.key === null) {
-        logError('Error: key not passed to <Navbar /> items');
+        logger.error('Error: key not passed to <Navbar /> items');
       }
 
       return (
