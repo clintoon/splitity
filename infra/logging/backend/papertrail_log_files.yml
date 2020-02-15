@@ -1,0 +1,7 @@
+files:
+  - /backend/log/production.log
+destination:
+  host: logs6.papertrailapp.com
+  port: 39519
+  protocol: tls
+pid_file: /var/run/remote_syslog.pid

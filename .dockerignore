@@ -6,3 +6,4 @@
 **/*.env
 **/*.key
 web/public/bundle.js
+**/*.log
