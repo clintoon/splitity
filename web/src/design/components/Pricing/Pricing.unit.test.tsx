@@ -11,6 +11,7 @@ const PLAN1_PRICE = 0;
 const PLAN2_HEAD = 'Organization accounts';
 const PLAN2_CONTENT = 'Unlimited repos on organization accounts';
 const PLAN2_PRICE = 123;
+const PLAN2_BANNER = '1 month free trial';
 
 interface RenderPricingResult {
   renderResult: RenderResult;
@@ -30,6 +31,7 @@ const renderPricing = (): RenderPricingResult => {
           head: PLAN2_HEAD,
           content: PLAN2_CONTENT,
           price: PLAN2_PRICE,
+          banner: PLAN2_BANNER,
         },
       ]}
     />
@@ -55,5 +57,6 @@ describe('<Pricing/>', (): void => {
     expect(renderResult.queryByText(PLAN2_HEAD)).not.toBe(null);
     expect(renderResult.queryByText(PLAN2_CONTENT)).not.toBe(null);
     expect(renderResult.queryByText(`$${PLAN2_PRICE}`)).not.toBe(null);
+    expect(renderResult.queryByText(`${PLAN2_BANNER}`)).not.toBe(null);
   });
 });

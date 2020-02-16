@@ -82,7 +82,8 @@ const HomePage = (): JSX.Element => {
           {
             head: 'Organization accounts',
             content: 'Unlimited repos on organization accounts',
-            price: 0,
+            price: 30,
+            banner: '1 month free trial. No credit card required.',
           },
         ]}
       />{' '}
