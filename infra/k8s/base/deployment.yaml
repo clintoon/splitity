@@ -70,7 +70,7 @@ spec:
         - name: splitity-backend-sidekiq
           image: splitity/splitity-backend:latest
           imagePullPolicy: Always
-          command: ['remote_syslog', '&&', 'bundle', 'exec', 'sidekiq']
+          command: ["/bin/bash", "-c", "remote_syslog && bundle exec sidekiq"]
           env:
             - name: RAILS_MASTER_KEY
               valueFrom:
