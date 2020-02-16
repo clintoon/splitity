@@ -15,6 +15,7 @@ interface PricingProps {
     price: number;
     head: string;
     content: string;
+    banner?: string;
   }[];
 }
 
@@ -27,14 +28,26 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-const Box = styled.div`
-  height: 300px;
-  width: 230px;
-  padding: 30px;
+const PricingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 380px;
+  width: 290px;
   background: ${Color.White};
   border: 2px solid ${Color.Gray100};
   margin: 0 10px 10px 0;
   border-radius: 10px;
+`;
+
+const Box = styled.div`
+  padding: 30px 30px 0 30px;
+`;
+
+const Banner = styled.div`
+  background: ${Color.Blue100};
+  padding: 16px;
+  border-radius: 0 0 10px 10px;
 `;
 
 const Pricing = ({ title, plans }: PricingProps): JSX.Element => {
@@ -50,30 +63,35 @@ const Pricing = ({ title, plans }: PricingProps): JSX.Element => {
       </Text>
       <Container>
         {plans.map(
-          ({ price, head, content }, index): JSX.Element => {
+          ({ price, head, content, banner }, index): JSX.Element => {
             return (
-              <Box key={index}>
-                <Text
-                  textAlign={TextAlign.Center}
-                  margin="30px 0"
-                  fontWeight={TextWeight.Bold}
-                >
-                  {head}
-                </Text>
-                <Text textAlign={TextAlign.Center} margin="10px 0">
-                  {content}
-                </Text>
-                <Text
-                  styleOf={TextStyle.Title1}
-                  textAlign={TextAlign.Center}
-                  margin="30px 0"
-                >
-                  ${price}
-                </Text>
-                <Text textAlign={TextAlign.Center} margin="10px 0">
-                  per month
-                </Text>
-              </Box>
+              <PricingContainer key={index}>
+                <Box>
+                  <Text
+                    textAlign={TextAlign.Center}
+                    margin="30px 0"
+                    fontWeight={TextWeight.Bold}
+                  >
+                    {head}
+                  </Text>
+                  <Text textAlign={TextAlign.Center} margin="10px 0">
+                    {content}
+                  </Text>
+                  <Text
+                    styleOf={TextStyle.Title1}
+                    textAlign={TextAlign.Center}
+                    margin="30px 0"
+                  >
+                    ${price}
+                  </Text>
+                  <Text textAlign={TextAlign.Center}>per month</Text>
+                </Box>
+                {banner && (
+                  <Banner>
+                    <Text textAlign={TextAlign.Center}>{banner}</Text>
+                  </Banner>
+                )}
+              </PricingContainer>
             );
           }
         )}
