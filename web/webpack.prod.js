@@ -1,6 +1,7 @@
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
 const webpack = require('webpack');
+const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 
 module.exports = merge(common, {
   mode: 'production',
@@ -13,6 +14,13 @@ module.exports = merge(common, {
       'GITHUB_APP_NAME',
       'BACKEND_API_URL',
       'MIXPANEL_TOKEN',
+      'REACT_SENTRY_DSN',
     ]),
+    new SentryWebpackPlugin({
+      include: '.',
+      ignoreFile: '.sentrycliignore',
+      ignore: ['node_modules'],
+      configFile: 'sentry.properties',
+    }),
   ],
 });

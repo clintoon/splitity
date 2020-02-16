@@ -1,5 +1,5 @@
 const sentryConfig = {
-  dsn: process.env.REACT_SENTRY_DSN,
+  dsn: process.env.SENTRY_DSN,
 };
 
 export { sentryConfig };
