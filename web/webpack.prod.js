@@ -21,6 +21,7 @@ module.exports = merge(common, {
       ignoreFile: '.sentrycliignore',
       ignore: ['node_modules'],
       configFile: 'sentry.properties',
+      release: process.env.SENTRY_RELEASE,
     }),
   ],
 });
