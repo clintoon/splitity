@@ -5,9 +5,11 @@
 
 # Read more: https://github.com/cyu/rack-cors
 
+allowed_origins = Rails.application.credentials.dig(:cors, :allowed_origins)
+
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'localhost:8080'
+    origins allowed_origins unless allowed_origins.nil?
 
     resource '*',
              headers: :any,
