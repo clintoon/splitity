@@ -1,6 +1,6 @@
 require 'json'
 
-class JobArgsEncryptor
+class SplitityEncryptor
   def initialize(key)
     @key = key
   end

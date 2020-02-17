@@ -25,7 +25,7 @@ class PullRequestsController < ApplicationController
       parent_pr_id: params[:pull_request_id],
       repo_owner: params[:owner],
       repo_name: params[:repo_name],
-      patches: JobArgsEncryptor.new(Rails.application.credentials.active_job[:secret_key]).encrypt(params[:patches]),
+      patches: EncryptionService.new.encrypt(params[:patches]),
       installation_id: installation_id,
       split_initiated_by_user_id: @current_user[:id]
     )

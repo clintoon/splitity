@@ -43,7 +43,7 @@ class SplitPullRequestJob < ApplicationJob
 
   def perform(*args)
     params = args[0]
-    patches = JobArgsEncryptor.new(Rails.application.credentials.active_job[:secret_key]).decrypt(params[:patches])
+    patches = EncryptionService.new.decrypt(params[:patches])
 
     github_app = GithubAppService.new
     installation_token = github_app.repo_installation_token(
