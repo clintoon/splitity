@@ -43,6 +43,7 @@ class SplitPullRequestJob < ApplicationJob
 
   def perform(*args)
     params = args[0]
+    patches = JobArgsEncryptor.new(Rails.application.credentials.active_job[:secret_key]).decrypt(params[:patches])
 
     github_app = GithubAppService.new
     installation_token = github_app.repo_installation_token(
@@ -63,7 +64,7 @@ class SplitPullRequestJob < ApplicationJob
     # apply diff
     repos = []
 
-    params[:patches].each_with_index do |patch, split_count|
+    patches.each_with_index do |patch, split_count|
       split_count += 1
       path_prefix = "tmp/splitity/split-pr-job/repo-#{params[:repo_id]}/job-#{params[:job_id]}/pr-count-#{split_count}"
       FileUtils.mkdir_p(path_prefix)
