@@ -1,3 +1,5 @@
+require_relative '../../lib/splitity_encryptor'
+
 class EncryptionService
   def initialize
     key = Rails.application.credentials.encryption_key

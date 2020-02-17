@@ -41,8 +41,5 @@ module Backend
       sentry_dsn = Rails.application.credentials.dig(:sentry, :dsn)
       config.dsn = sentry_dsn unless sentry_dsn.nil?
     end
-
-    # autoload lib
-    config.autoload_paths << "#{Rails.root}/lib"
   end
 end
