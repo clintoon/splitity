@@ -155,10 +155,22 @@ jobs:
           paths:
             - backend/vendor/bundle
       - run:
+          name: Add current ip to postgres whitelist
+          command: |
+            cd infra/scripts/digitalocean_db_whitelist/
+            bundle install
+            ./whitelist_updater.rb add --access-token $DIGITAL_OCEAN_ACCESS_TOKEN --db-name "splitity-${BUILD_ENV}-postgres-cluster"
+      - run:
           name: Setup database
           command: |
             cd backend
             RAILS_ENV=$BUILD_ENV rails db:migrate
+      - run:
+          name: Add remove ip from postgres whitelist
+          command: |
+            cd infra/scripts/digitalocean_db_whitelist/
+            ./whitelist_updater.rb add --access-token $DIGITAL_OCEAN_ACCESS_TOKEN --db-name "splitity-${BUILD_ENV}-postgres-cluster"
+          when: always
 
   deploy_k8s:
     working_directory: ~/splitity
