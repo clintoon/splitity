@@ -57,7 +57,7 @@ jobs:
       - save_cache:
           key: rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}
           paths:
-            - backend/vendor/bundle
+            - ~/.bundle
       - run:
           name: Setup database
           command: |
@@ -153,12 +153,31 @@ jobs:
       - save_cache:
           key: rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}
           paths:
-            - backend/vendor/bundle
+            - ~/.bundle
+      - restore_cache:
+          keys:
+            - whitelist-updater-bundle-v1-{{ checksum "infra/scripts/digitalocean_db_whitelist/Gemfile.lock" }}
+      - run:
+          name: Add current ip to postgres whitelist
+          command: |
+            cd infra/scripts/digitalocean_db_whitelist/
+            bundle install
+            ./whitelist_updater.rb add --access-token $DIGITAL_OCEAN_ACCESS_TOKEN --db-name "splitity-${BUILD_ENV}-postgres-cluster"
       - run:
           name: Setup database
           command: |
             cd backend
             RAILS_ENV=$BUILD_ENV rails db:migrate
+      - save_cache:
+          key: whitelist-updater-bundle-v1-{{ checksum "infra/scripts/digitalocean_db_whitelist/Gemfile.lock" }}
+          paths:
+            - ~/.bundle
+      - run:
+          name: Remove remove ip from postgres whitelist
+          command: |
+            cd infra/scripts/digitalocean_db_whitelist/
+            ./whitelist_updater.rb remove --access-token $DIGITAL_OCEAN_ACCESS_TOKEN --db-name "splitity-${BUILD_ENV}-postgres-cluster"
+          when: always
 
   deploy_k8s:
     working_directory: ~/splitity

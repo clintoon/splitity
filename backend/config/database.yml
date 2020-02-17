@@ -27,5 +27,5 @@ production:
   port: <%= Rails.application.credentials.dig(:postgres, :port) %>
   sslmode: require
   database: defaultdb
-  username: doadmin
+  username: <%= Rails.application.credentials.dig(:postgres, :username) %>
   password: <%= Rails.application.credentials.dig(:postgres, :password) %>
