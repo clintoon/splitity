@@ -57,7 +57,7 @@ jobs:
       - save_cache:
           key: rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}
           paths:
-            - backend/vendor/bundle
+            - ~/.bundle
       - run:
           name: Setup database
           command: |
@@ -153,7 +153,10 @@ jobs:
       - save_cache:
           key: rails-bundle-v1-{{ checksum "backend/Gemfile.lock" }}
           paths:
-            - backend/vendor/bundle
+            - ~/.bundle
+      - restore_cache:
+          keys:
+            - whitelist-updater-bundle-v1-{{ checksum "infra/scripts/digitalocean_db_whitelist/Gemfile.lock" }}
       - run:
           name: Add current ip to postgres whitelist
           command: |
@@ -165,6 +168,10 @@ jobs:
           command: |
             cd backend
             RAILS_ENV=$BUILD_ENV rails db:migrate
+      - save_cache:
+          key: whitelist-updater-bundle-v1-{{ checksum "infra/scripts/digitalocean_db_whitelist/Gemfile.lock" }}
+          paths:
+            - ~/.bundle
       - run:
           name: Add remove ip from postgres whitelist
           command: |
