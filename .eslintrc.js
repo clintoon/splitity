@@ -12,6 +12,7 @@ module.exports = {
   rules: {
     '@typescript-eslint/indent': ['off', 2],
     '@typescript-eslint/no-explicit-any': 'error',
+    'react/prop-types': ['off'],
   },
   overrides: [
     {

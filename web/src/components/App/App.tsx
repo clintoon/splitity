@@ -5,7 +5,6 @@ import { useStore } from '@web/stores/useStore';
 import { withRouter, RouteComponentProps } from 'react-router';
 import { useSignInRedirectResult } from '@web/components/App/hooks/useSignInRedirectResult';
 import { useSyncUserStore } from '@web/components/App/hooks/useSyncUserStore';
-import { useNotAuthRedirect } from '@web/components/App/hooks/useNotAuthRedirect';
 
 const APP_LOADING = 'app-loading';
 
@@ -13,7 +12,6 @@ const WrappedApp = ({ history }: RouteComponentProps): JSX.Element => {
   const store = useStore();
 
   const fetchingUserResult = useSyncUserStore(store);
-  useNotAuthRedirect(history);
 
   const fetchingRedirectResult = useSignInRedirectResult(store, history);
   if (fetchingRedirectResult || fetchingUserResult) {

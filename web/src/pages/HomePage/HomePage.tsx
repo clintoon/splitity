@@ -69,7 +69,7 @@ const HomePage = (): JSX.Element => {
           'Save the time and trouble with doing it manually. Just click and go.',
         ]}
         color={Color.White}
-        illustration={<DevProductivity />}
+        illustration={<DevProductivity width="400px" />}
       />
       <Pricing
         title="Pricing"

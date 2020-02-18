@@ -4,6 +4,8 @@ import { useStore } from '@web/stores/useStore';
 import { SettingsSection } from './SettingsSection';
 import { GettingStartedSection } from './GettingStartedSection';
 
+const GITHUB_DASHBOARD_PAGE_TESTID = 'github dashboard page';
+
 const Container = styled.div`
   display: flex;
   justify-content: center;
@@ -24,7 +26,7 @@ const GithubDashboard = (): JSX.Element | null => {
   const { githubInstallationId } = currentUser;
 
   return (
-    <Container>
+    <Container data-testid={GITHUB_DASHBOARD_PAGE_TESTID}>
       <Content>
         <SettingsSection installationId={githubInstallationId} />
         <GettingStartedSection />
@@ -33,4 +35,4 @@ const GithubDashboard = (): JSX.Element | null => {
   );
 };
 
-export { GithubDashboard };
+export { GithubDashboard, GITHUB_DASHBOARD_PAGE_TESTID };

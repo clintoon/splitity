@@ -7,6 +7,7 @@ import { initializeTracking } from './lib/analytics/tracking';
 import { sentryConfig } from '@web/config/sentry';
 import { environmentConfig } from '@web/config/environment';
 import * as Sentry from '@sentry/browser';
+import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 
 initializeTracking();
 Sentry.init({
@@ -18,7 +19,9 @@ const rootContainer = document.getElementById('root');
 ReactDOM.render(
   <StoreProvider>
     <BrowserRouter>
-      <App />
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
     </BrowserRouter>
   </StoreProvider>,
   rootContainer
