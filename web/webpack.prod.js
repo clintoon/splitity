@@ -14,7 +14,7 @@ module.exports = merge(common, {
       'GITHUB_APP_NAME',
       'BACKEND_API_URL',
       'MIXPANEL_TOKEN',
-      'REACT_SENTRY_DSN',
+      'SENTRY_DSN',
     ]),
     new SentryWebpackPlugin({
       include: '.',
