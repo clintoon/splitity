@@ -1,4 +1,9 @@
-import { captureMessage, Severity } from '@sentry/browser';
+import {
+  captureMessage,
+  Severity,
+  captureException,
+  withScope,
+} from '@sentry/browser';
 
 interface LogImplOptions {
   logLevel: Severity;
@@ -29,4 +34,14 @@ const logger = {
   },
 };
 
-export { logger };
+const logException = (error: Error, extraInfo?: object): void => {
+  withScope((scope): void => {
+    if (extraInfo) {
+      scope.setExtras(extraInfo);
+    }
+
+    captureException(error);
+  });
+};
+
+export { logger, logException };
