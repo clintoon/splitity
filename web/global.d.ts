@@ -13,3 +13,9 @@ declare module '*.svg' {
   const svg: React.FunctionComponent<SVGProps>;
   export default svg;
 }
+
+// For file loader
+declare module '*.png' {
+  const content: string;
+  export default content;
+}
