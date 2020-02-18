@@ -203,7 +203,7 @@ const PullRequestSplittingPage = ({
           patches,
         });
         track(TrackingEvent.onSplitPRSuccess);
-        history.replace(GithubRoutePath.AppRoot);
+        history.push(GithubRoutePath.AppRoot);
         showAlert(
           'An job to split the PR was added to the queue. Please wait for the pull requests to be created in the github repo.'
         );

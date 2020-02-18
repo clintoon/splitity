@@ -10,6 +10,7 @@ import { useStore } from '@web/stores/useStore';
 import { observer } from 'mobx-react-lite';
 import { handleSignIn } from '@web/lib/eventHandlers/auth';
 import { resetTracking } from '@web/lib/analytics/tracking';
+import { SplitityLogoButton } from './SplitityLogoButton';
 
 const NAVBAR_SIGNIN_TESTID = 'navbar-signin';
 const NAVBAR_SIGN_OUT_TESTID = 'navbar-signout';
@@ -17,6 +18,7 @@ const NAVBAR_SIGN_OUT_TESTID = 'navbar-signout';
 const renderNotAuthenticatedNavbar = (): JSX.Element => {
   return (
     <DesignNavbar
+      leftItems={[<SplitityLogoButton key="logo" />]}
       rightItems={[
         <div data-testid={NAVBAR_SIGNIN_TESTID} key="login">
           <Button styleOf={ButtonStyle.Primary} onClick={handleSignIn}>
@@ -40,6 +42,7 @@ const renderAuthenticatedNavbar = (history: History): JSX.Element => {
 
   return (
     <DesignNavbar
+      leftItems={[<SplitityLogoButton key="logo" />]}
       rightItems={[
         <div data-testid={NAVBAR_SIGN_OUT_TESTID} key="logout">
           <Button styleOf={ButtonStyle.Primary} onClick={handleSignOut}>
