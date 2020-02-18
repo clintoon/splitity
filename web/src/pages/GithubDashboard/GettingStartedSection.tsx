@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Card } from '@web/design/components/Card/Card';
 import { Text } from '@web/design/components/Text/Text';
 import { Color } from '@web/design/styles/color';
+import howToSplitImg from '@web/assets/images/how_to_split.png';
 
 const Container = styled.div`
   max-width: 700px;
@@ -15,6 +16,9 @@ const CardBodyWrapper = styled.div`
 
 const ImgWrapper = styled.div`
   padding: 5px;
+  img {
+    width: 650px;
+  }
 `;
 
 const GettingStartedSection = (): JSX.Element => {
@@ -22,8 +26,13 @@ const GettingStartedSection = (): JSX.Element => {
     <Container>
       <Card header="Getting started">
         <CardBodyWrapper>
-          <Text>When you have a pull request that you want to split, do:</Text>
-          <ImgWrapper>TODO: add img</ImgWrapper>
+          <Text>
+            To get started, comment the below on one of your pull requests to
+            get started
+          </Text>
+          <ImgWrapper>
+            <img alt="how to" src={howToSplitImg} />
+          </ImgWrapper>
         </CardBodyWrapper>
       </Card>
     </Container>
