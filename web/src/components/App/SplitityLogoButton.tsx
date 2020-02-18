@@ -5,6 +5,8 @@ import { useHistory } from 'react-router-dom';
 import { useStore } from '@web/stores/useStore';
 import { RoutePath, GithubRoutePath } from '@web/constants/routes';
 
+const SPLITITY_LOGO_BUTTON_TESTID = 'splitity logo button';
+
 const ButtonWrapper = styled.button`
   display: flex;
   align-items: center;
@@ -28,10 +30,13 @@ const SplitityLogoButton = (): JSX.Element => {
   };
 
   return (
-    <ButtonWrapper onClick={onClickHandler}>
+    <ButtonWrapper
+      onClick={onClickHandler}
+      data-testid={SPLITITY_LOGO_BUTTON_TESTID}
+    >
       <SplitityLogo width="80px" height="40px" />
     </ButtonWrapper>
   );
 };
 
-export { SplitityLogoButton };
+export { SplitityLogoButton, SPLITITY_LOGO_BUTTON_TESTID };
