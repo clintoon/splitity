@@ -19,6 +19,8 @@ import { fileDiffsToPatches } from './getPatch';
 import { track } from '@web/lib/analytics/tracking';
 import { TrackingEvent } from '@web/lib/analytics/events';
 
+const PULL_REQUEST_SPLITTING_PAGE_TESTID = 'pull request splitting page';
+
 interface MatchProps {
   owner: string;
   repoName: string;
@@ -215,7 +217,7 @@ const PullRequestSplittingPage = ({
   };
 
   return (
-    <div>
+    <div data-testid={PULL_REQUEST_SPLITTING_PAGE_TESTID}>
       <PullRequestInfoPage
         title={title || ''}
         repoName={repoName}
@@ -250,4 +252,10 @@ const PullRequestSplittingPage = ({
   );
 };
 
-export { PullRequestSplittingPage, PRBranchData, HunkInfo, HunkAllocations };
+export {
+  PullRequestSplittingPage,
+  PRBranchData,
+  HunkInfo,
+  HunkAllocations,
+  PULL_REQUEST_SPLITTING_PAGE_TESTID,
+};
