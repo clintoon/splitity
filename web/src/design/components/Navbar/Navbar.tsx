@@ -27,15 +27,19 @@ const NavbarBox = styled.div`
 const ItemGroup = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
 `;
 
 const ItemWrapper = styled.div`
+  display: flex;
+  align-items: center;
   margin: 0 4px;
 `;
 
 const Content = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: space-between;
   margin: 0 16px;
   width: 100%;
