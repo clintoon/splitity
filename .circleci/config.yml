@@ -83,6 +83,13 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
+          name: Setup git LFS
+          command: |
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get -u install git-lfs
+            git lfs install
+            git lfs pull
+      - run:
           name: Build Web Docker image
           command: >-
             docker build
