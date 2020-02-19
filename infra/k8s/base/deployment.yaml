@@ -3,7 +3,6 @@ kind: Deployment
 metadata:
   name: splitity-web
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: splitity-web
@@ -26,7 +25,6 @@ kind: Deployment
 metadata:
   name: splitity-backend-api
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: splitity-backend-api
@@ -55,7 +53,6 @@ kind: Deployment
 metadata:
   name: splitity-backend-sidekiq
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: splitity-backend-sidekiq
@@ -70,7 +67,7 @@ spec:
         - name: splitity-backend-sidekiq
           image: splitity/splitity-backend:latest
           imagePullPolicy: Always
-          command: ["/bin/bash", "-c", "remote_syslog && bundle exec sidekiq"]
+          command: ['/bin/bash', '-c', 'remote_syslog && bundle exec sidekiq']
           env:
             - name: RAILS_MASTER_KEY
               valueFrom:

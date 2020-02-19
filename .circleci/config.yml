@@ -83,6 +83,13 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
+          name: Setup git LFS
+          command: |
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get -u install git-lfs
+            git lfs install
+            git lfs pull
+      - run:
           name: Build Web Docker image
           command: >-
             docker build
@@ -199,6 +206,12 @@ jobs:
           command: |
             doctl auth init --access-token $DIGITAL_OCEAN_ACCESS_TOKEN
             doctl kubernetes cluster kubeconfig save "splitity-${BUILD_ENV}-k8s-cluster"
+      - run:
+          name: Update helm charts
+          command: |
+            curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+            helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+            helm upgrade --install metrics-server stable/metrics-server --set args={"--metric-resolution=10s, --kubelet-preferred-address-types=InternalIP"}
       - run:
           name: Setup K8s secrets
           command: |
