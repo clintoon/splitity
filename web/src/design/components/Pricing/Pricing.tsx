@@ -8,6 +8,7 @@ import {
   TextWeight,
 } from '@web/design/components/Text/Text';
 import { Color } from '@web/design/styles/color';
+import { Breakpoint } from '@web/design/styles/mediaQuery';
 
 interface PricingProps {
   title: string;
@@ -26,6 +27,11 @@ const Wrapper = styled.div`
 const Container = styled.div`
   display: flex;
   justify-content: center;
+
+  @media (max-width: ${Breakpoint.sm}) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const PricingContainer = styled.div`
