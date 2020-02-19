@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Text, TextStyle, TextAs } from '@web/design/components/Text/Text';
+import { Breakpoint } from '@web/design/styles/mediaQuery';
 
 interface ContainerProps {
   color: string;
@@ -8,9 +9,15 @@ interface ContainerProps {
 
 const Container = styled.div<ContainerProps>`
   display: flex;
-  height: 500px;
   background-color: ${({ color }): string => color};
   justify-content: center;
+  padding: 100px 0;
+
+  @media (max-width: ${Breakpoint.sm}) {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
 `;
 
 interface InfoPanelProps {
@@ -21,15 +28,23 @@ interface InfoPanelProps {
 }
 
 const InfoSection = styled.div`
-  width: 450px;
-  margin: 60px 50px 0 0;
+  max-width: 450px;
+  margin: 0 50px 0 0;
+
+  @media (max-width: ${Breakpoint.sm}) {
+    margin: 0;
+  }
 `;
+
 const IllustrationSection = styled.div`
   display: flex;
-  width: 450px;
   margin: 0 0 0 50px;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: ${Breakpoint.sm}) {
+    padding: 30px;
+  }
 `;
 
 const InfoPanel = ({
