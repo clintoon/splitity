@@ -202,6 +202,12 @@ jobs:
             curl -sL https://github.com/digitalocean/doctl/releases/download/v1.38.0/doctl-1.38.0-linux-amd64.tar.gz | tar -xzv
             sudo mv doctl /bin
       - run:
+          name: Update helm charts
+          command: |
+            curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+            helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+            helm upgrade --install metrics-server stable/metrics-server --set args={"--metric-resolution=10s, --kubelet-preferred-address-types=InternalIP"}
+      - run:
           name: Setup kubectl cluster config
           command: |
             doctl auth init --access-token $DIGITAL_OCEAN_ACCESS_TOKEN
