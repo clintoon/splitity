@@ -11,7 +11,7 @@ const Container = styled.div<ContainerProps>`
   display: flex;
   background-color: ${({ color }): string => color};
   justify-content: center;
-  padding: 100px 0;
+  padding: 100px 20px;
 
   @media (max-width: ${Breakpoint.sm}) {
     flex-direction: column;
