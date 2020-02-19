@@ -17,7 +17,8 @@ const CardBodyWrapper = styled.div`
 const ImgWrapper = styled.div`
   padding: 5px;
   img {
-    width: 650px;
+    width: 100%;
+    height: auto;
   }
 `;
 

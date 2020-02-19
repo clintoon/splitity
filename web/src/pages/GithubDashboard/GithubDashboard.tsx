@@ -12,8 +12,8 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  max-width: 700px;
   flex-basis: 700px;
+  margin: 0 20px;
 `;
 
 const GithubDashboard = (): JSX.Element | null => {
