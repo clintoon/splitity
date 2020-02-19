@@ -1,17 +1,9 @@
-apiVersion: autoscaling/v2beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: splitity-web
 spec:
-  minReplicas: 1
-  maxReplicas: 5
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 80
+  replicas: 1
   selector:
     matchLabels:
       app: splitity-web
@@ -29,20 +21,12 @@ spec:
           ports:
             - containerPort: 8080
 ---
-apiVersion: autoscaling/v2beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: splitity-backend-api
 spec:
-  minReplicas: 1
-  maxReplicas: 5
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 80
+  replicas: 1
   selector:
     matchLabels:
       app: splitity-backend-api
@@ -66,20 +50,12 @@ spec:
                   name: backend
                   key: rails_master_key
 ---
-apiVersion: autoscaling/v2beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: splitity-backend-sidekiq
 spec:
-  minReplicas: 1
-  maxReplicas: 5
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 80
+  replicas: 1
   selector:
     matchLabels:
       app: splitity-backend-sidekiq
