@@ -7,6 +7,7 @@ import {
   TextAlign,
 } from '@web/design/components/Text/Text';
 import { InfoItem } from './internal/InfoItem';
+import { Breakpoint } from '@web/design/styles/mediaQuery';
 
 interface InfoGridItem {
   head: string;
@@ -36,26 +37,49 @@ const GridContainer = styled.div`
 const Grid = styled.div`
   display: flex;
   max-width: 800px;
-  flex-basis: 800px;
   justify-content: space-evenly;
+
+  @media (max-width: ${Breakpoint.sm}) {
+    flex-direction: column;
+    align-items: center;
+  }
+`;
+
+const TextWrapper = styled.div`
+  margin: 0 0 40px 0;
+
+  @media (max-width: ${Breakpoint.sm}) {
+    margin: 0 0 20px 0;
+  }
+`;
+
+const ItemWrapper = styled.div`
+  @media (max-width: ${Breakpoint.sm}) {
+    margin: 0 0 20px 0;
+  }
 `;
 
 const InfoGrid = ({ title, color, items }: InfoGridProps): JSX.Element => {
   return (
     <Container color={color}>
-      <Text
-        styleOf={TextStyle.Title3}
-        as={TextAs.H2}
-        textAlign={TextAlign.Center}
-        margin="0 0 40px 0"
-      >
-        {title}
-      </Text>
+      <TextWrapper>
+        <Text
+          styleOf={TextStyle.Title3}
+          as={TextAs.H2}
+          textAlign={TextAlign.Center}
+        >
+          {title}
+        </Text>
+      </TextWrapper>
       <GridContainer>
         <Grid>
           {items.map(
             (item, index): JSX.Element => {
-              return <InfoItem key={index} {...item} />;
+              return (
+                <ItemWrapper key={index}>
+                  <InfoItem {...item} />
+                </ItemWrapper>
+              );
             }
           )}
         </Grid>

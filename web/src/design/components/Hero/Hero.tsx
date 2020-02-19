@@ -11,6 +11,7 @@ import {
   ButtonSize,
   ButtonStyle,
 } from '@web/design/components/Button/Button';
+import { Breakpoint } from '@web/design/styles/mediaQuery';
 
 const HERO_TESTID = 'hero';
 const HERO_TITLE_TESTID = 'hero-title';
@@ -32,16 +33,12 @@ interface HeroWrapperProps {
 }
 
 const HeroWrapper = styled.div<HeroWrapperProps>`
-  height: 650px;
+  padding: 80px 0;
+  width: 100%;
   background-color: ${({ backgroundColor }): string => backgroundColor};
-  position: relative;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-`;
-
-const ContentWrapper = styled.div`
-  margin: 80px 0 0 0;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const ButtonWrapper = styled.div`
@@ -52,6 +49,13 @@ const ButtonWrapper = styled.div`
 
 const BodyWrapper = styled.div`
   margin: 40px 0 0 0;
+  width: 90%;
+  height: 90%;
+
+  @media (min-width: ${Breakpoint.lg}) {
+    width: 60%;
+    height: 60%;
+  }
 `;
 
 const Hero = ({
@@ -63,39 +67,37 @@ const Hero = ({
 }: HeroProps): JSX.Element => {
   return (
     <HeroWrapper data-testid={HERO_TESTID} backgroundColor={backgroundColor}>
-      <ContentWrapper>
-        <div data-testid={HERO_TITLE_TESTID}>
-          <Text
-            as={TextAs.H1}
-            styleOf={TextStyle.Title1}
-            textAlign={TextAlign.Center}
+      <div data-testid={HERO_TITLE_TESTID}>
+        <Text
+          as={TextAs.H1}
+          styleOf={TextStyle.Title1}
+          textAlign={TextAlign.Center}
+        >
+          {title}
+        </Text>
+      </div>
+      <div data-testid={HERO_SUBTITLE_TESTID}>
+        <Text
+          as={TextAs.H3}
+          styleOf={TextStyle.Title3}
+          textAlign={TextAlign.Center}
+          margin="0 0 20px 0"
+        >
+          {subtitle}
+        </Text>
+      </div>
+      {button && (
+        <ButtonWrapper>
+          <Button
+            styleOf={ButtonStyle.Primary}
+            size={ButtonSize.Large}
+            onClick={button.onClick}
           >
-            {title}
-          </Text>
-        </div>
-        <div data-testid={HERO_SUBTITLE_TESTID}>
-          <Text
-            as={TextAs.H3}
-            styleOf={TextStyle.Title3}
-            textAlign={TextAlign.Center}
-            margin="0 0 20px 0"
-          >
-            {subtitle}
-          </Text>
-        </div>
-        {button && (
-          <ButtonWrapper>
-            <Button
-              styleOf={ButtonStyle.Primary}
-              size={ButtonSize.Large}
-              onClick={button.onClick}
-            >
-              {button.label}
-            </Button>
-          </ButtonWrapper>
-        )}
-        <BodyWrapper>{body}</BodyWrapper>
-      </ContentWrapper>
+            {button.label}
+          </Button>
+        </ButtonWrapper>
+      )}
+      <BodyWrapper>{body}</BodyWrapper>
     </HeroWrapper>
   );
 };

@@ -12,7 +12,7 @@ const InfoItem = ({ head, content }: InfoItemProps): JSX.Element => {
       <Text
         textAlign={TextAlign.Center}
         fontWeight={TextWeight.Bold}
-        margin="0 0 5px 0"
+        margin="0 0 8px 0"
       >
         {head}
       </Text>

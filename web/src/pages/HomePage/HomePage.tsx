@@ -14,10 +14,14 @@ const RoundedCorners = styled.div`
   border-radius: 25px;
   overflow: hidden;
   z-index: 1;
+  position: relative;
+  padding-top: 56.25%;
 `;
 
-const HowItWorksSection = styled.div`
-  margin: 200px 0 0 0;
+const StyledReactPlayer = styled(ReactPlayer)`
+  position: absolute;
+  top: 0;
+  left: 0;
 `;
 
 const HomePage = (): JSX.Element => {
@@ -33,35 +37,33 @@ const HomePage = (): JSX.Element => {
         }}
         body={
           <RoundedCorners>
-            <ReactPlayer
+            <StyledReactPlayer
               url="https://www.youtube.com/watch?v=9bZkp7q19f0"
               muted
               light
               controls
-              width="960px"
-              height="540px"
+              width="100%"
+              height="100%"
             />
           </RoundedCorners>
         }
       />
-      <HowItWorksSection>
-        <InfoGrid
-          title="How it works?"
-          color={Color.Gray100}
-          items={[
-            {
-              head: 'Allocate your changes across different pull requests.',
-              content:
-                'Use our easy to use interface to click and highlight code changes within and across your files into different pull requests',
-            },
-            {
-              head: 'Split',
-              content:
-                'When your ready, with the click of a button, we will automatically create the newly split pull requests',
-            },
-          ]}
-        />
-      </HowItWorksSection>
+      <InfoGrid
+        title="How it works?"
+        color={Color.Gray100}
+        items={[
+          {
+            head: 'Allocate your changes across different pull requests.',
+            content:
+              'Use our easy to use interface to click and highlight code changes within and across your files into different pull requests',
+          },
+          {
+            head: 'Split',
+            content:
+              'When your ready, with the click of a button, we will automatically create the newly split pull requests',
+          },
+        ]}
+      />
       <InfoPanel
         title="Why use Splitity?"
         bulletPoints={[
@@ -69,7 +71,7 @@ const HomePage = (): JSX.Element => {
           'Save the time and trouble with doing it manually. Just click and go.',
         ]}
         color={Color.White}
-        illustration={<DevProductivity width="400px" />}
+        illustration={<DevProductivity width="100%" height="100%" />}
       />
       <Pricing
         title="Pricing"
