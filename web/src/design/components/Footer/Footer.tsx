@@ -32,7 +32,9 @@ const Container = styled.div`
 `;
 
 const LinkWrapper = styled.span`
-  margin: 0 0 0 10px;
+  :not(:last-child) {
+    margin: 0 10px 0 0;
+  }
 `;
 
 const LinksSection = styled.div``;
