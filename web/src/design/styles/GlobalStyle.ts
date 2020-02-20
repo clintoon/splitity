@@ -7,6 +7,11 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     background-color: ${Color.Gray100};
   }
+
+  /* Set the footer to be at the bottom */
+  html, body, #root {
+    height: 100%;
+  }
 `;
 
 export { GlobalStyle };

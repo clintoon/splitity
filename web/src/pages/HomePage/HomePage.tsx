@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import { InfoPanel } from '@web/design/components/InfoPanel/InfoPanel';
 import DevProductivity from '@web/design/svg/undraw_dev_productivity.svg';
 import { InfoGrid } from '@web/design/components/InfoGrid/InfoGrid';
-import { Footer } from '@web/design/components/Footer/Footer';
 import { Pricing } from '@web/design/components/Pricing/Pricing';
 
 const RoundedCorners = styled.div`
@@ -88,8 +87,7 @@ const HomePage = (): JSX.Element => {
             banner: '1 month free trial. No credit card required.',
           },
         ]}
-      />{' '}
-      <Footer text="Copyright © 2020 Splitity Pty Ltd" />
+      />
     </div>
   );
 };
