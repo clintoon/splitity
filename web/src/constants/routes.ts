@@ -1,5 +1,7 @@
 enum RoutePath {
   Root = '/',
+  TermsAndConditions = '/terms-and-conditions',
+  PrivacyPolicy = '/privacy-policy',
 }
 
 enum GithubRoutePath {

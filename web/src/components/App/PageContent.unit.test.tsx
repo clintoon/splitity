@@ -5,10 +5,12 @@ import { currentUserFactory } from '@web/testing/mockCurrentUser';
 import { mockStoreFactory, TestStoreProvider } from '@web/testing/mockStore';
 import { createMemoryHistory, MemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
-import { GithubRoutePath } from '@web/constants/routes';
+import { GithubRoutePath, RoutePath } from '@web/constants/routes';
 import { PAGE_NOT_FOUND_TESTID } from '@web/pages/NotFoundPage/NotFoundPage';
 import { GITHUB_DASHBOARD_PAGE_TESTID } from '@web/pages/GithubDashboard/GithubDashboard';
 import { PULL_REQUEST_SPLITTING_PAGE_TESTID } from '@web/pages/PullRequestSplittingPage/PullRequestSplittingPage';
+import { TERMS_AND_CONDITIONS_TESTID } from '@web/pages/TermsAndConditionsPage/TermsAndConditionsPage';
+import { PRIVACY_POLICY_TESTID } from '@web/pages/PrivacyPolicyPage/PrivacyPolicyPage';
 
 jest.mock('@web/lib/github/github');
 jest.mock('@web/lib/backend/backendApi');
@@ -102,5 +104,25 @@ describe('<PageContent/>', (): void => {
         renderResult.queryByTestId(PULL_REQUEST_SPLITTING_PAGE_TESTID)
       ).not.toBe(null);
     });
+  });
+
+  it('renders terms and conditions page when on the terms route', (): void => {
+    const { renderResult } = renderPageContent({
+      isLoggedIn: false,
+      initialRoute: RoutePath.TermsAndConditions,
+    });
+
+    expect(renderResult.queryByTestId(TERMS_AND_CONDITIONS_TESTID)).not.toBe(
+      null
+    );
+  });
+
+  it('renders the privacy policy page when on the privacy policy route', (): void => {
+    const { renderResult } = renderPageContent({
+      isLoggedIn: false,
+      initialRoute: RoutePath.PrivacyPolicy,
+    });
+
+    expect(renderResult.queryByTestId(PRIVACY_POLICY_TESTID)).not.toBe(null);
   });
 });
