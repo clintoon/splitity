@@ -7,7 +7,7 @@ import { Link } from '@web/design/components/Link/Link';
 const Container = styled.div`
   display: flex;
   height: 40px;
-  background-color: ${Color.Gray300};
+  background-color: ${Color.Gray200};
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
