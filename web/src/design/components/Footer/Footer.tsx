@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Text } from '@web/design/components/Text/Text';
 import { Color } from '@web/design/styles/color';
+import { Link } from '@web/design/components/Link/Link';
 
 const Container = styled.div`
   display: flex;
@@ -11,14 +12,34 @@ const Container = styled.div`
   align-items: center;
 `;
 
-interface FooterProps {
+interface Link {
+  id: string;
   text: string;
+  to: string;
 }
 
-const Footer = ({ text }: FooterProps): JSX.Element => {
+interface FooterProps {
+  text: string;
+  links: Link[];
+}
+
+const LinkWrapper = styled.span`
+  margin: 0 0 0 10px;
+`;
+
+const Footer = ({ text, links }: FooterProps): JSX.Element => {
   return (
     <Container>
-      <Text>{text}</Text>
+      <Text margin="0 10px 0 0">{text}</Text>
+      {links.map(
+        (link): JSX.Element => {
+          return (
+            <LinkWrapper key={link.id}>
+              <Link to={link.to}>{link.text}</Link>
+            </LinkWrapper>
+          );
+        }
+      )}
     </Container>
   );
 };

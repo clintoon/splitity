@@ -89,7 +89,21 @@ const HomePage = (): JSX.Element => {
           },
         ]}
       />{' '}
-      <Footer text="Copyright © 2020 Splitity Pty Ltd" />
+      <Footer
+        text="Copyright © 2020 Splitity Pty Ltd"
+        links={[
+          {
+            id: 'terms',
+            text: 'Terms & conditions',
+            to: '/terms-and-conditions',
+          },
+          {
+            id: 'privacy',
+            text: 'Privacy policy',
+            to: '/privacy-policy',
+          },
+        ]}
+      />
     </div>
   );
 };
