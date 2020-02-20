@@ -10,12 +10,12 @@ interface MarkdownProps {
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  margin: 50px 0;
 `;
 
 const MarkdownWrapper = styled.div`
   max-width: 900px;
   font: ${fontFamily};
+  padding: 20px;
 `;
 
 const MarkdownDisplay = ({ source }: MarkdownProps): JSX.Element => {
