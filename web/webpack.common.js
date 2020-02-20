@@ -39,6 +39,10 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.md$/i,
+        use: 'raw-loader',
+      },
     ],
   },
 };

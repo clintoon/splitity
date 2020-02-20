@@ -19,3 +19,9 @@ declare module '*.png' {
   const content: string;
   export default content;
 }
+
+// For raw loader
+declare module '*.md' {
+  const content: string;
+  export default content;
+}
