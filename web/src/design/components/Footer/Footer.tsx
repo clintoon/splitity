@@ -10,6 +10,7 @@ const Container = styled.div`
   background-color: ${Color.Gray300};
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
 `;
 
 interface Link {
