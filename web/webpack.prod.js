@@ -5,7 +5,7 @@ const SentryWebpackPlugin = require('@sentry/webpack-plugin');
 
 module.exports = merge(common, {
   mode: 'production',
-  devtool: 'cheap-source-map',
+  devtool: 'source-map',
   plugins: [
     new webpack.EnvironmentPlugin([
       'REACT_APP_FIREBASE_KEY',
