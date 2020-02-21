@@ -20,6 +20,9 @@ COPY package.json /package.json
 RUN yarn install
 RUN yarn build
 
+# Delete source maps
+RUN rm public/*.map
+
 EXPOSE 8080
 
 CMD yarn serve
