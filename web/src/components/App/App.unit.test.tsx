@@ -207,26 +207,18 @@ describe('<App/>', (): void => {
     it('throw error when user is logged in but authCookie is not set', async (): Promise<
       void
     > => {
-      // Mocking console.error to not dump error to console
-      const consoleErrSpy = jest.spyOn(console, 'error');
-      consoleErrSpy.mockImplementation((): void => {});
+      const { stores } = renderApp({
+        initialRoute: RoutePath.Root,
+        isAuthenticated: true,
+        backFromAuthRedirect: false,
+        initialStoreAuthenticated: false,
+        authCookieToken: null,
+      });
 
-      const toThrow = async (): Promise<void> => {
-        renderApp({
-          initialRoute: RoutePath.Root,
-          isAuthenticated: true,
-          backFromAuthRedirect: false,
-          initialStoreAuthenticated: false,
-          authCookieToken: null,
-        });
-        await wait();
-      };
-
-      await expect(toThrow()).rejects.toThrowErrorMatchingInlineSnapshot(
-        `"Error: logged in but cannot find oAuthToken"`
-      );
-
-      consoleErrSpy.mockRestore();
+      await wait((): void => {
+        expect(stores.auth.isLoggedIn()).toBe(false);
+        expect(clearAuthCookie).toBeCalled();
+      });
     });
 
     it('stores githubInstallationId into store when user installed app', async (): Promise<
@@ -260,6 +252,23 @@ describe('<App/>', (): void => {
       await wait((): void => {
         const currentUser = stores.auth.getCurrentUser();
         expect((currentUser as CurrentUser).githubInstallationId).toBe(null);
+      });
+    });
+
+    it('calls resetTracking, currentUser is not set in the store, and auth cookie is cleared if not authenticated', async (): Promise<
+      void
+    > => {
+      const { stores } = renderApp({
+        initialRoute: RoutePath.Root,
+        isAuthenticated: false,
+        initialStoreAuthenticated: false,
+        backFromAuthRedirect: false,
+        githubAppInstalled: false,
+      });
+      await wait((): void => {
+        expect(resetTracking).toBeCalled();
+        expect(stores.auth.getCurrentUser()).toBe(null);
+        expect(clearAuthCookie).toBeCalled();
       });
     });
   });
@@ -460,27 +469,6 @@ describe('<App/>', (): void => {
           expect(FirebaseAuth.prototype.signOut).toHaveBeenCalled();
           expect(history.location.pathname).toBe(RoutePath.Root);
         });
-      });
-    });
-
-    it('logout button calls reset tracking when pressed', async (): Promise<
-      void
-    > => {
-      const { renderResult } = renderApp({
-        initialRoute: GithubRoutePath.AppRoot,
-        isAuthenticated: true,
-        backFromAuthRedirect: false,
-        initialStoreAuthenticated: false,
-      });
-
-      await wait((): void => {
-        const signOut = renderResult.getByTestId(NAVBAR_SIGN_OUT_TESTID);
-        const signOutButton = within(signOut).getByTestId(BUTTON_TESTID);
-        fireEvent.click(signOutButton);
-      });
-
-      await wait((): void => {
-        expect(resetTracking).toBeCalled();
       });
     });
   });
