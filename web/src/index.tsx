@@ -8,12 +8,15 @@ import { sentryConfig } from '@web/config/sentry';
 import { environmentConfig } from '@web/config/environment';
 import * as Sentry from '@sentry/browser';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
+import { LogLevel } from '@sentry/types';
 
 initializeTracking();
 Sentry.init({
   dsn: sentryConfig.dsn,
   environment: environmentConfig.env,
+  logLevel: LogLevel.Verbose,
 });
+
 const rootContainer = document.getElementById('root');
 
 ReactDOM.render(
