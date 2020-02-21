@@ -129,7 +129,9 @@ const convertLineGroupsToChunks = (
 
 const isValidFileDiff = (file: File): boolean => {
   // if file has no changes then it is invalid
-  return !(file.chunks.length === 0);
+  return (
+    !(file.chunks.length === 0) || Boolean(file.new) || Boolean(file.deleted)
+  );
 };
 
 const getDiff = (filesDiff: FileDiff[], lineGroupIds: Set<string>): Diff => {
