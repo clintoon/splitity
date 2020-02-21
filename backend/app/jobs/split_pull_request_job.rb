@@ -36,7 +36,7 @@ class SplitPullRequestJob < ApplicationJob
     stdout, stderr, status = Open3.capture3(cmd)
     logger.info("apply_patch stdout: '#{stdout}'") unless stdout.empty?
 
-    raise ApplyPatchErrors, "apply_patch git apply fail with exit code with stderr: '#{stderr}'" unless status.success?
+    raise ApplyPatchError, "apply_patch git apply fail with exit code with stderr: '#{stderr}'" unless status.success?
 
     logger.warn("apply_patch git apply success with stderr: '#{stderr}'") unless stderr.empty?
   end
