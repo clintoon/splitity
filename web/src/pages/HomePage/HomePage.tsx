@@ -9,9 +9,7 @@ import DevProductivity from '@web/design/svg/undraw_dev_productivity.svg';
 import { InfoGrid } from '@web/design/components/InfoGrid/InfoGrid';
 import { Pricing } from '@web/design/components/Pricing/Pricing';
 
-const RoundedCorners = styled.div`
-  border-radius: 25px;
-  overflow: hidden;
+const PlayerWrapper = styled.div`
   z-index: 1;
   position: relative;
   padding-top: 56.25%;
@@ -35,16 +33,16 @@ const HomePage = (): JSX.Element => {
           onClick: handleSignIn,
         }}
         body={
-          <RoundedCorners>
+          <PlayerWrapper>
             <StyledReactPlayer
-              url="https://www.youtube.com/watch?v=9bZkp7q19f0"
+              url="https://youtu.be/payxAlyG_fw"
               muted
               light
               controls
               width="100%"
               height="100%"
             />
-          </RoundedCorners>
+          </PlayerWrapper>
         }
       />
       <InfoGrid
