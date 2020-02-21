@@ -1,4 +1,4 @@
-import { File, Chunk } from 'parse-diff';
+import { File, Chunk, Change } from 'parse-diff';
 import { FileDiff, FileDiffLineGroup } from '@web/lib/parseDiff/parseDiff';
 import { Diff, generateDiff } from '@web/lib/parseDiff/generateDiff';
 import { HunkAllocations } from './PullRequestSplittingPage';
@@ -39,7 +39,14 @@ interface GetLineGroupLineCountsResult {
 const getLineGroupLineCounts = (
   lineGroup: FileDiffLineGroup
 ): GetLineGroupLineCountsResult => {
-  const countsByType = countBy(lineGroup.changes, (change): string => {
+  // Filter out when it isn't a line
+  // e.g. \ No newline at end of file
+  const changes = lineGroup.changes.filter((line: Change): boolean => {
+    const contentType = line.content.charAt(0);
+    return contentType === ' ' || contentType === '-' || contentType === '+';
+  });
+
+  const countsByType = countBy(changes, (change): string => {
     return change.type;
   });
 
@@ -121,8 +128,8 @@ const convertLineGroupsToChunks = (
 };
 
 const isValidFileDiff = (file: File): boolean => {
-  // if file has no changes and is a delete or an add, then it is invalid
-  return !(file.chunks.length === 0 && (file.deleted || file.new));
+  // if file has no changes then it is invalid
+  return !(file.chunks.length === 0);
 };
 
 const getDiff = (filesDiff: FileDiff[], lineGroupIds: Set<string>): Diff => {
