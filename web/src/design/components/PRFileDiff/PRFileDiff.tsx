@@ -5,6 +5,7 @@ import { Color } from '@web/design/styles/color';
 import { codeFontFamily } from '@web/design/styles/font';
 import { Line } from '@web/design/components/PRFileDiff/internal/Line';
 import { DiffChunk, FileDiffLineGroup } from '@web/lib/parseDiff/parseDiff';
+import { Change } from 'parse-diff';
 
 const NORMAL_LINEGROUP_TEST_ID = 'pr-file-diff-not-hunk-normal-linegroup';
 const NOT_ALLOCED_HUNK_TEST_ID = 'pr-file-diff-hunk-linegroup';
@@ -114,6 +115,13 @@ const LineGroup = ({
     lineGroupTypeTestId = NORMAL_LINEGROUP_TEST_ID;
   }
 
+  // Only render line changes
+  // e.g. don't render \ No newline at end of file
+  const displayLines = lineGroup.changes.filter((line: Change): boolean => {
+    const contentType = line.content.charAt(0);
+    return contentType === ' ' || contentType === '+' || contentType === '-';
+  });
+
   return (
     <LineGroupContainer
       data-testid={lineGroupTypeTestId}
@@ -128,7 +136,7 @@ const LineGroup = ({
           : undefined
       }
     >
-      {lineGroup.changes.map(
+      {displayLines.map(
         (change, index): JSX.Element => {
           return <Line key={index} change={change} />;
         }
