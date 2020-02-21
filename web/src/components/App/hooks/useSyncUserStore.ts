@@ -7,6 +7,7 @@ import { transformFirebaseUser } from '@web/lib/firebase/helpers/auth';
 import { getOAuthToken, clearAuthCookie } from '@web/lib/cookie/authCookie';
 import { StoreType } from '@web/stores/storeProvider';
 import { GithubAPI } from '@web/lib/github/github';
+import { resetTracking } from '@web/lib/analytics/tracking';
 
 const useSyncUserStore = (store: StoreType): boolean => {
   const [fetchingResult, setFetchingResult] = useState(true);
@@ -14,12 +15,9 @@ const useSyncUserStore = (store: StoreType): boolean => {
   useEffect((): (() => void) => {
     const auth = new FirebaseAuth(firebaseApp);
     const unsubscribe = auth.onAuthStateChanged((user: User | null): void => {
-      if (user) {
-        const oAuthToken = getOAuthToken();
-        if (!oAuthToken) {
-          throw Error('Error: logged in but cannot find oAuthToken');
-          // TODO(clinton): Sign out instead of throwing error and crashing
-        }
+      const oAuthToken = getOAuthToken();
+
+      if (user && oAuthToken) {
         const currentUser = transformFirebaseUser({ user });
         const githubApi = new GithubAPI();
         githubApi
@@ -31,6 +29,7 @@ const useSyncUserStore = (store: StoreType): boolean => {
       } else {
         store.auth.signOutUser();
         clearAuthCookie();
+        resetTracking();
         setFetchingResult(false);
       }
     });

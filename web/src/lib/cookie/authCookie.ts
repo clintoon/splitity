@@ -6,7 +6,7 @@ const setOAuthToken = (oAuthToken: string): void => {
 };
 
 const getOAuthToken = (): string | undefined => {
-  const oAuthToken = Cookies.getJSON(CookieName.Auth).oAuthToken;
+  const oAuthToken = Cookies.getJSON(CookieName.Auth)?.oAuthToken;
   if (!oAuthToken) {
     return undefined;
   }
