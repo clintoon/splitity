@@ -21,7 +21,7 @@ RUN yarn install
 RUN yarn build
 
 # Delete source maps
-RUN rm build/*.map
+RUN rm public/*.map
 
 EXPOSE 8080
 
