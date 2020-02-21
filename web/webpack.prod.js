@@ -18,7 +18,7 @@ module.exports = merge(common, {
       'SENTRY_DSN',
     ]),
     new SentryWebpackPlugin({
-      include: './public/',
+      include: './public/*.map',
       configFile: 'sentry.properties',
       release: process.env.SENTRY_RELEASE,
     }),
