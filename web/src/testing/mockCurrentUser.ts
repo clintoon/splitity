@@ -1,15 +1,8 @@
 import { CurrentUser } from '@web/stores/authStore';
 
-interface CurrentUserFactoryOptions {
-  githubInstallationId: number | null;
-}
-
-const currentUserFactory = (
-  options?: CurrentUserFactoryOptions
-): CurrentUser => {
+const currentUserFactory = (): CurrentUser => {
   return {
     userId: 123,
-    githubInstallationId: options ? options.githubInstallationId : null,
   };
 };
 

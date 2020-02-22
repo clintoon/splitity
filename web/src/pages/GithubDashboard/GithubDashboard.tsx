@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useStore } from '@web/stores/useStore';
 import { SettingsSection } from './SettingsSection';
 import { GettingStartedSection } from './GettingStartedSection';
+import { GithubAPI } from '@web/lib/github/github';
+import { usePromise } from '@web/lib/hooks/usePromise';
 
 const GITHUB_DASHBOARD_PAGE_TESTID = 'github dashboard page';
 
@@ -16,6 +18,17 @@ const Content = styled.div`
   margin: 0 20px;
 `;
 
+const useFetchGithubInstallationId = (githubUserId: number): number | null => {
+  const github = new GithubAPI();
+
+  const githubInstallationId = usePromise(
+    github.getAppInstallationId(githubUserId),
+    null
+  );
+
+  return githubInstallationId ?? null;
+};
+
 const GithubDashboard = (): JSX.Element | null => {
   const store = useStore();
   const currentUser = store.auth.getCurrentUser();
@@ -23,7 +36,8 @@ const GithubDashboard = (): JSX.Element | null => {
   if (!currentUser) {
     return null;
   }
-  const { githubInstallationId } = currentUser;
+
+  const githubInstallationId = useFetchGithubInstallationId(currentUser.userId);
 
   return (
     <Container data-testid={GITHUB_DASHBOARD_PAGE_TESTID}>

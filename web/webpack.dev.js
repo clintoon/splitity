@@ -12,6 +12,7 @@ module.exports = merge(common, {
     compress: true,
     historyApiFallback: true,
     hot: true,
+    allowedHosts: ['.ngrok.io'],
   },
   plugins: [new Dotenv()],
 });

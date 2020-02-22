@@ -23,8 +23,6 @@ import { NAVBAR_TESTID } from '@web/design/components/Navbar/Navbar';
 import { NAVBAR_SIGNIN_TESTID, NAVBAR_SIGN_OUT_TESTID } from './Navbar';
 import { BUTTON_TESTID } from '@web/design/components/Button/Button';
 import { handleSignIn } from '@web/lib/eventHandlers/auth';
-import { GithubAPI } from '@web/lib/github/github';
-import { CurrentUser } from '@web/stores/authStore';
 import {
   track,
   identify,
@@ -44,7 +42,6 @@ const AUTH_TOKEN_COOKIE = 'auth-token-cookie';
 const EMAIL = 'clinton@gmail.com';
 const EMAIL_VERIFIED = false;
 const USER_ID = 123;
-const GITHUB_INSTALLATION_ID = 123;
 const userMock = mock<User>();
 when(userMock.email).thenReturn(EMAIL);
 when(userMock.emailVerified).thenReturn(EMAIL_VERIFIED);
@@ -59,7 +56,6 @@ interface RenderAppOptions {
   isAuthenticated: boolean;
   backFromAuthRedirect: boolean;
   authCookieToken?: string | null;
-  githubAppInstalled?: boolean;
   isNewUser?: boolean;
 }
 
@@ -127,20 +123,11 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
     getRedirectResultSpy.mockResolvedValue(null);
   }
 
-  const githubInstallationId = options.githubAppInstalled
-    ? GITHUB_INSTALLATION_ID
-    : null;
-
-  jest
-    .spyOn(GithubAPI.prototype, 'getAppInstallationId')
-    .mockResolvedValue(githubInstallationId);
-
   const storeOptions = initialStoreAuthenticated
     ? {
         auth: {
           currentUser: {
             ...currentUserData,
-            githubInstallationId,
           },
         },
       }
@@ -200,75 +187,23 @@ describe('<App/>', (): void => {
       });
       await wait((): void => {
         expect(stores.auth.getCurrentUser()).toBe(null);
+        expect(resetTracking).toBeCalled();
         expect(clearAuthCookie).toHaveBeenCalled();
       });
     });
 
-    it('throw error when user is logged in but authCookie is not set', async (): Promise<
+    it('logs the user out if the user is authenticated without the auth cookie', async (): Promise<
       void
     > => {
-      const { stores } = renderApp({
+      renderApp({
         initialRoute: RoutePath.Root,
         isAuthenticated: true,
-        backFromAuthRedirect: false,
         initialStoreAuthenticated: false,
+        backFromAuthRedirect: false,
         authCookieToken: null,
       });
-
       await wait((): void => {
-        expect(stores.auth.isLoggedIn()).toBe(false);
-        expect(clearAuthCookie).toBeCalled();
-      });
-    });
-
-    it('stores githubInstallationId into store when user installed app', async (): Promise<
-      void
-    > => {
-      const { stores } = renderApp({
-        initialRoute: RoutePath.Root,
-        isAuthenticated: true,
-        initialStoreAuthenticated: false,
-        backFromAuthRedirect: false,
-        githubAppInstalled: true,
-      });
-      await wait((): void => {
-        const currentUser = stores.auth.getCurrentUser();
-        expect((currentUser as CurrentUser).githubInstallationId).toBe(
-          GITHUB_INSTALLATION_ID
-        );
-      });
-    });
-
-    it('githubInstallationId is null when user has not installed github app', async (): Promise<
-      void
-    > => {
-      const { stores } = renderApp({
-        initialRoute: RoutePath.Root,
-        isAuthenticated: true,
-        initialStoreAuthenticated: false,
-        backFromAuthRedirect: false,
-        githubAppInstalled: false,
-      });
-      await wait((): void => {
-        const currentUser = stores.auth.getCurrentUser();
-        expect((currentUser as CurrentUser).githubInstallationId).toBe(null);
-      });
-    });
-
-    it('calls resetTracking, currentUser is not set in the store, and auth cookie is cleared if not authenticated', async (): Promise<
-      void
-    > => {
-      const { stores } = renderApp({
-        initialRoute: RoutePath.Root,
-        isAuthenticated: false,
-        initialStoreAuthenticated: false,
-        backFromAuthRedirect: false,
-        githubAppInstalled: false,
-      });
-      await wait((): void => {
-        expect(resetTracking).toBeCalled();
-        expect(stores.auth.getCurrentUser()).toBe(null);
-        expect(clearAuthCookie).toBeCalled();
+        expect(FirebaseAuth.prototype.signOut).toBeCalled();
       });
     });
   });
@@ -289,47 +224,12 @@ describe('<App/>', (): void => {
       });
     });
 
-    it('stores githubInstallationId when user has installed github app', async (): Promise<
-      void
-    > => {
-      const { stores } = renderApp({
-        initialRoute: RoutePath.Root,
-        isAuthenticated: false,
-        backFromAuthRedirect: true,
-        initialStoreAuthenticated: false,
-        githubAppInstalled: true,
-      });
-      await wait((): void => {
-        const currentUser = stores.auth.getCurrentUser();
-        expect((currentUser as CurrentUser).githubInstallationId).toBe(
-          GITHUB_INSTALLATION_ID
-        );
-      });
-    });
-
-    it('githubInstallationId is null when user has not installed github app', async (): Promise<
-      void
-    > => {
-      const { stores } = renderApp({
-        initialRoute: RoutePath.Root,
-        isAuthenticated: false,
-        backFromAuthRedirect: true,
-        initialStoreAuthenticated: false,
-        githubAppInstalled: false,
-      });
-      await wait((): void => {
-        const currentUser = stores.auth.getCurrentUser();
-        expect((currentUser as CurrentUser).githubInstallationId).toBe(null);
-      });
-    });
-
     it('calls alias when is new user', async (): Promise<void> => {
       renderApp({
         initialRoute: RoutePath.Root,
         isAuthenticated: false,
         backFromAuthRedirect: true,
         initialStoreAuthenticated: false,
-        githubAppInstalled: false,
         isNewUser: true,
       });
       await wait((): void => {
@@ -343,7 +243,6 @@ describe('<App/>', (): void => {
         isAuthenticated: false,
         backFromAuthRedirect: true,
         initialStoreAuthenticated: false,
-        githubAppInstalled: false,
         isNewUser: true,
       });
       await wait((): void => {
@@ -357,7 +256,6 @@ describe('<App/>', (): void => {
         isAuthenticated: false,
         backFromAuthRedirect: true,
         initialStoreAuthenticated: false,
-        githubAppInstalled: false,
         isNewUser: false,
       });
       await wait((): void => {
