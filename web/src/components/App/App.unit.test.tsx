@@ -192,23 +192,20 @@ describe('<App/>', (): void => {
       });
     });
 
-    // TODO Add this functionality
-
-    // it('logs the user out if the user is authenticated without the auth cookie', async (): Promise<
-    //   void
-    // > => {
-    //   const { stores } = renderApp({
-    //     initialRoute: RoutePath.Root,
-    //     isAuthenticated: true,
-    //     initialStoreAuthenticated: false,
-    //     backFromAuthRedirect: false,
-    //   });
-    //   await wait((): void => {
-    //     expect(resetTracking).toBeCalled();
-    //     expect(stores.auth.getCurrentUser()).toBe(null);
-    //     expect(clearAuthCookie).toBeCalled();
-    //   });
-    // });
+    it('logs the user out if the user is authenticated without the auth cookie', async (): Promise<
+      void
+    > => {
+      renderApp({
+        initialRoute: RoutePath.Root,
+        isAuthenticated: true,
+        initialStoreAuthenticated: false,
+        backFromAuthRedirect: false,
+        authCookieToken: null,
+      });
+      await wait((): void => {
+        expect(FirebaseAuth.prototype.signOut).toBeCalled();
+      });
+    });
   });
 
   describe('auth redirect result', (): void => {

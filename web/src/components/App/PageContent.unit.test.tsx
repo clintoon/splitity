@@ -78,16 +78,20 @@ describe('<PageContent/>', (): void => {
     expect(renderResult.queryByTestId(PAGE_NOT_FOUND_TESTID)).not.toBe(null);
   });
 
-  it('renders found page on /gh route if logged in', (): void => {
+  it('renders found page on /gh route if logged in', async (): Promise<
+    void
+  > => {
     const { renderResult } = renderPageContent({
       isLoggedIn: true,
       initialRoute: GithubRoutePath.AppRoot,
     });
 
-    expect(renderResult.queryByTestId(PAGE_NOT_FOUND_TESTID)).toBe(null);
-    expect(renderResult.queryByTestId(GITHUB_DASHBOARD_PAGE_TESTID)).not.toBe(
-      null
-    );
+    await wait((): void => {
+      expect(renderResult.queryByTestId(PAGE_NOT_FOUND_TESTID)).toBe(null);
+      expect(renderResult.queryByTestId(GITHUB_DASHBOARD_PAGE_TESTID)).not.toBe(
+        null
+      );
+    });
   });
 
   it('renders found page on split pr route if logged in', async (): Promise<
