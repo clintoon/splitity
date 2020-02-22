@@ -1,6 +1,6 @@
 import React from 'react';
 import { GithubDashboard } from './GithubDashboard';
-import { RenderResult, render, within } from '@testing-library/react';
+import { RenderResult, render, within, wait } from '@testing-library/react';
 import { TestStoreProvider, mockStoreFactory } from '@web/testing/mockStore';
 import { GithubAPI } from '@web/lib/github/github';
 import { currentUserFactory } from '@web/testing/mockCurrentUser';
@@ -44,7 +44,6 @@ const renderGithubDashboard = ({
     auth: {
       currentUser: {
         ...currentUserData,
-        githubInstallationId: hasInstalledGithubApp ? 123 : null,
       },
     },
   };
@@ -60,61 +59,76 @@ const renderGithubDashboard = ({
 };
 
 describe('<GithubDashboard/>', (): void => {
-  it('displays the install app button when app is not installed', (): void => {
+  it('displays the install app button when app is not installed', async (): Promise<
+    void
+  > => {
     const { renderResult } = renderGithubDashboard({
       hasInstalledGithubApp: false,
     });
 
-    const installAppContainer = renderResult.getByTestId(
-      SETTINGS_SECTION_INSTALL_APP_TESTID
-    );
-    expect(within(installAppContainer).queryByTestId(BUTTON_TESTID)).not.toBe(
-      null
-    );
+    await wait((): void => {
+      const installAppContainer = renderResult.getByTestId(
+        SETTINGS_SECTION_INSTALL_APP_TESTID
+      );
+      expect(within(installAppContainer).queryByTestId(BUTTON_TESTID)).not.toBe(
+        null
+      );
+    });
   });
 
-  it('install app button triggers the opening of github install app page', (): void => {
+  it('install app button triggers the opening of github install app page', async (): Promise<
+    void
+  > => {
     const { renderResult, onInstallGithubAppSpy } = renderGithubDashboard({
       hasInstalledGithubApp: false,
     });
+    await wait((): void => {
+      const installAppContainer = renderResult.getByTestId(
+        SETTINGS_SECTION_INSTALL_APP_TESTID
+      );
+      const installAppButton = within(installAppContainer).getByTestId(
+        BUTTON_TESTID
+      );
 
-    const installAppContainer = renderResult.getByTestId(
-      SETTINGS_SECTION_INSTALL_APP_TESTID
-    );
-    const installAppButton = within(installAppContainer).getByTestId(
-      BUTTON_TESTID
-    );
-
-    Simulate.click(installAppButton);
-    expect(onInstallGithubAppSpy).toBeCalled();
+      Simulate.click(installAppButton);
+      expect(onInstallGithubAppSpy).toBeCalled();
+    });
   });
 
-  it('displays the manage app button when app is not installed', (): void => {
+  it('displays the manage app button when app is not installed', async (): Promise<
+    void
+  > => {
     const { renderResult } = renderGithubDashboard({
       hasInstalledGithubApp: true,
     });
 
-    const manageAppContainer = renderResult.getByTestId(
-      SETTINGS_SECTION_MANAGE_APP_TESTID
-    );
-    expect(within(manageAppContainer).queryByTestId(BUTTON_TESTID)).not.toBe(
-      null
-    );
+    await wait((): void => {
+      const manageAppContainer = renderResult.getByTestId(
+        SETTINGS_SECTION_MANAGE_APP_TESTID
+      );
+      expect(within(manageAppContainer).queryByTestId(BUTTON_TESTID)).not.toBe(
+        null
+      );
+    });
   });
 
-  it('manage app button triggers the github app configure page', (): void => {
+  it('manage app button triggers the github app configure page', async (): Promise<
+    void
+  > => {
     const { renderResult, onAddReposClickSpy } = renderGithubDashboard({
       hasInstalledGithubApp: true,
     });
 
-    const manageAppContainer = renderResult.getByTestId(
-      SETTINGS_SECTION_MANAGE_APP_TESTID
-    );
-    const manageAppButton = within(manageAppContainer).getByTestId(
-      BUTTON_TESTID
-    );
+    await wait((): void => {
+      const manageAppContainer = renderResult.getByTestId(
+        SETTINGS_SECTION_MANAGE_APP_TESTID
+      );
+      const manageAppButton = within(manageAppContainer).getByTestId(
+        BUTTON_TESTID
+      );
 
-    Simulate.click(manageAppButton);
-    expect(onAddReposClickSpy).toBeCalledWith(123);
+      Simulate.click(manageAppButton);
+      expect(onAddReposClickSpy).toBeCalledWith(123);
+    });
   });
 });

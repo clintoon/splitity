@@ -12,7 +12,6 @@ const WrappedApp = ({ history }: RouteComponentProps): JSX.Element => {
   const store = useStore();
 
   const fetchingUserResult = useSyncUserStore(store);
-
   const fetchingRedirectResult = useSignInRedirectResult(store, history);
   if (fetchingRedirectResult || fetchingUserResult) {
     return <div data-testid={APP_LOADING}>loading...</div>;
