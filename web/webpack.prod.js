@@ -16,6 +16,8 @@ module.exports = merge(common, {
       'BACKEND_API_URL',
       'MIXPANEL_TOKEN',
       'SENTRY_DSN',
+      'GITHUB_APP_CLIENT_ID',
+      'WEB_URL',
     ]),
     new SentryWebpackPlugin({
       include: './public/',
