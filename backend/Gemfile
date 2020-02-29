@@ -47,7 +47,10 @@ gem 'lograge'
 
 gem 'json'
 
+# TODO(clinton): remove
 gem 'rest-client'
+
+gem 'faraday'
 
 gem 'jwe'
 

@@ -9,6 +9,12 @@ interface SplitPullRequestOptions {
   patches: string[];
 }
 
+interface GetPullRequestDiffOptions {
+  owner: string;
+  repoName: string;
+  pullRequestId: number;
+}
+
 interface LoginOptions {
   code: string;
 }
@@ -43,6 +49,13 @@ const getAuthHeaders = (): AuthHeaders => {
     },
   };
 };
+
+interface GetPullRequestDiffResult {
+  repo_name: string;
+  repo_owner: string;
+  diff: string;
+  title: string;
+}
 
 class BackendAPI {
   private http: AxiosInstance;
@@ -97,7 +110,6 @@ class BackendAPI {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public async getGithubAppInstallations(): Promise<
     GithubAppInstallationsResult
   > {
@@ -107,10 +119,22 @@ class BackendAPI {
       ...getAuthHeaders(),
     });
 
-    console.log('resp', resp);
-
     return resp.data.installations;
   }
+
+  public getPullRequestDiff = async ({
+    owner,
+    repoName,
+    pullRequestId,
+  }: GetPullRequestDiffOptions): Promise<GetPullRequestDiffResult> => {
+    const resp = await this.http({
+      method: 'get',
+      url: `/v1/repos/${owner}/${repoName}/pulls/${pullRequestId}/diff`,
+      ...getAuthHeaders(),
+    });
+
+    return resp.data;
+  };
 }
 
 export { BackendAPI };

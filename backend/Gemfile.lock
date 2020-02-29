@@ -265,6 +265,7 @@ DEPENDENCIES
   byebug
   database_cleaner
   factory_bot_rails
+  faraday
   json
   jwe
   jwt (~> 2.2, >= 2.2.1)

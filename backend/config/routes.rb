@@ -7,5 +7,7 @@ Rails.application.routes.draw do
   get 'v1/current_user/github_app_installations', to: 'current_user#github_app_installations'
 
   post 'v1/repos/:owner/:repo_name/pulls/:pull_request_id/split', to: 'pull_requests#split'
+  get 'v1/repos/:owner/:repo_name/pulls/:pull_request_id/diff', to: 'pull_requests#get_diff'
+
   post 'v1/hooks/github', to: 'github_events#notify'
 end
