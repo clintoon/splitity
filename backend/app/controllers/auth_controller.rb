@@ -18,7 +18,7 @@ class AuthController < ApplicationController
   end
 
   def logout
-    session.clear
+    session.destroy
     head :no_content
   end
 end
