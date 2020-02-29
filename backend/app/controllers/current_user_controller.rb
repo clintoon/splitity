@@ -1,10 +1,8 @@
 class CurrentUserController < ApplicationController
-  def get
-    access_token = session[:access_token]
-    github = GithubService.new(access_token: access_token)
-    user_info = github.current_user
+  before_action :login_required
 
-    resp = user_id: user_info[:user_id]
+  def get
+    resp = { user_id: @current_user[:id] }
     render json: resp
   end
 end

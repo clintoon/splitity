@@ -10,36 +10,41 @@ interface SplitPullRequestOptions {
 }
 
 interface LoginOptions {
-  token: string;
+  code: string;
 }
 
 interface SplitPullRequestResult {
   splitPullRequestJobId: string;
 }
 
+interface LoginResult {
+  accessToken: string;
+}
+
 interface CurrentUserResult {
   userId: number;
 }
 
+interface AuthHeaders {
+  headers: {
+    'Access-Token': string | undefined;
+  };
+}
+
+const getAuthHeaders = (): AuthHeaders => {
+  return {
+    headers: {
+      'Access-Token': getOAuthToken(),
+    },
+  };
+};
+
 class BackendAPI {
   private http: AxiosInstance;
-  // TODO(clinton): remove old client
-  private httpWithAuth: AxiosInstance;
 
   public constructor() {
-    const oAuthToken = getOAuthToken();
-    const auth = oAuthToken;
-
-    this.httpWithAuth = axios.create({
-      baseURL: backendConfig.backendApiUrl,
-      headers: {
-        'Access-Token': auth,
-      },
-    });
-
     this.http = axios.create({
       baseURL: backendConfig.backendApiUrl,
-      withCredentials: true,
     });
   }
 
@@ -49,31 +54,37 @@ class BackendAPI {
     pullRequestId,
     patches,
   }: SplitPullRequestOptions): Promise<SplitPullRequestResult> {
-    const resp = await this.httpWithAuth({
+    const resp = await this.http({
       method: 'post',
       url: `/v1/repos/${owner}/${repoName}/pulls/${pullRequestId}/split`,
       data: {
         patches,
       },
+      ...getAuthHeaders(),
     });
 
     return resp.data;
   }
 
-  public async login({ token }: LoginOptions): Promise<void> {
-    await this.http({
+  public async login({ code }: LoginOptions): Promise<LoginResult> {
+    const resp = await this.http({
       method: 'post',
       url: '/v1/auth/login',
       data: {
-        token,
+        code,
       },
     });
+
+    return {
+      accessToken: resp.data.access_token,
+    };
   }
 
   public async getCurrentUser(): Promise<CurrentUserResult> {
     const resp = await this.http({
       method: 'get',
       url: '/v1/current_user',
+      ...getAuthHeaders(),
     });
 
     return {

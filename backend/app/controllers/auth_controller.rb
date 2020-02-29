@@ -1,9 +1,9 @@
 require 'rest-client'
+require 'jwe'
 
 class AuthController < ApplicationController
   def login
     session_code = params[:code]
-
     # TODO(clinton): Move to service class
     response = RestClient.post('https://github.com/login/oauth/access_token',
                                { client_id: Rails.application.credentials.github[:client_id],
@@ -12,13 +12,12 @@ class AuthController < ApplicationController
                                accept: :json)
     access_token = JSON.parse(response)['access_token']
 
-    session[:access_token] = access_token
+    return head :internal_server_error if access_token.nil?
 
-    head :no_content
-  end
+    # Generate JWE
+    encrypted = JWE.encrypt(access_token, Rails.application.credentials.encryption_key, alg: 'dir')
 
-  def logout
-    session.destroy
-    head :no_content
+    resp = { access_token: encrypted }
+    render json: resp
   end
 end

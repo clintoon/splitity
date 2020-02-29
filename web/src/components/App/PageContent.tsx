@@ -4,13 +4,14 @@ import { Route, Switch } from 'react-router-dom';
 import { Navbar } from '@web/components/App/Navbar';
 import { HomePage } from '@web/pages/HomePage/HomePage';
 import { GithubDashboard } from '@web/pages/GithubDashboard/GithubDashboard';
-import { RoutePath, GithubRoutePath } from '@web/constants/routes';
+import { RoutePath, GithubRoutePath, AuthPath } from '@web/constants/routes';
 import { PullRequestSplittingPage } from '@web/pages/PullRequestSplittingPage/PullRequestSplittingPage';
 import { useStore } from '@web/stores/useStore';
 import { NotFoundPage } from '@web/pages/NotFoundPage/NotFoundPage';
 import { TermsAndConditionsPage } from '@web/pages/TermsAndConditionsPage/TermsAndConditionsPage';
 import { PrivacyPolicyPage } from '@web/pages/PrivacyPolicyPage/PrivacyPolicyPage';
 import { Footer } from './Footer';
+import { AuthCallbackPage } from '@web/pages/AuthCallbackPage/AuthCallbackPage';
 
 const PAGE_CONTENT_TESTID = 'page-content';
 
@@ -54,6 +55,7 @@ const PageContent = (): JSX.Element => {
             path={RoutePath.PrivacyPolicy}
             component={PrivacyPolicyPage}
           />
+          <Route exact path={AuthPath.Callback} component={AuthCallbackPage} />
           <Route component={NotFoundPage} />
         </Switch>
       </ContentSection>
