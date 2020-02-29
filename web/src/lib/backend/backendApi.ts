@@ -9,11 +9,17 @@ interface SplitPullRequestOptions {
   patches: string[];
 }
 
+interface LoginOptions {
+  token: string;
+}
+
 interface SplitPullRequestResult {
   splitPullRequestJobId: string;
 }
 
 class BackendAPI {
+  private http: AxiosInstance;
+  // TODO(clinton): remove old client
   private httpWithAuth: AxiosInstance;
 
   public constructor() {
@@ -25,6 +31,11 @@ class BackendAPI {
       headers: {
         'Access-Token': auth,
       },
+    });
+
+    this.http = axios.create({
+      baseURL: backendConfig.backendApiUrl,
+      withCredentials: true,
     });
   }
 
@@ -43,6 +54,16 @@ class BackendAPI {
     });
 
     return resp.data;
+  }
+
+  public async login({ token }: LoginOptions): Promise<void> {
+    await this.http({
+      method: 'post',
+      url: '/auth/login',
+      data: {
+        token,
+      },
+    });
   }
 }
 
