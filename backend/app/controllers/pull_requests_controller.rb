@@ -55,7 +55,7 @@ class PullRequestsController < ApplicationController
 
   def user_write_repo_access?(repo)
     access_token = request.headers[:HTTP_ACCESS_TOKEN]
-    github = GithubService.new(access_token: access_token)
+    github = GithubService.new(access_token: @github_access_token)
 
     permission = github.permission_level(repo, @current_user[:login])[:permission]
     %w[write admin].include?(permission)
