@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { githubConfig } from '@web/config/github';
 
 const handleSignIn = async (): Promise<void> => {
-  // TODO(clinton): handle signIn
   track(TrackingEvent.onRedirectToAuthScreen);
 
   const state = uuidv4();
