@@ -11,7 +11,6 @@
     "@sentry/browser": "^5.12.1",
     "axios": "^0.19.0",
     "core-js": "^3.2.1",
-    "firebase": "^7.2.1",
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.15",
     "mixpanel-browser": "^2.33.1",
