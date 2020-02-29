@@ -31,6 +31,11 @@ interface AuthHeaders {
   };
 }
 
+type GithubAppInstallationsResult = {
+  github_app_id: number;
+  account_id: number;
+}[];
+
 const getAuthHeaders = (): AuthHeaders => {
   return {
     headers: {
@@ -90,6 +95,21 @@ class BackendAPI {
     return {
       userId: resp.data.user_id,
     };
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public async getGithubAppInstallations(): Promise<
+    GithubAppInstallationsResult
+  > {
+    const resp = await this.http({
+      method: 'get',
+      url: '/v1/current_user/github_app_installations',
+      ...getAuthHeaders(),
+    });
+
+    console.log('resp', resp);
+
+    return resp.data.installations;
   }
 }
 

@@ -46,4 +46,12 @@ class GithubService
   def create_issue_comment_reaction(repo, issue_comment_id, reaction)
     @client.create_issue_comment_reaction(repo, issue_comment_id, reaction)
   end
+
+  def app_installations_for_user
+    @client.auto_paginate = true
+    installations = @client.find_user_installations
+    @client.auto_paginate = false
+
+    installations
+  end
 end
