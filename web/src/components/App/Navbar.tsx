@@ -1,13 +1,10 @@
 import React from 'react';
 import { Navbar as DesignNavbar } from '@web/design/components/Navbar/Navbar';
 import { Button, ButtonStyle } from '@web/design/components/Button/Button';
-import { FirebaseAuth } from '@web/lib/firebase/auth';
-import { firebaseApp } from '@web/lib/firebase/firebase';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { History } from 'history';
 import { RoutePath } from '@web/constants/routes';
 import { useStore } from '@web/stores/useStore';
-import { observer } from 'mobx-react-lite';
 import { handleSignIn } from '@web/lib/eventHandlers/auth';
 import { SplitityLogoButton } from './SplitityLogoButton';
 
@@ -31,10 +28,9 @@ const renderNotAuthenticatedNavbar = (): JSX.Element => {
 
 const renderAuthenticatedNavbar = (history: History): JSX.Element => {
   const handleSignOut = async (): Promise<void> => {
-    const auth = new FirebaseAuth(firebaseApp);
+    // TODO(clinton): Add logout
     // This triggers the useUpdateNotAuthenticated hook
     // which will clear the cookies and store
-    await auth.signOut();
     history.push(RoutePath.Root);
   };
 
