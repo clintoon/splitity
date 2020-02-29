@@ -17,6 +17,10 @@ interface SplitPullRequestResult {
   splitPullRequestJobId: string;
 }
 
+interface CurrentUserResult {
+  userId: number;
+}
+
 class BackendAPI {
   private http: AxiosInstance;
   // TODO(clinton): remove old client
@@ -59,11 +63,22 @@ class BackendAPI {
   public async login({ token }: LoginOptions): Promise<void> {
     await this.http({
       method: 'post',
-      url: '/auth/login',
+      url: '/v1/auth/login',
       data: {
         token,
       },
     });
+  }
+
+  public async getCurrentUser(): Promise<CurrentUserResult> {
+    const resp = await this.http({
+      method: 'get',
+      url: '/v1/current_user',
+    });
+
+    return {
+      userId: resp.data.user_id,
+    };
   }
 }
 
