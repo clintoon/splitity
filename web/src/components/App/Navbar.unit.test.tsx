@@ -73,4 +73,17 @@ describe('<Navbar/>', (): void => {
 
     expect(signOutButton).not.toBe(null);
   });
+
+  it('pressing sign up logs you in', (): void => {
+    const { renderResult } = renderNavbar({
+      initialRoute: GithubRoutePath.AppRoot,
+      userLoggedIn: true,
+    });
+
+    const signOutContainer = renderResult.getByTestId(NAVBAR_SIGN_OUT_TESTID);
+
+    const signOutButton = within(signOutContainer).queryByTestId(BUTTON_TESTID);
+
+    expect(signOutButton).not.toBe(null);
+  });
 });

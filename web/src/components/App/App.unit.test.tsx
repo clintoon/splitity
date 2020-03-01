@@ -12,6 +12,8 @@ import { NAVBAR_TESTID } from '@web/design/components/Navbar/Navbar';
 
 import { BackendAPI } from '@web/lib/backend/backendApi';
 import { currentUserFactory } from '@web/testing/mockCurrentUser';
+import { clearAuthCookie } from '@web/lib/cookie/authCookie';
+import { resetTracking } from '@web/lib/analytics/tracking';
 
 jest.mock('@web/lib/cookie/authCookie');
 jest.mock('@web/lib/analytics/tracking');
@@ -114,6 +116,8 @@ describe('<App/>', (): void => {
     });
     await wait((): void => {
       expect(stores.auth.isLoggedIn()).toBe(false);
+      expect(clearAuthCookie).toBeCalled();
+      expect(resetTracking).toBeCalled();
     });
   });
 
