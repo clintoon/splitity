@@ -1,6 +1,7 @@
 require 'rest-client'
 require 'jwe'
 
+# TODO(clinton): Write unit tests
 class AuthController < ApplicationController
   def login
     session_code = params[:code]

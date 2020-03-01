@@ -1,3 +1,4 @@
+# TODO(clinton): write unit tests
 class CurrentUserController < ApplicationController
   before_action :login_required
 

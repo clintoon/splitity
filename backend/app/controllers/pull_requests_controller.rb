@@ -32,6 +32,7 @@ class PullRequestsController < ApplicationController
     render json: { split_pull_request_job_id: split_pr_job_id }
   end
 
+  # TODO(clinton): Write unit tests
   def get_diff
     github = GithubService.new(access_token: @github_access_token)
 
