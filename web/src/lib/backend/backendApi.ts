@@ -53,8 +53,6 @@ const getAuthHeaders = (): AuthHeaders => {
 };
 
 interface GetPullRequestDiffResult {
-  repo_name: string;
-  repo_owner: string;
   diff: string;
   title: string;
 }
@@ -134,11 +132,11 @@ class BackendAPI {
     );
   }
 
-  public getPullRequestDiff = async ({
+  public async getPullRequestDiff({
     owner,
     repoName,
     pullRequestId,
-  }: GetPullRequestDiffOptions): Promise<GetPullRequestDiffResult> => {
+  }: GetPullRequestDiffOptions): Promise<GetPullRequestDiffResult> {
     const resp = await this.http({
       method: 'get',
       url: `/v1/repos/${owner}/${repoName}/pulls/${pullRequestId}/diff`,
@@ -146,7 +144,7 @@ class BackendAPI {
     });
 
     return resp.data;
-  };
+  }
 }
 
 export { BackendAPI };
