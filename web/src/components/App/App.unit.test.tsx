@@ -1,373 +1,130 @@
-// import React from 'react';
-// import {
-//   render,
-//   RenderResult,
-//   wait,
-//   within,
-//   fireEvent,
-// } from '@testing-library/react';
-// import { createMemoryHistory, MemoryHistory } from 'history';
-// import { mock, when, instance } from 'ts-mockito';
-// import { User, Unsubscribe, UserInfo } from 'firebase/app';
-// import { Router } from 'react-router';
+import React from 'react';
+import { render, RenderResult, wait } from '@testing-library/react';
+import { createMemoryHistory, MemoryHistory } from 'history';
+import { Router } from 'react-router';
 
-// import { App, APP_LOADING } from '@web/components/App/App';
-// import { StoreType } from '@web/stores/storeProvider';
-// import { mockStoreFactory, TestStoreProvider } from '@web/testing/mockStore';
-// import { FirebaseAuth } from '@web/lib/firebase/auth';
-// import * as AuthCookie from '@web/lib/cookie/authCookie';
-// import { RoutePath, GithubRoutePath } from '@web/constants/routes';
-// import { PAGE_CONTENT_TESTID } from '@web/components/App/PageContent';
-// import { clearAuthCookie, setOAuthToken } from '@web/lib/cookie/authCookie';
-// import { NAVBAR_TESTID } from '@web/design/components/Navbar/Navbar';
-// import { NAVBAR_SIGNIN_TESTID, NAVBAR_SIGN_OUT_TESTID } from './Navbar';
-// import { BUTTON_TESTID } from '@web/design/components/Button/Button';
-// import { handleSignIn } from '@web/lib/eventHandlers/auth';
-// import {
-//   track,
-//   identify,
-//   alias,
-//   resetTracking,
-// } from '@web/lib/analytics/tracking';
-// import { TrackingEvent } from '@web/lib/analytics/events';
+import { App, APP_LOADING } from '@web/components/App/App';
+import { StoreType } from '@web/stores/storeProvider';
+import { mockStoreFactory, TestStoreProvider } from '@web/testing/mockStore';
+import { RoutePath } from '@web/constants/routes';
+import { PAGE_CONTENT_TESTID } from '@web/components/App/PageContent';
+import { NAVBAR_TESTID } from '@web/design/components/Navbar/Navbar';
 
-// jest.mock('@web/lib/firebase/auth');
-// jest.mock('@web/lib/cookie/authCookie');
-// jest.mock('@web/lib/eventHandlers/auth');
-// jest.mock('@web/lib/github/github');
-// jest.mock('@web/lib/analytics/tracking');
-// jest.mock('react-player');
+import { BackendAPI } from '@web/lib/backend/backendApi';
+import { currentUserFactory } from '@web/testing/mockCurrentUser';
 
-// const AUTH_TOKEN_COOKIE = 'auth-token-cookie';
-// const EMAIL = 'clinton@gmail.com';
-// const EMAIL_VERIFIED = false;
-// const USER_ID = 123;
-// const userMock = mock<User>();
-// when(userMock.email).thenReturn(EMAIL);
-// when(userMock.emailVerified).thenReturn(EMAIL_VERIFIED);
+jest.mock('@web/lib/cookie/authCookie');
+jest.mock('@web/lib/analytics/tracking');
+jest.mock('react-player');
 
-// const providerDataMock = mock<UserInfo>();
-// when(providerDataMock.uid).thenReturn(USER_ID.toString());
-// when(userMock.providerData).thenReturn([instance(providerDataMock)]);
+const USER_ID = 123;
 
-// interface RenderAppOptions {
-//   initialRoute: string;
-//   initialStoreAuthenticated: boolean;
-//   isAuthenticated: boolean;
-//   backFromAuthRedirect: boolean;
-//   authCookieToken?: string | null;
-//   isNewUser?: boolean;
-// }
+interface RenderAppOptions {
+  initialRoute: string;
+  isAuthenticated: boolean;
+  initialStoreAuthenticated: boolean;
+}
 
-// interface RenderAppResult {
-//   renderResult: RenderResult;
-//   stores: StoreType;
-//   history: MemoryHistory;
-// }
+interface RenderAppResult {
+  renderResult: RenderResult;
+  stores: StoreType;
+  history: MemoryHistory;
+}
 
-// const currentUserData = {
-//   email: EMAIL,
-//   emailVerified: EMAIL_VERIFIED,
-//   userId: USER_ID,
-// };
+const renderApp = (options: RenderAppOptions): RenderAppResult => {
+  const { isAuthenticated, initialRoute } = options;
 
-// const renderApp = (options: RenderAppOptions): RenderAppResult => {
-//   const {
-//     isAuthenticated,
-//     initialRoute,
-//     backFromAuthRedirect,
-//     initialStoreAuthenticated,
-//     authCookieToken,
-//     isNewUser,
-//   } = options;
+  if (isAuthenticated) {
+    jest
+      .spyOn(BackendAPI.prototype, 'getCurrentUser')
+      .mockResolvedValue({ userId: USER_ID });
+  } else {
+    jest.spyOn(BackendAPI.prototype, 'getCurrentUser').mockRejectedValue({
+      response: {
+        status: 401,
+      },
+    });
+  }
 
-//   const onAuthStateChangedSpy = jest.spyOn(
-//     FirebaseAuth.prototype,
-//     'onAuthStateChanged'
-//   );
-//   const onSubscribeMock = jest.fn();
-//   const getOAuthTokenSpy = jest.spyOn(AuthCookie, 'getOAuthToken');
+  const storeOptions = options.initialStoreAuthenticated
+    ? {
+        auth: {
+          currentUser: {
+            ...currentUserFactory(),
+          },
+        },
+      }
+    : undefined;
+  const stores = mockStoreFactory(storeOptions);
+  const history = createMemoryHistory({ initialEntries: [initialRoute] });
 
-//   if (isAuthenticated) {
-//     // If we pass in null, then the authToken is not set.
-//     getOAuthTokenSpy.mockReturnValue(
-//       authCookieToken === null ? undefined : AUTH_TOKEN_COOKIE
-//     );
-//     onAuthStateChangedSpy.mockImplementation(
-//       (callback: (user: User) => void): Unsubscribe => {
-//         callback(instance(userMock));
-//         return onSubscribeMock;
-//       }
-//     );
-//   } else {
-//     onAuthStateChangedSpy.mockImplementation(
-//       (callback: (user: null) => void): Unsubscribe => {
-//         callback(null);
-//         return onSubscribeMock;
-//       }
-//     );
-//   }
+  const renderResult = render(
+    <Router history={history}>
+      <TestStoreProvider stores={stores}>
+        <App />
+      </TestStoreProvider>
+    </Router>
+  );
 
-//   const getRedirectResultSpy = jest.spyOn(
-//     FirebaseAuth.prototype,
-//     'getRedirectResult'
-//   );
+  return {
+    renderResult,
+    stores,
+    history,
+  };
+};
 
-//   if (backFromAuthRedirect) {
-//     getRedirectResultSpy.mockResolvedValue({
-//       currentUser: currentUserData,
-//       oAuthToken: AUTH_TOKEN_COOKIE,
-//       isNewUser: Boolean(isNewUser),
-//     });
-//   } else {
-//     getRedirectResultSpy.mockResolvedValue(null);
-//   }
+describe('<App/>', (): void => {
+  it('displays loading screen when still loading', async (): Promise<void> => {
+    const { renderResult } = renderApp({
+      initialRoute: RoutePath.Root,
+      isAuthenticated: false,
+      initialStoreAuthenticated: false,
+    });
+    expect(renderResult.queryByTestId(APP_LOADING)).not.toBe(null);
+    await wait();
+  });
 
-//   const storeOptions = initialStoreAuthenticated
-//     ? {
-//         auth: {
-//           currentUser: {
-//             ...currentUserData,
-//           },
-//         },
-//       }
-//     : undefined;
-//   const stores = mockStoreFactory(storeOptions);
+  it('displays the page content is done loading', async (): Promise<void> => {
+    const { renderResult } = renderApp({
+      initialRoute: RoutePath.Root,
+      isAuthenticated: false,
+      initialStoreAuthenticated: false,
+    });
+    await wait((): void => {
+      expect(renderResult.queryByTestId(PAGE_CONTENT_TESTID)).not.toBe(null);
+    });
+  });
 
-//   const history = createMemoryHistory({ initialEntries: [initialRoute] });
+  it('logs in the user if user is authenticated', async (): Promise<void> => {
+    const { stores } = renderApp({
+      initialRoute: RoutePath.Root,
+      isAuthenticated: true,
+      initialStoreAuthenticated: false,
+    });
+    await wait((): void => {
+      expect(stores.auth.isLoggedIn()).toBe(true);
+    });
+  });
 
-//   const renderResult = render(
-//     <Router history={history}>
-//       <TestStoreProvider stores={stores}>
-//         <App />
-//       </TestStoreProvider>
-//     </Router>
-//   );
+  it('logs out the user if not authenticated', async (): Promise<void> => {
+    const { stores } = renderApp({
+      initialRoute: RoutePath.Root,
+      isAuthenticated: false,
+      initialStoreAuthenticated: true,
+    });
+    await wait((): void => {
+      expect(stores.auth.isLoggedIn()).toBe(false);
+    });
+  });
 
-//   return {
-//     renderResult,
-//     stores,
-//     history,
-//   };
-// };
-
-// describe('<App/>', (): void => {
-//   it('displays loading screen when still loading', async (): Promise<void> => {
-//     const { renderResult } = renderApp({
-//       initialRoute: RoutePath.Root,
-//       isAuthenticated: false,
-//       initialStoreAuthenticated: false,
-//       backFromAuthRedirect: false,
-//     });
-//     expect(renderResult.queryByTestId(APP_LOADING)).not.toBe(null);
-//     await wait();
-//   });
-
-//   it('displays the page content is done loading', async (): Promise<void> => {
-//     const { renderResult } = renderApp({
-//       initialRoute: RoutePath.Root,
-//       isAuthenticated: false,
-//       initialStoreAuthenticated: false,
-//       backFromAuthRedirect: false,
-//     });
-//     await wait((): void => {
-//       expect(renderResult.queryByTestId(PAGE_CONTENT_TESTID)).not.toBe(null);
-//     });
-//   });
-
-//   describe('initial user state', (): void => {
-//     it('clear user from store and cookie if not logged in', async (): Promise<
-//       void
-//     > => {
-//       const { stores } = renderApp({
-//         initialRoute: RoutePath.Root,
-//         isAuthenticated: false,
-//         backFromAuthRedirect: false,
-//         initialStoreAuthenticated: true,
-//       });
-//       await wait((): void => {
-//         expect(stores.auth.getCurrentUser()).toBe(null);
-//         expect(resetTracking).toBeCalled();
-//         expect(clearAuthCookie).toHaveBeenCalled();
-//       });
-//     });
-
-//     it('logs the user out if the user is authenticated without the auth cookie', async (): Promise<
-//       void
-//     > => {
-//       renderApp({
-//         initialRoute: RoutePath.Root,
-//         isAuthenticated: true,
-//         initialStoreAuthenticated: false,
-//         backFromAuthRedirect: false,
-//         authCookieToken: null,
-//       });
-//       await wait((): void => {
-//         expect(FirebaseAuth.prototype.signOut).toBeCalled();
-//       });
-//     });
-//   });
-
-//   describe('auth redirect result', (): void => {
-//     it('logs in user when we redirected from firebase', async (): Promise<
-//       void
-//     > => {
-//       const { stores } = renderApp({
-//         initialRoute: RoutePath.Root,
-//         isAuthenticated: false,
-//         backFromAuthRedirect: true,
-//         initialStoreAuthenticated: false,
-//       });
-//       await wait((): void => {
-//         expect(stores.auth.getCurrentUser()).not.toBe(null);
-//         expect(setOAuthToken).toHaveBeenCalled();
-//       });
-//     });
-
-//     it('calls alias when is new user', async (): Promise<void> => {
-//       renderApp({
-//         initialRoute: RoutePath.Root,
-//         isAuthenticated: false,
-//         backFromAuthRedirect: true,
-//         initialStoreAuthenticated: false,
-//         isNewUser: true,
-//       });
-//       await wait((): void => {
-//         expect(alias).toBeCalled();
-//       });
-//     });
-
-//     it('calls track "sign_up" when is new user', async (): Promise<void> => {
-//       renderApp({
-//         initialRoute: RoutePath.Root,
-//         isAuthenticated: false,
-//         backFromAuthRedirect: true,
-//         initialStoreAuthenticated: false,
-//         isNewUser: true,
-//       });
-//       await wait((): void => {
-//         expect(track).toBeCalledWith(TrackingEvent.signUpCompleted);
-//       });
-//     });
-
-//     it('calls identify when is not new user', async (): Promise<void> => {
-//       renderApp({
-//         initialRoute: RoutePath.Root,
-//         isAuthenticated: false,
-//         backFromAuthRedirect: true,
-//         initialStoreAuthenticated: false,
-//         isNewUser: false,
-//       });
-//       await wait((): void => {
-//         expect(identify).toBeCalled();
-//       });
-//     });
-//   });
-
-//   describe('navbar', (): void => {
-//     it('displays navbar', async (): Promise<void> => {
-//       const { renderResult } = renderApp({
-//         initialRoute: RoutePath.Root,
-//         isAuthenticated: false,
-//         backFromAuthRedirect: false,
-//         initialStoreAuthenticated: false,
-//       });
-//       await wait((): void => {
-//         expect(renderResult.queryByTestId(NAVBAR_TESTID)).not.toBe(null);
-//       });
-//     });
-
-//     describe('signin button', (): void => {
-//       it('displays signin button when not logged in', async (): Promise<
-//         void
-//       > => {
-//         const { renderResult } = renderApp({
-//           initialRoute: RoutePath.Root,
-//           isAuthenticated: false,
-//           backFromAuthRedirect: false,
-//           initialStoreAuthenticated: false,
-//         });
-//         await wait((): void => {
-//           expect(renderResult.queryByTestId(NAVBAR_SIGNIN_TESTID)).not.toBe(
-//             null
-//           );
-//         });
-//       });
-
-//       it('displays signin button when logged in at root route', async (): Promise<
-//         void
-//       > => {
-//         const { renderResult } = renderApp({
-//           initialRoute: RoutePath.Root,
-//           isAuthenticated: true,
-//           backFromAuthRedirect: false,
-//           initialStoreAuthenticated: false,
-//         });
-//         await wait((): void => {
-//           expect(renderResult.queryByTestId(NAVBAR_SIGNIN_TESTID)).not.toBe(
-//             null
-//           );
-//         });
-//       });
-
-//       it('signin button signs in user when pressed', async (): Promise<
-//         void
-//       > => {
-//         const { renderResult } = renderApp({
-//           initialRoute: RoutePath.Root,
-//           isAuthenticated: false,
-//           backFromAuthRedirect: false,
-//           initialStoreAuthenticated: false,
-//         });
-//         await wait((): void => {
-//           const signIn = renderResult.getByTestId(NAVBAR_SIGNIN_TESTID);
-//           const signInButton = within(signIn).getByTestId(BUTTON_TESTID);
-
-//           fireEvent.click(signInButton);
-
-//           expect(handleSignIn).toHaveBeenCalled();
-//         });
-//       });
-//     });
-
-//     describe('logout button', (): void => {
-//       it('displays logout button when logged at github app route', async (): Promise<
-//         void
-//       > => {
-//         const { renderResult } = renderApp({
-//           initialRoute: GithubRoutePath.AppRoot,
-//           isAuthenticated: true,
-//           backFromAuthRedirect: false,
-//           initialStoreAuthenticated: false,
-//         });
-//         await wait((): void => {
-//           expect(renderResult.queryByTestId(NAVBAR_SIGN_OUT_TESTID)).not.toBe(
-//             null
-//           );
-//         });
-//       });
-
-//       it('logout button logs out user when pressed', async (): Promise<
-//         void
-//       > => {
-//         const { renderResult, history } = renderApp({
-//           initialRoute: GithubRoutePath.AppRoot,
-//           isAuthenticated: true,
-//           backFromAuthRedirect: false,
-//           initialStoreAuthenticated: false,
-//         });
-
-//         await wait((): void => {
-//           const signOut = renderResult.getByTestId(NAVBAR_SIGN_OUT_TESTID);
-//           const signOutButton = within(signOut).getByTestId(BUTTON_TESTID);
-//           fireEvent.click(signOutButton);
-//         });
-
-//         await wait((): void => {
-//           expect(FirebaseAuth.prototype.signOut).toHaveBeenCalled();
-//           expect(history.location.pathname).toBe(RoutePath.Root);
-//         });
-//       });
-//     });
-//   });
-// });
+  it('displays navbar', async (): Promise<void> => {
+    const { renderResult } = renderApp({
+      initialRoute: RoutePath.Root,
+      isAuthenticated: false,
+      initialStoreAuthenticated: false,
+    });
+    await wait((): void => {
+      expect(renderResult.queryByTestId(NAVBAR_TESTID)).not.toBe(null);
+    });
+  });
+});

@@ -3,6 +3,7 @@ import { GlobalStyle } from '@web/design/styles/GlobalStyle';
 import { PageContent } from '@web/components/App/PageContent';
 import { useStore } from '@web/stores/useStore';
 import { BackendAPI } from '@web/lib/backend/backendApi';
+import { handleSignOut } from '@web/lib/eventHandlers/auth';
 
 const APP_LOADING = 'app-loading';
 
@@ -18,7 +19,9 @@ const App = (): JSX.Element => {
         const currentUser = await backend.getCurrentUser();
         store.auth.signInUser(currentUser);
       } catch (error) {
-        // TODO(clinton)
+        if (error.response.status === 401) {
+          handleSignOut(store);
+        }
       } finally {
         setLoading(false);
       }

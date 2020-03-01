@@ -5,8 +5,9 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { History } from 'history';
 import { RoutePath } from '@web/constants/routes';
 import { useStore } from '@web/stores/useStore';
-import { handleSignIn } from '@web/lib/eventHandlers/auth';
+import { handleSignIn, handleSignOut } from '@web/lib/eventHandlers/auth';
 import { SplitityLogoButton } from './SplitityLogoButton';
+import { StoreType } from '@web/stores/storeProvider';
 
 const NAVBAR_SIGNIN_TESTID = 'navbar-signin';
 const NAVBAR_SIGN_OUT_TESTID = 'navbar-signout';
@@ -26,20 +27,22 @@ const renderNotAuthenticatedNavbar = (): JSX.Element => {
   );
 };
 
-const renderAuthenticatedNavbar = (history: History): JSX.Element => {
-  const handleSignOut = async (): Promise<void> => {
-    // TODO(clinton): Add logout
-    // This triggers the useUpdateNotAuthenticated hook
-    // which will clear the cookies and store
-    history.push(RoutePath.Root);
-  };
-
+const renderAuthenticatedNavbar = (
+  history: History,
+  store: StoreType
+): JSX.Element => {
   return (
     <DesignNavbar
       leftItems={[<SplitityLogoButton key="logo" />]}
       rightItems={[
         <div data-testid={NAVBAR_SIGN_OUT_TESTID} key="logout">
-          <Button styleOf={ButtonStyle.Primary} onClick={handleSignOut}>
+          <Button
+            styleOf={ButtonStyle.Primary}
+            onClick={(): void => {
+              handleSignOut(store);
+              history.push(RoutePath.Root);
+            }}
+          >
             Logout
           </Button>
         </div>,
@@ -54,7 +57,7 @@ const WrappedNavbar = ({
 }: RouteComponentProps): JSX.Element => {
   const store = useStore();
   if (store.auth.isLoggedIn() && location.pathname !== RoutePath.Root) {
-    return renderAuthenticatedNavbar(history);
+    return renderAuthenticatedNavbar(history, store);
   } else {
     return renderNotAuthenticatedNavbar();
   }

@@ -15,7 +15,7 @@ const AuthModel = types
   })
   .views(self => ({
     isLoggedIn: (): boolean => {
-      return !!self.currentUser;
+      return Boolean(self.currentUser);
     },
     getCurrentUser: (): CurrentUser | null => {
       return self.currentUser;

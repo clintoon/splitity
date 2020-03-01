@@ -1,7 +1,9 @@
-import { track } from '../analytics/tracking';
+import { track, resetTracking } from '../analytics/tracking';
 import { TrackingEvent } from '../analytics/events';
 import { v4 as uuidv4 } from 'uuid';
 import { githubConfig } from '@web/config/github';
+import { clearAuthCookie } from '../cookie/authCookie';
+import { StoreType } from '@web/stores/storeProvider';
 
 const handleSignIn = async (): Promise<void> => {
   track(TrackingEvent.onRedirectToAuthScreen);
@@ -11,4 +13,10 @@ const handleSignIn = async (): Promise<void> => {
   window.location.href = `https://github.com/login/oauth/authorize?client_id=${githubConfig.githubAppClientId}&state=${state}`;
 };
 
-export { handleSignIn };
+const handleSignOut = (store: StoreType): void => {
+  clearAuthCookie();
+  store.auth.signOutUser();
+  resetTracking();
+};
+
+export { handleSignIn, handleSignOut };
