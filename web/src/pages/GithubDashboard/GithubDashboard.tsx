@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useStore } from '@web/stores/useStore';
 import { SettingsSection } from './SettingsSection';
@@ -26,13 +26,13 @@ const useFetchGithubInstallationId = (githubUserId: number): number | null => {
 
     // Filters to only get the installation that is owned by current user
     const userInstallations = installations.filter((installation): boolean => {
-      return installation.account_id === githubUserId;
+      return installation.accountId === githubUserId;
     });
     if (userInstallations.length === 0) {
       return null;
     }
 
-    return userInstallations[0].github_app_id;
+    return userInstallations[0].installationId;
   };
 
   // TODO(clinton): optimize this. This is called multiple times

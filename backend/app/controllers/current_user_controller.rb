@@ -12,7 +12,7 @@ class CurrentUserController < ApplicationController
 
     formatted_installations = installations.map do |installation|
       {
-        github_app_id: installation.id,
+        installation_id: installation.id,
         account_id: installation.account.id
       }
     end

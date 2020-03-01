@@ -37,10 +37,12 @@ interface AuthHeaders {
   };
 }
 
-type GithubAppInstallationsResult = {
-  github_app_id: number;
-  account_id: number;
-}[];
+interface GithubAppInstallation {
+  installationId: number;
+  accountId: number;
+}
+
+type GithubAppInstallationsResult = GithubAppInstallation[];
 
 const getAuthHeaders = (): AuthHeaders => {
   return {
@@ -119,7 +121,17 @@ class BackendAPI {
       ...getAuthHeaders(),
     });
 
-    return resp.data.installations;
+    return resp.data.installations.map(
+      (installation: {
+        account_id: number;
+        installation_id: number;
+      }): GithubAppInstallation => {
+        return {
+          accountId: installation.account_id,
+          installationId: installation.installation_id,
+        };
+      }
+    );
   }
 
   public getPullRequestDiff = async ({
