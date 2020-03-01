@@ -1,4 +1,6 @@
 require 'test_helper'
+require 'securerandom'
+require 'jwe'
 
 class PullRequestsControllerTest < ActionDispatch::IntegrationTest
   test 'splitting PR returns an unauthenticated status when Access-Token header is not set' do
@@ -10,9 +12,10 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'splitting PR returns an unauthenticated status when Access-Token header is not valid' do
-    Rails.application.credentials.stubs(:encryption_key).returns('00000000000000000000000000000000')
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    invalid_access_token = 'abc123'
+    invalid_access_token = JWE.encrypt('abc123', key, alg: 'dir')
 
     mock = Minitest::Mock.new
     mock.expect :current_user, nil
@@ -29,9 +32,10 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'splitting PR returns an 200 OK when Access-Token header is valid' do
-    Rails.application.credentials.stubs(:encryption_key).returns('00000000000000000000000000000000')
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    valid_access_token = 'abc123'
+    valid_access_token = JWE.encrypt('abc123', key, alg: 'dir')
 
     github_mock = Minitest::Mock.new
     github_mock.expect :current_user, id: 1, login: 'clintoon'
@@ -57,9 +61,10 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'splitting PR returns an 200 OK when user has admin access' do
-    Rails.application.credentials.stubs(:encryption_key).returns('00000000000000000000000000000000')
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    valid_access_token = 'abc123'
+    valid_access_token = JWE.encrypt('abc123', key, alg: 'dir')
 
     github_mock = Minitest::Mock.new
     github_mock.expect :current_user, id: 1, login: 'clintoon'
@@ -85,9 +90,10 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'splitting PR should return unauthorized if user does not have write access' do
-    Rails.application.credentials.stubs(:encryption_key).returns('00000000000000000000000000000000')
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    valid_access_token = 'abc123'
+    valid_access_token = JWE.encrypt('abc123', key, alg: 'dir')
 
     github_mock = Minitest::Mock.new
     github_mock.expect :current_user, id: 1, login: 'clintoon'
@@ -111,9 +117,10 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'splitting PR should return forbidden if repo id has changed' do
-    Rails.application.credentials.stubs(:encryption_key).returns('00000000000000000000000000000000')
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    valid_access_token = 'abc123'
+    valid_access_token = JWE.encrypt('abc123', key, alg: 'dir')
 
     github_mock = Minitest::Mock.new
     github_mock.expect :current_user, id: 1, login: 'clintoon'
