@@ -1,17 +1,14 @@
-// import { handleSignIn } from '@web/lib/eventHandlers/auth';
-// import { track } from '@web/lib/analytics/tracking';
-// import { TrackingEvent } from '../analytics/events';
+import { handleSignIn } from '@web/lib/eventHandlers/auth';
+import { track } from '@web/lib/analytics/tracking';
+import { TrackingEvent } from '../analytics/events';
 
-// jest.mock('@web/lib/analytics/tracking');
+jest.mock('@web/lib/analytics/tracking');
+jest.mock('@web/lib/window/window');
 
-// describe('handleSignin', (): void => {
-//   it('calls redirectSignInWithGithub', (): void => {
-//     handleSignIn();
-//     expect(FirebaseAuth.prototype.redirectSignInWithGithub).toHaveBeenCalled();
-//   });
+describe('handleSignin', (): void => {
+  it('calls tracking event', (): void => {
+    handleSignIn();
 
-//   it('calls onRedirectToAuthScreen tracking event', (): void => {
-//     handleSignIn();
-//     expect(track).toHaveBeenCalledWith(TrackingEvent.onRedirectToAuthScreen);
-//   });
-// });
+    expect(track).toBeCalledWith(TrackingEvent.onRedirectToAuthScreen);
+  });
+});
