@@ -53,55 +53,6 @@ const useCallPageLoadTracking = (): void => {
   });
 };
 
-// const useGetPRTitle = (
-//   owner: string,
-//   repoName: string,
-//   pullRequestId: number
-// ): string | undefined => {
-//   const [title, setTitle] = useState<string | undefined>();
-
-//   useEffect((): void => {
-//     const callback = async (): Promise<void> => {
-//       const githubApi = new GithubAPI();
-//       const res = await githubApi.getPullRequestInfo({
-//         owner,
-//         repoName,
-//         pullRequestId: Number(pullRequestId),
-//       });
-
-//       if (res) {
-//         setTitle(res.title);
-//       }
-//     };
-//     callback();
-//   }, []);
-//   return title;
-// };
-
-// const useGetPRDiff = (
-//   owner: string,
-//   repoName: string,
-//   pullRequestId: number
-// ): FileDiff[] | undefined => {
-//   const [PRDiff, setPRDiff] = useState<FileDiff[]>();
-//   useEffect((): void => {
-//     const callback = async (): Promise<void> => {
-//       const githubApi = new GithubAPI();
-//       const diff = await githubApi.getPullRequestDiff({
-//         owner,
-//         repoName,
-//         pullRequestId,
-//       });
-
-//       const fileDiffs = parseDiff(diff);
-//       setPRDiff(fileDiffs);
-//     };
-//     callback();
-//   }, []);
-
-//   return PRDiff;
-// };
-
 interface FetchPRData {
   title: string;
   diff: FileDiff[];

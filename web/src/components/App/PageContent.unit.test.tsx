@@ -11,10 +11,12 @@ import { GITHUB_DASHBOARD_PAGE_TESTID } from '@web/pages/GithubDashboard/GithubD
 import { PULL_REQUEST_SPLITTING_PAGE_TESTID } from '@web/pages/PullRequestSplittingPage/PullRequestSplittingPage';
 import { TERMS_AND_CONDITIONS_TESTID } from '@web/pages/TermsAndConditionsPage/TermsAndConditionsPage';
 import { PRIVACY_POLICY_TESTID } from '@web/pages/PrivacyPolicyPage/PrivacyPolicyPage';
+import { BackendAPI } from '@web/lib/backend/backendApi';
+import { GITHUB_MULTIPLE_FILE_DIFF } from '@web/testing/fixtures/pullRequestDiff';
 
-jest.mock('@web/lib/github/github');
 jest.mock('@web/lib/backend/backendApi');
 jest.mock('@web/lib/analytics/tracking');
+
 interface RenderPageContentOptions {
   isLoggedIn: boolean;
   initialRoute: string;
@@ -29,6 +31,15 @@ const renderPageContent = ({
   isLoggedIn,
   initialRoute,
 }: RenderPageContentOptions): RenderPageContentResult => {
+  jest
+    .spyOn(BackendAPI.prototype, 'getGithubAppInstallations')
+    .mockResolvedValue([]);
+
+  jest.spyOn(BackendAPI.prototype, 'getPullRequestDiff').mockResolvedValue({
+    diff: GITHUB_MULTIPLE_FILE_DIFF,
+    title: 'title123',
+  });
+
   const storeOptions = isLoggedIn
     ? {
         auth: {
