@@ -71,7 +71,7 @@ jobs:
       - store_artifacts:
           path: backend/coverage
       - codecov/upload:
-          file: backend/coverage/.*.json
+          file: backend/coverage/.resultset.json
           flags: backend,unit
 
   build_web:
