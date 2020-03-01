@@ -1,5 +1,7 @@
 require 'json'
 
+# TODO(clinton): Refactor this out and move into encryption_service
+# Use a signed and encrypted JWT
 class SplitityEncryptor
   def initialize(key)
     @key = key
