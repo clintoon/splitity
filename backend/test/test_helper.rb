@@ -3,6 +3,8 @@ ENV['RAILS_ENV'] ||= 'test'
 if ENV['CI'] == 'true'
   require 'simplecov'
   SimpleCov.start 'rails'
+  require 'codecov'
+  SimpleCov.formatter = SimpleCov::Formatter::
 end
 
 require_relative '../config/environment'
