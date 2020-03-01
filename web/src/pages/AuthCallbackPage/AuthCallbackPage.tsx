@@ -6,6 +6,7 @@ import { BackendAPI } from '@web/lib/backend/backendApi';
 import { useStore } from '@web/stores/useStore';
 import { setOAuthToken } from '@web/lib/cookie/authCookie';
 
+// TODO(clinton): Write unit tests for this component
 const AuthCallbackPage = (): JSX.Element => {
   const location = useLocation();
   const history = useHistory();
