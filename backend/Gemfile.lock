@@ -131,7 +131,7 @@ GEM
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     parallel (1.19.1)
-    parser (2.7.0.2)
+    parser (2.7.0.3)
       ast (~> 2.4.0)
     pg (1.2.2)
     public_suffix (4.0.3)
@@ -184,7 +184,7 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rexml (3.2.4)
-    rubocop (0.80.0)
+    rubocop (0.80.1)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
       parser (>= 2.7.0.1)
@@ -258,7 +258,7 @@ DEPENDENCIES
   rails (~> 6.0.2)
   rb-readline
   rest-client
-  rubocop (~> 0.80.0)
+  rubocop (~> 0.80.1)
   rubocop-rails
   rugged!
   sentry-raven (~> 2.9)
