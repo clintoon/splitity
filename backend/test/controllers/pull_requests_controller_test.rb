@@ -25,6 +25,25 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
+  test 'splitting PR returns an unauthenticated status when access token header has expired' do
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
+
+    invalid_access_token = EncryptionService.encrypt_and_sign('abc123', expires_in: 1.day)
+
+    GithubService.stubs(:new).returns(mock)
+
+    Timecop.freeze(Time.zone.now + 2.days) do
+      post(
+        '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',
+        params: { patches: ['example patch'] },
+        headers: { 'HTTP_ACCESS_TOKEN': invalid_access_token }
+      )
+
+      assert_response :unauthorized
+    end
+  end
+
   test 'splitting PR returns an unauthenticated status when github token is not valid' do
     key = SecureRandom.random_bytes(16)
     Rails.application.credentials.stubs(:encryption_key).returns(key)
