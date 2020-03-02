@@ -15,7 +15,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     key = SecureRandom.random_bytes(16)
     Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    invalid_access_token = JWE.encrypt('abc123', key, alg: 'dir')
+    invalid_access_token = EncryptionService.encrypt_and_sign('abc123')
 
     mock = Minitest::Mock.new
     mock.expect :current_user, nil
@@ -35,7 +35,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     key = SecureRandom.random_bytes(16)
     Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    valid_access_token = JWE.encrypt('abc123', key, alg: 'dir')
+    valid_access_token = EncryptionService.encrypt_and_sign('abc123')
 
     github_mock = Minitest::Mock.new
     github_mock.expect :current_user, id: 1, login: 'clintoon'
@@ -64,7 +64,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     key = SecureRandom.random_bytes(16)
     Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    valid_access_token = JWE.encrypt('abc123', key, alg: 'dir')
+    valid_access_token = EncryptionService.encrypt_and_sign('abc123')
 
     github_mock = Minitest::Mock.new
     github_mock.expect :current_user, id: 1, login: 'clintoon'
@@ -93,7 +93,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     key = SecureRandom.random_bytes(16)
     Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    valid_access_token = JWE.encrypt('abc123', key, alg: 'dir')
+    valid_access_token = EncryptionService.encrypt_and_sign('abc123')
 
     github_mock = Minitest::Mock.new
     github_mock.expect :current_user, id: 1, login: 'clintoon'
@@ -120,7 +120,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     key = SecureRandom.random_bytes(16)
     Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    valid_access_token = JWE.encrypt('abc123', key, alg: 'dir')
+    valid_access_token = EncryptionService.encrypt_and_sign('abc123')
 
     github_mock = Minitest::Mock.new
     github_mock.expect :current_user, id: 1, login: 'clintoon'

@@ -6,7 +6,7 @@ class ApplicationController < ActionController::API
     access_token = request.headers[:HTTP_ACCESS_TOKEN]
     return head :unauthorized if access_token.nil?
 
-    @github_access_token = JweService.decrypt(access_token)
+    @github_access_token = EncryptionService.decrypt_and_verify(access_token)
 
     begin
       github = GithubService.new(access_token: @github_access_token)

@@ -22,7 +22,7 @@ class AuthController < ApplicationController
     return head :internal_server_error if access_token.nil?
 
     # Generate JWE
-    encrypted = JweService.encrypt(access_token)
+    encrypted = EncryptionService.encrypt_and_sign(access_token)
 
     resp = { access_token: encrypted }
     render json: resp
