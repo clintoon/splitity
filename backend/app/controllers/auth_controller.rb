@@ -5,7 +5,7 @@ require 'jwe'
 class AuthController < ApplicationController
   def login
     session_code = params[:code]
-    # TODO(clinton): Move to service class
+    # TODO(clinton): Move to service class and migrate to faraday
     response = RestClient.post(
       'https://github.com/login/oauth/access_token',
       {
