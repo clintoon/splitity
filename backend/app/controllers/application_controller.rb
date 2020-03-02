@@ -12,6 +12,8 @@ class ApplicationController < ActionController::API
       return head :unauthorized
     end
 
+    return head :unauthorized if @github_access_token.nil?
+
     begin
       github = GithubService.new(access_token: @github_access_token)
       current_user = github.current_user
