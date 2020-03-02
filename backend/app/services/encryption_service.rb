@@ -1,8 +1,8 @@
 require 'json'
 
 class EncryptionService
-  def self.encrypt_and_sign(payload)
-    crypt = ActiveSupport::MessageEncryptor.new(Rails.application.credentials.encryption_key, cipher: 'aes-128-cbc', serializer: JSON)
+  def self.encrypt_and_sign(payload, **options)
+    crypt = ActiveSupport::MessageEncryptor.new(Rails.application.credentials.encryption_key, cipher: 'aes-128-cbc', serializer: JSON, **options)
     encrypted_payload = crypt.encrypt_and_sign(payload)
     encrypted_payload
   end

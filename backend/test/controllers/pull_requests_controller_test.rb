@@ -1,6 +1,5 @@
 require 'test_helper'
 require 'securerandom'
-require 'jwe'
 
 class PullRequestsControllerTest < ActionDispatch::IntegrationTest
   test 'splitting PR returns an unauthenticated status when Access-Token header is not set' do
@@ -12,6 +11,21 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'splitting PR returns an unauthenticated status when Access-Token header is not valid' do
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
+
+    invalid_access_token = 'invalid'
+
+    post(
+      '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',
+      params: { patches: ['example patch'] },
+      headers: { 'HTTP_ACCESS_TOKEN': invalid_access_token }
+    )
+
+    assert_response :unauthorized
+  end
+
+  test 'splitting PR returns an unauthenticated status when github token is not valid' do
     key = SecureRandom.random_bytes(16)
     Rails.application.credentials.stubs(:encryption_key).returns(key)
 

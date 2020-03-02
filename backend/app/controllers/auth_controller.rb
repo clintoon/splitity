@@ -1,5 +1,4 @@
 require 'faraday'
-require 'jwe'
 
 # TODO(clinton): Write unit tests
 class AuthController < ApplicationController
@@ -21,8 +20,7 @@ class AuthController < ApplicationController
 
     return head :internal_server_error if access_token.nil?
 
-    # Generate JWE
-    encrypted = EncryptionService.encrypt_and_sign(access_token)
+    encrypted = EncryptionService.encrypt_and_sign(access_token, expires_in: 1.month)
 
     resp = { access_token: encrypted }
     render json: resp
