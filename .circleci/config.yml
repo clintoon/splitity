@@ -105,6 +105,8 @@ jobs:
             --build-arg SENTRY_DSN="${REACT_SENTRY_DSN}"
             --build-arg SENTRY_AUTH_TOKEN="${SENTRY_AUTH_TOKEN}"
             --build-arg SENTRY_RELEASE="${CIRCLE_SHA1}"
+            --build-arg GITHUB_APP_CLIENT_ID="${GITHUB_APP_CLIENT_ID}"
+            --build-arg WEB_URL="${WEB_URL}"
             .
       - run:
           name: Login to docker hub
