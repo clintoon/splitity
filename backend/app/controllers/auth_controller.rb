@@ -19,7 +19,7 @@ class AuthController < ApplicationController
 
     return head :unauthorized if access_token.nil?
 
-    encrypted = EncryptionService.encrypt_and_sign(access_token, expires_in: 1.month)
+    encrypted = EncryptionService.encrypt_and_sign(access_token, expires_in: 1.month, purpose: :login)
 
     resp = { access_token: encrypted }
     render json: resp

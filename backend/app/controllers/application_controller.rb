@@ -7,7 +7,7 @@ class ApplicationController < ActionController::API
     return head :unauthorized if access_token.nil?
 
     begin
-      @github_access_token = EncryptionService.decrypt_and_verify(access_token)
+      @github_access_token = EncryptionService.decrypt_and_verify(access_token, purpose: :login)
     rescue ActiveSupport::MessageEncryptor::InvalidMessage, ActiveSupport::MessageVerifier::InvalidSignature
       return head :unauthorized
     end

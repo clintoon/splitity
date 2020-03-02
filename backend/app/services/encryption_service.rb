@@ -7,9 +7,9 @@ class EncryptionService
     encrypted_payload
   end
 
-  def self.decrypt_and_verify(encrypted_payload)
+  def self.decrypt_and_verify(encrypted_payload, **options)
     crypt = ActiveSupport::MessageEncryptor.new(Rails.application.credentials.encryption_key, cipher: 'aes-128-cbc', serializer: JSON)
-    payload = crypt.decrypt_and_verify(encrypted_payload)
+    payload = crypt.decrypt_and_verify(encrypted_payload, **options)
     payload
   end
 end
