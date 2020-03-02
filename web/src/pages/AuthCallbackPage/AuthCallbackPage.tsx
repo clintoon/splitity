@@ -46,7 +46,7 @@ const AuthCallbackPage = (): JSX.Element => {
     };
 
     loginUser();
-  });
+  }, []);
 
   return <div>Loading...</div>;
 };
