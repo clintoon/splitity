@@ -8,4 +8,8 @@ enum GithubRoutePath {
   AppRoot = '/gh',
 }
 
-export { RoutePath, GithubRoutePath };
+enum AuthPath {
+  Callback = '/auth/callback',
+}
+
+export { RoutePath, GithubRoutePath, AuthPath };

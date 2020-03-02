@@ -1,8 +1,10 @@
 require 'test_helper'
+require 'securerandom'
 
 class TestEncryptionService < ActiveSupport::TestCase
   test 'has same value when encrypted then decrypted' do
-    Rails.application.credentials.stubs(:encryption_key).returns('00000000000000000000000000000000')
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
 
     encryption_service = EncryptionService.new
 
@@ -14,7 +16,8 @@ class TestEncryptionService < ActiveSupport::TestCase
   end
 
   test 'encrypts the value' do
-    Rails.application.credentials.stubs(:encryption_key).returns('00000000000000000000000000000000')
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
 
     encryption_service = EncryptionService.new
 

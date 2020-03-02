@@ -1,19 +1,14 @@
-import { FirebaseAuth } from '@web/lib/firebase/auth';
 import { handleSignIn } from '@web/lib/eventHandlers/auth';
 import { track } from '@web/lib/analytics/tracking';
 import { TrackingEvent } from '../analytics/events';
 
-jest.mock('@web/lib/firebase/auth');
 jest.mock('@web/lib/analytics/tracking');
+jest.mock('@web/lib/window/window');
 
 describe('handleSignin', (): void => {
-  it('calls redirectSignInWithGithub', (): void => {
+  it('calls tracking event', (): void => {
     handleSignIn();
-    expect(FirebaseAuth.prototype.redirectSignInWithGithub).toHaveBeenCalled();
-  });
 
-  it('calls onRedirectToAuthScreen tracking event', (): void => {
-    handleSignIn();
-    expect(track).toHaveBeenCalledWith(TrackingEvent.onRedirectToAuthScreen);
+    expect(track).toBeCalledWith(TrackingEvent.onRedirectToAuthScreen);
   });
 });

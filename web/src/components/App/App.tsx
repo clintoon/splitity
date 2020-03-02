@@ -1,46 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GlobalStyle } from '@web/design/styles/GlobalStyle';
 import { PageContent } from '@web/components/App/PageContent';
 import { useStore } from '@web/stores/useStore';
-import { withRouter, RouteComponentProps } from 'react-router';
-import { useSignInRedirectResult } from '@web/components/App/hooks/useSignInRedirectResult';
-import { useSyncUserStore } from '@web/components/App/hooks/useSyncUserStore';
-import { getOAuthToken } from '@web/lib/cookie/authCookie';
-import { FirebaseAuth } from '@web/lib/firebase/auth';
-import { firebaseApp } from '@web/lib/firebase/firebase';
-import { observer } from 'mobx-react-lite';
+import { BackendAPI } from '@web/lib/backend/backendApi';
+import { handleSignOut } from '@web/lib/eventHandlers/auth';
 
 const APP_LOADING = 'app-loading';
 
-const WrappedApp = observer(
-  ({ history }: RouteComponentProps): JSX.Element => {
-    const displayLoading = <div data-testid={APP_LOADING}>loading...</div>;
+const App = (): JSX.Element => {
+  const store = useStore();
+  const [loading, setLoading] = useState(true);
 
-    const store = useStore();
+  // Fetch current user data and store in mobx
+  useEffect((): void => {
+    const loadCurrentUser = async (): Promise<void> => {
+      const backend = new BackendAPI();
+      try {
+        const currentUser = await backend.getCurrentUser();
+        store.auth.signInUser(currentUser);
+      } catch (error) {
+        if (error.response.status === 401) {
+          handleSignOut(store);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    const fetchingUserResult = useSyncUserStore(store);
-    const fetchingRedirectResult = useSignInRedirectResult(store, history);
+    loadCurrentUser();
+  });
 
-    if (fetchingRedirectResult || fetchingUserResult) {
-      return displayLoading;
-    }
-
-    // Check if oAuthToken exists if logged in
-    if (store.auth.isLoggedIn() && !getOAuthToken()) {
-      const firebaseAuth = new FirebaseAuth(firebaseApp);
-      firebaseAuth.signOut();
-      return displayLoading;
-    }
-
-    return (
-      <React.Fragment>
-        <GlobalStyle />
-        <PageContent />
-      </React.Fragment>
-    );
+  if (loading) {
+    return <div data-testid={APP_LOADING}>loading...</div>;
   }
-);
 
-const App = withRouter(WrappedApp);
+  return (
+    <React.Fragment>
+      <GlobalStyle />
+      <PageContent />
+    </React.Fragment>
+  );
+};
 
-export { App, WrappedApp as AppForTest, APP_LOADING };
+export { App, APP_LOADING };

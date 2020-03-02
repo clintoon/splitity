@@ -2,7 +2,6 @@ import React from 'react';
 import { GithubDashboard } from './GithubDashboard';
 import { RenderResult, render, within, wait } from '@testing-library/react';
 import { TestStoreProvider, mockStoreFactory } from '@web/testing/mockStore';
-import { GithubAPI } from '@web/lib/github/github';
 import { currentUserFactory } from '@web/testing/mockCurrentUser';
 import {
   SETTINGS_SECTION_INSTALL_APP_TESTID,
@@ -12,8 +11,9 @@ import { BUTTON_TESTID } from '@web/design/components/Button/Button';
 import * as OpenPage from '@web/lib/actions/openPage';
 import { Simulate } from 'react-dom/test-utils';
 import { noop } from 'lodash';
+import { BackendAPI } from '@web/lib/backend/backendApi';
 
-jest.mock('@web/lib/github/github');
+jest.mock('@web/lib/backend/backendApi');
 
 interface RenderGithubDashboardResult {
   renderResult: RenderResult;
@@ -28,9 +28,15 @@ interface RenderGithubDashboardOptions {
 const renderGithubDashboard = ({
   hasInstalledGithubApp,
 }: RenderGithubDashboardOptions): RenderGithubDashboardResult => {
+  const currentUserData = currentUserFactory();
+
   jest
-    .spyOn(GithubAPI.prototype, 'getAppInstallationId')
-    .mockResolvedValue(hasInstalledGithubApp ? 123 : null);
+    .spyOn(BackendAPI.prototype, 'getGithubAppInstallations')
+    .mockResolvedValue(
+      hasInstalledGithubApp
+        ? [{ installationId: 123, accountId: currentUserData.userId }]
+        : []
+    );
 
   const onAddReposClickSpy = jest
     .spyOn(OpenPage, 'onAddReposClick')
@@ -39,7 +45,6 @@ const renderGithubDashboard = ({
     .spyOn(OpenPage, 'onInstallGithubApp')
     .mockImplementation(noop);
 
-  const currentUserData = currentUserFactory();
   const storeOptions = {
     auth: {
       currentUser: {

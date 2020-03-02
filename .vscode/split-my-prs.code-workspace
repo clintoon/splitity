@@ -36,6 +36,7 @@
     "ruby.useLanguageServer": true,
     "editor.insertSpaces": true,
     "editor.tabSize": 2,
-    "editor.detectIndentation": true
+    "editor.detectIndentation": true,
+    "ruby.useBundler": true
   }
 }

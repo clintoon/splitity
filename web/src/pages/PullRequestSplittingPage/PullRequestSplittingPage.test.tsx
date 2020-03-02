@@ -13,7 +13,6 @@ import {
   PR_SPLITTING_PAGE_LOADING_TESTID,
 } from '@web/pages/PullRequestSplittingPage/PullRequestsFileDiffs';
 import { PULL_REQUEST_INFO_TESTID } from '@web/pages/PullRequestSplittingPage/PullRequestInfo';
-import { GithubAPI } from '@web/lib/github/github';
 import { GITHUB_MULTIPLE_FILE_DIFF } from '@web/testing/fixtures/pullRequestDiff';
 import {
   PULL_REQUEST_CONTROL_PANEL_TESTID,
@@ -44,7 +43,6 @@ import { logger } from '@web/lib/logger';
 import { track } from '@web/lib/analytics/tracking';
 import { TrackingEvent } from '@web/lib/analytics/events';
 
-jest.mock('@web/lib/github/github');
 jest.mock('@web/lib/backend/backendApi');
 jest.mock('@web/lib/logger');
 jest.mock('@web/lib/alert/alert');
@@ -70,10 +68,6 @@ interface GetPRBranchChip {
 const renderPullRequestSplittingPage = ({
   splitPREndpointMockFailure,
 }: RenderPullRequestSplittingPageOptions): RenderPullRequestSplittingPageResult => {
-  jest.spyOn(GithubAPI.prototype, 'getPullRequestInfo').mockResolvedValue({
-    title: TITLE,
-  });
-
   if (splitPREndpointMockFailure) {
     jest
       .spyOn(BackendAPI.prototype, 'splitPullRequest')
@@ -84,9 +78,10 @@ const renderPullRequestSplittingPage = ({
     });
   }
 
-  jest
-    .spyOn(GithubAPI.prototype, 'getPullRequestDiff')
-    .mockResolvedValue(GITHUB_MULTIPLE_FILE_DIFF);
+  jest.spyOn(BackendAPI.prototype, 'getPullRequestDiff').mockResolvedValue({
+    diff: GITHUB_MULTIPLE_FILE_DIFF,
+    title: TITLE,
+  });
 
   const initialRoute = '/clintoon/test01/pull/123';
   const history = createMemoryHistory({ initialEntries: [initialRoute] });

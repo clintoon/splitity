@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { match as routerMatch } from 'react-router-dom';
-import { GithubAPI } from '@web/lib/github/github';
 import { PullRequestInfoPage } from '@web/pages/PullRequestSplittingPage/PullRequestInfo';
 import styled from 'styled-components';
 import { PullRequestControlPanel } from './PullRequestControlPanel';
@@ -54,53 +53,36 @@ const useCallPageLoadTracking = (): void => {
   });
 };
 
-const useGetPRTitle = (
-  owner: string,
-  repoName: string,
-  pullRequestId: number
-): string | undefined => {
-  const [title, setTitle] = useState<string | undefined>();
+interface FetchPRData {
+  title: string;
+  diff: FileDiff[];
+}
+
+interface UseFetchPRDataOptions {
+  owner: string;
+  repoName: string;
+  pullRequestId: number;
+}
+
+const useFetchPRData = (
+  options: UseFetchPRDataOptions
+): FetchPRData | undefined => {
+  const [prData, setPRData] = useState();
 
   useEffect((): void => {
-    const callback = async (): Promise<void> => {
-      const githubApi = new GithubAPI();
-      const res = await githubApi.getPullRequestInfo({
-        owner,
-        repoName,
-        pullRequestId: Number(pullRequestId),
+    const fetchData = async (): Promise<void> => {
+      const backend = new BackendAPI();
+      const { title, diff } = await backend.getPullRequestDiff(options);
+      setPRData({
+        title,
+        diff: parseDiff(diff),
       });
-
-      if (res) {
-        setTitle(res.title);
-      }
     };
-    callback();
-  }, []);
-  return title;
-};
 
-const useGetPRDiff = (
-  owner: string,
-  repoName: string,
-  pullRequestId: number
-): FileDiff[] | undefined => {
-  const [PRDiff, setPRDiff] = useState<FileDiff[]>();
-  useEffect((): void => {
-    const callback = async (): Promise<void> => {
-      const githubApi = new GithubAPI();
-      const diff = await githubApi.getPullRequestDiff({
-        owner,
-        repoName,
-        pullRequestId,
-      });
-
-      const fileDiffs = parseDiff(diff);
-      setPRDiff(fileDiffs);
-    };
-    callback();
+    fetchData();
   }, []);
 
-  return PRDiff;
+  return prData;
 };
 
 const PRSplitSection = styled.div`
@@ -116,8 +98,14 @@ const PullRequestSplittingPage = ({
   useCallPageLoadTracking();
 
   const { owner, repoName, pullRequestId } = match.params;
-  const title = useGetPRTitle(owner, repoName, Number(pullRequestId));
-  const PRDiff = useGetPRDiff(owner, repoName, Number(pullRequestId));
+  const prData = useFetchPRData({
+    owner: owner,
+    repoName: repoName,
+    pullRequestId: Number(pullRequestId),
+  });
+  const PRDiff = prData?.diff;
+  const title = prData?.title;
+
   const history: History = useHistory();
 
   const [prBranchsData, setPRBranchsData] = useState<PRBranchsData>({

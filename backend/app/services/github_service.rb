@@ -1,4 +1,5 @@
 require 'octokit'
+require 'faraday'
 
 # To interact with the Github API
 class GithubService
@@ -8,6 +9,8 @@ class GithubService
       client_id: Rails.application.credentials.github[:client_id],
       client_secret: Rails.application.credentials.github[:client_secret]
     )
+
+    @github_access_token = params[:access_token]
   end
 
   def current_user
@@ -25,7 +28,12 @@ class GithubService
 
   def pull_request(repo, number)
     data = @client.pull_request(repo, number)
-    { head_ref: data[:head][:ref], base_ref: data[:base][:ref], base_sha: data[:base][:sha], title: data[:title] }
+    {
+      title: data[:title],
+      head_ref: data[:head][:ref],
+      base_ref: data[:base][:ref],
+      base_sha: data[:base][:sha]
+    }
   end
 
   def create_pull_request(repo, base, head, title, body = nil)
@@ -45,5 +53,26 @@ class GithubService
 
   def create_issue_comment_reaction(repo, issue_comment_id, reaction)
     @client.create_issue_comment_reaction(repo, issue_comment_id, reaction)
+  end
+
+  def app_installations_for_user
+    @client.auto_paginate = true
+    installations = @client.find_user_installations
+    @client.auto_paginate = false
+
+    installations
+  end
+
+  def pull_request_diff(owner:, repo_name:, pull_request_id:)
+    response = Faraday.get(
+      "https://api.github.com/repos/#{owner}/#{repo_name}/pulls/#{pull_request_id}.diff",
+      nil,
+      {
+        Accept: 'application/vnd.github.v3.diff',
+        Authorization: "token #{@github_access_token}"
+      }
+    )
+
+    response.body
   end
 end

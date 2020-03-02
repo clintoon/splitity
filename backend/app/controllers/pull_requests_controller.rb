@@ -1,9 +1,8 @@
-# Controller to split pull requests
 class PullRequestsController < ApplicationController
   before_action :login_required
 
   def split
-    github = GithubService.new(access_token: request.headers[:HTTP_ACCESS_TOKEN])
+    github = GithubService.new(access_token: @github_access_token)
     github_app = GithubAppService.new
 
     repo = github.repository(owner: params[:owner], name: params[:repo_name])
@@ -33,11 +32,31 @@ class PullRequestsController < ApplicationController
     render json: { split_pull_request_job_id: split_pr_job_id }
   end
 
+  # TODO(clinton): Write unit tests
+  def get_diff
+    github = GithubService.new(access_token: @github_access_token)
+
+    diff = github.pull_request_diff(
+      owner: params[:owner],
+      repo_name: params[:repo_name],
+      pull_request_id: params[:pull_request_id]
+    )
+    pr_info = github.pull_request(
+      { name: params[:repo_name], owner: params[:owner] },
+      params[:pull_request_id]
+    )
+
+    render json: {
+      title: pr_info[:title],
+      diff: diff
+    }
+  end
+
   private
 
   def user_write_repo_access?(repo)
     access_token = request.headers[:HTTP_ACCESS_TOKEN]
-    github = GithubService.new(access_token: access_token)
+    github = GithubService.new(access_token: @github_access_token)
 
     permission = github.permission_level(repo, @current_user[:login])[:permission]
     %w[write admin].include?(permission)

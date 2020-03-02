@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useStore } from '@web/stores/useStore';
 import { SettingsSection } from './SettingsSection';
 import { GettingStartedSection } from './GettingStartedSection';
-import { GithubAPI } from '@web/lib/github/github';
 import { usePromise } from '@web/lib/hooks/usePromise';
+import { BackendAPI } from '@web/lib/backend/backendApi';
+import { observer } from 'mobx-react-lite';
 
 const GITHUB_DASHBOARD_PAGE_TESTID = 'github dashboard page';
 
@@ -19,17 +20,28 @@ const Content = styled.div`
 `;
 
 const useFetchGithubInstallationId = (githubUserId: number): number | null => {
-  const github = new GithubAPI();
+  const backend = new BackendAPI();
 
-  const githubInstallationId = usePromise(
-    github.getAppInstallationId(githubUserId),
-    null
-  );
+  const fetchAppInstallationId = async (): Promise<number | null> => {
+    const installations = await backend.getGithubAppInstallations();
 
+    // Filters to only get the installation that is owned by current user
+    const userInstallations = installations.filter((installation): boolean => {
+      return installation.accountId === githubUserId;
+    });
+    if (userInstallations.length === 0) {
+      return null;
+    }
+
+    return userInstallations[0].installationId;
+  };
+
+  // TODO(clinton): optimize this. This is called multiple times
+  const githubInstallationId = usePromise(fetchAppInstallationId(), null);
   return githubInstallationId ?? null;
 };
 
-const GithubDashboard = (): JSX.Element | null => {
+const GithubDashboard = observer((): JSX.Element | null => {
   const store = useStore();
   const currentUser = store.auth.getCurrentUser();
 
@@ -47,6 +59,6 @@ const GithubDashboard = (): JSX.Element | null => {
       </Content>
     </Container>
   );
-};
+});
 
 export { GithubDashboard, GITHUB_DASHBOARD_PAGE_TESTID };
