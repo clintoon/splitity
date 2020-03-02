@@ -22,7 +22,7 @@ class AuthController < ApplicationController
     return head :internal_server_error if access_token.nil?
 
     # Generate JWE
-    encrypted = JWE.encrypt(access_token, Rails.application.credentials.encryption_key, alg: 'dir')
+    encrypted = JweService.encrypt(access_token)
 
     resp = { access_token: encrypted }
     render json: resp
