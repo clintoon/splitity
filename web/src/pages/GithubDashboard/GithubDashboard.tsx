@@ -5,6 +5,7 @@ import { SettingsSection } from './SettingsSection';
 import { GettingStartedSection } from './GettingStartedSection';
 import { usePromise } from '@web/lib/hooks/usePromise';
 import { BackendAPI } from '@web/lib/backend/backendApi';
+import { observer } from 'mobx-react-lite';
 
 const GITHUB_DASHBOARD_PAGE_TESTID = 'github dashboard page';
 
@@ -40,7 +41,7 @@ const useFetchGithubInstallationId = (githubUserId: number): number | null => {
   return githubInstallationId ?? null;
 };
 
-const GithubDashboard = (): JSX.Element | null => {
+const GithubDashboard = observer((): JSX.Element | null => {
   const store = useStore();
   const currentUser = store.auth.getCurrentUser();
 
@@ -58,6 +59,6 @@ const GithubDashboard = (): JSX.Element | null => {
       </Content>
     </Container>
   );
-};
+});
 
 export { GithubDashboard, GITHUB_DASHBOARD_PAGE_TESTID };
