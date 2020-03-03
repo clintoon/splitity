@@ -17,7 +17,7 @@
     "mobx": "^5.13.0",
     "mobx-react-lite": "^1.4.1",
     "mobx-state-tree": "^3.14.1",
-    "parse-diff": "^0.6.0",
+    "parse-diff": "^0.7.0",
     "polished": "^3.4.2",
     "query-string": "^6.11.0",
     "randomcolor": "^0.5.4",
