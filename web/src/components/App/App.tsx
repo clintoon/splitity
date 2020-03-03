@@ -4,6 +4,7 @@ import { PageContent } from '@web/components/App/PageContent';
 import { useStore } from '@web/stores/useStore';
 import { BackendAPI } from '@web/lib/backend/backendApi';
 import { handleSignOut } from '@web/lib/eventHandlers/auth';
+import { identify } from '@web/lib/analytics/tracking';
 
 const APP_LOADING = 'app-loading';
 
@@ -18,6 +19,7 @@ const App = (): JSX.Element => {
       try {
         const currentUser = await backend.getCurrentUser();
         store.auth.signInUser(currentUser);
+        identify(currentUser.userId.toString());
       } catch (error) {
         if (error.response.status === 401) {
           handleSignOut(store);
