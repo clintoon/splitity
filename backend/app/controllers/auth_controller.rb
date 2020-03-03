@@ -24,7 +24,7 @@ class AuthController < ApplicationController
     # TODO(clinton): write unit tests for below
     github = GithubService.new(access_token: access_token)
     gh_user_id = github.current_user[:id]
-    provider_user_id = "github|#{gh_user_id}"
+    provider_user_id = gh_user_id.to_s
     is_new_user = !User.exists?(provider_user_id: provider_user_id)
 
     if is_new_user

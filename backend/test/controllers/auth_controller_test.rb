@@ -9,7 +9,7 @@ class AuthControllerTest < ActionDispatch::IntegrationTest
     mock_body = { access_token: 'abc123' }.to_json
     stub_request(:post, 'https://github.com/login/oauth/access_token').to_return(body: mock_body)
 
-    GithubService.any_instance.stubs(:current_user).returns({ id: '123', login: 'clintoon' })
+    GithubService.any_instance.stubs(:current_user).returns({ id: 123, login: 'clintoon' })
 
     post(
       '/v1/auth/login',
@@ -37,7 +37,7 @@ class AuthControllerTest < ActionDispatch::IntegrationTest
     mock_body = { access_token: 'abc123' }.to_json
     stub_request(:post, 'https://github.com/login/oauth/access_token').to_return(body: mock_body)
 
-    GithubService.any_instance.stubs(:current_user).returns({ id: '123', login: 'clintoon' })
+    GithubService.any_instance.stubs(:current_user).returns({ id: 123, login: 'clintoon' })
 
     post(
       '/v1/auth/login',
@@ -61,7 +61,7 @@ class AuthControllerTest < ActionDispatch::IntegrationTest
     mock_body = { error: 'bad_verification_code' }.to_json
     stub_request(:post, 'https://github.com/login/oauth/access_token').to_return(body: mock_body)
 
-    GithubService.any_instance.stubs(:current_user).returns({ id: '123', login: 'clintoon' })
+    GithubService.any_instance.stubs(:current_user).returns({ id: 123, login: 'clintoon' })
 
     post(
       '/v1/auth/login',
