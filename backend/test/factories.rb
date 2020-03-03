@@ -1,4 +1,8 @@
 FactoryBot.define do
+  factory :user do
+    provider_user_id { 'github|123' }
+  end
+
   factory :split_pull_request_job_record do
     parent_pr_id { 1 }
     split_initiated_by_user_id { 1 }

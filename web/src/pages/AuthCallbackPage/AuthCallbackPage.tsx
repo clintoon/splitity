@@ -7,6 +7,7 @@ import { useStore } from '@web/stores/useStore';
 import { setOAuthToken } from '@web/lib/cookie/authCookie';
 import { SessionStorageItem } from '@web/lib/window/constants';
 import { getSessionStorageItem } from '@web/lib/window/window';
+import { identify, alias } from '@web/lib/analytics/tracking';
 
 // TODO(clinton): Write unit tests for this component
 const AuthCallbackPage = (): JSX.Element => {
@@ -33,14 +34,19 @@ const AuthCallbackPage = (): JSX.Element => {
 
       // Call the backend to log in and store token in cookie
       let backend = new BackendAPI();
-      const { accessToken } = await backend.login({ code });
+      const { accessToken, isNewUser } = await backend.login({ code });
       setOAuthToken(accessToken);
 
       // Set current user store
       const currentUser = await backend.getCurrentUser();
       store.auth.signInUser(currentUser);
 
-      // TODO(clinton): Sort out tracking here
+      const currentUserId = currentUser.userId.toString();
+      if (isNewUser) {
+        alias(currentUserId);
+      } else {
+        identify(currentUserId);
+      }
 
       history.replace(GithubRoutePath.AppRoot);
     };
