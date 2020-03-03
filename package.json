@@ -19,9 +19,7 @@
     "prettier": "^1.18.2"
   },
   "workspaces": [
-    "backend",
-    "web",
-    "packages/*"
+    "web"
   ],
   "husky": {
     "hooks": {
