@@ -25,6 +25,7 @@ interface SplitPullRequestResult {
 
 interface LoginResult {
   accessToken: string;
+  isNewUser: boolean;
 }
 
 interface CurrentUserResult {
@@ -99,6 +100,7 @@ class BackendAPI {
 
     return {
       accessToken: resp.data.access_token,
+      isNewUser: resp.data.is_new_user,
     };
   }
 
