@@ -19,7 +19,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     post(
       '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',
       params: { patches: ['example patch'] },
-      headers: { 'HTTP_ACCESS_TOKEN': invalid_access_token }
+      headers: { 'HTTP_AUTHORIZATION': "Bearer #{invalid_access_token}" }
     )
 
     assert_response :unauthorized
@@ -35,7 +35,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
       post(
         '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',
         params: { patches: ['example patch'] },
-        headers: { 'HTTP_ACCESS_TOKEN': invalid_access_token }
+        headers: { 'HTTP_AUTHORIZATION': "Bearer #{invalid_access_token}" }
       )
 
       assert_response :unauthorized
@@ -51,7 +51,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     post(
       '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',
       params: { patches: ['example patch'] },
-      headers: { 'HTTP_ACCESS_TOKEN': invalid_access_token }
+      headers: { 'HTTP_AUTHORIZATION': "Bearer #{invalid_access_token}" }
     )
 
     assert_response :unauthorized
@@ -70,7 +70,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     post(
       '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',
       params: { patches: ['example patch'] },
-      headers: { 'HTTP_ACCESS_TOKEN': invalid_access_token }
+      headers: { 'HTTP_AUTHORIZATION': "Bearer #{invalid_access_token}" }
     )
 
     assert_response :unauthorized
@@ -98,7 +98,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     post(
       '/v1/repos/clintoon/test01/pulls/123/split',
       params: { patches: ['example patch'] },\
-      headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
+      headers: { 'HTTP_AUTHORIZATION': "Bearer #{valid_access_token}" }
     )
 
     assert_response :success
@@ -127,7 +127,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     post(
       '/v1/repos/clintoon/test01/pulls/123/split',
       params: { patches: ['example patch'] },
-      headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
+      headers: { 'HTTP_AUTHORIZATION': "Bearer #{valid_access_token}" }
     )
 
     assert_response :success
@@ -154,7 +154,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     post(
       '/v1/repos/clintoon/test01/pulls/123/split',
       params: { patches: ['example patch'] },
-      headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
+      headers: { 'HTTP_AUTHORIZATION': "Bearer #{valid_access_token}" }
     )
 
     assert_response :unauthorized
@@ -183,7 +183,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     post(
       '/v1/repos/clintoon/test01/pulls/123/split',
       params: { patches: ['example patch'] },
-      headers: { 'HTTP_ACCESS_TOKEN': valid_access_token }
+      headers: { 'HTTP_AUTHORIZATION': "Bearer #{valid_access_token}" }
     )
 
     assert_response :forbidden

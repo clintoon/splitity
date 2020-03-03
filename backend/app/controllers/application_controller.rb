@@ -3,11 +3,13 @@ class ApplicationController < ActionController::API
   private
 
   def login_required
-    access_token = request.headers[:HTTP_ACCESS_TOKEN]
-    return head :unauthorized if access_token.nil?
+    authorization = request.headers[:HTTP_AUTHORIZATION]
+    return head :unauthorized if authorization.nil?
+
+    token = authorization.split(' ').last
 
     begin
-      @github_access_token = EncryptionService.decrypt_and_verify(access_token, purpose: :login)
+      @github_access_token = EncryptionService.decrypt_and_verify(token, purpose: :login)
     rescue ActiveSupport::MessageEncryptor::InvalidMessage, ActiveSupport::MessageVerifier::InvalidSignature
       return head :unauthorized
     end

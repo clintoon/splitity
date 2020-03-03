@@ -33,7 +33,7 @@ interface CurrentUserResult {
 
 interface AuthHeaders {
   headers: {
-    'Access-Token': string;
+    Authorization: string;
   };
 }
 
@@ -51,7 +51,7 @@ const getAuthHeaders = (): AuthHeaders | null => {
   }
   return {
     headers: {
-      'Access-Token': authToken,
+      Authorization: `Bearer ${authToken}`,
     },
   };
 };
