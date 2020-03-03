@@ -6,7 +6,13 @@ class ApplicationController < ActionController::API
     access_token = request.headers[:HTTP_ACCESS_TOKEN]
     return head :unauthorized if access_token.nil?
 
-    @github_access_token = JWE.decrypt(access_token, Rails.application.credentials.encryption_key)
+    begin
+      @github_access_token = EncryptionService.decrypt_and_verify(access_token, purpose: :login)
+    rescue ActiveSupport::MessageEncryptor::InvalidMessage, ActiveSupport::MessageVerifier::InvalidSignature
+      return head :unauthorized
+    end
+
+    return head :unauthorized if @github_access_token.nil?
 
     begin
       github = GithubService.new(access_token: @github_access_token)

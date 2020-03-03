@@ -1,6 +1,5 @@
 require 'test_helper'
 require 'securerandom'
-require 'jwe'
 
 class PullRequestsControllerTest < ActionDispatch::IntegrationTest
   test 'splitting PR returns an unauthenticated status when Access-Token header is not set' do
@@ -15,7 +14,54 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     key = SecureRandom.random_bytes(16)
     Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    invalid_access_token = JWE.encrypt('abc123', key, alg: 'dir')
+    invalid_access_token = 'invalid'
+
+    post(
+      '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',
+      params: { patches: ['example patch'] },
+      headers: { 'HTTP_ACCESS_TOKEN': invalid_access_token }
+    )
+
+    assert_response :unauthorized
+  end
+
+  test 'splitting PR returns an unauthenticated status when access token header has expired' do
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
+
+    invalid_access_token = EncryptionService.encrypt_and_sign('abc123', expires_in: 1.day, purpose: :login)
+
+    Timecop.freeze(Time.zone.now + 2.days) do
+      post(
+        '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',
+        params: { patches: ['example patch'] },
+        headers: { 'HTTP_ACCESS_TOKEN': invalid_access_token }
+      )
+
+      assert_response :unauthorized
+    end
+  end
+
+  test 'splitting PR returns an unauthenticated status when access token header has not login purpose' do
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
+
+    invalid_access_token = EncryptionService.encrypt_and_sign('abc123')
+
+    post(
+      '/v1/repos/:owner/:repo_name/pulls/:pull_request_id/split',
+      params: { patches: ['example patch'] },
+      headers: { 'HTTP_ACCESS_TOKEN': invalid_access_token }
+    )
+
+    assert_response :unauthorized
+  end
+
+  test 'splitting PR returns an unauthenticated status when github token is not valid' do
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
+
+    invalid_access_token = EncryptionService.encrypt_and_sign('abc123', purpose: :login)
 
     mock = Minitest::Mock.new
     mock.expect :current_user, nil
@@ -35,7 +81,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     key = SecureRandom.random_bytes(16)
     Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    valid_access_token = JWE.encrypt('abc123', key, alg: 'dir')
+    valid_access_token = EncryptionService.encrypt_and_sign('abc123', purpose: :login)
 
     github_mock = Minitest::Mock.new
     github_mock.expect :current_user, id: 1, login: 'clintoon'
@@ -64,7 +110,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     key = SecureRandom.random_bytes(16)
     Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    valid_access_token = JWE.encrypt('abc123', key, alg: 'dir')
+    valid_access_token = EncryptionService.encrypt_and_sign('abc123', purpose: :login)
 
     github_mock = Minitest::Mock.new
     github_mock.expect :current_user, id: 1, login: 'clintoon'
@@ -93,7 +139,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     key = SecureRandom.random_bytes(16)
     Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    valid_access_token = JWE.encrypt('abc123', key, alg: 'dir')
+    valid_access_token = EncryptionService.encrypt_and_sign('abc123', purpose: :login)
 
     github_mock = Minitest::Mock.new
     github_mock.expect :current_user, id: 1, login: 'clintoon'
@@ -120,7 +166,7 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     key = SecureRandom.random_bytes(16)
     Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    valid_access_token = JWE.encrypt('abc123', key, alg: 'dir')
+    valid_access_token = EncryptionService.encrypt_and_sign('abc123', purpose: :login)
 
     github_mock = Minitest::Mock.new
     github_mock.expect :current_user, id: 1, login: 'clintoon'

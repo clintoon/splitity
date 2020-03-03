@@ -6,11 +6,9 @@ class TestEncryptionService < ActiveSupport::TestCase
     key = SecureRandom.random_bytes(16)
     Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    encryption_service = EncryptionService.new
-
     before_encrypted = 'abc123'
-    encrypted_result = encryption_service.encrypt(before_encrypted)
-    decrypted_back = encryption_service.decrypt(encrypted_result)
+    encrypted_result = EncryptionService.encrypt_and_sign(before_encrypted)
+    decrypted_back = EncryptionService.decrypt_and_verify(encrypted_result)
 
     assert_equal(decrypted_back, before_encrypted)
   end
@@ -19,10 +17,8 @@ class TestEncryptionService < ActiveSupport::TestCase
     key = SecureRandom.random_bytes(16)
     Rails.application.credentials.stubs(:encryption_key).returns(key)
 
-    encryption_service = EncryptionService.new
-
     before_encrypted = 'abc123'
-    encrypted_result = encryption_service.encrypt(before_encrypted)
+    encrypted_result = EncryptionService.encrypt_and_sign(before_encrypted)
 
     assert_not_equal(encrypted_result, before_encrypted)
   end

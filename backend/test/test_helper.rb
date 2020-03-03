@@ -9,6 +9,8 @@ require_relative '../config/environment'
 require 'rails/test_help'
 require 'minitest/autorun'
 require 'mocha/minitest'
+require 'webmock/minitest'
+require 'timecop'
 
 # Restores test database after each test
 DatabaseCleaner.strategy = :transaction

@@ -5,6 +5,8 @@ import queryString from 'query-string';
 import { BackendAPI } from '@web/lib/backend/backendApi';
 import { useStore } from '@web/stores/useStore';
 import { setOAuthToken } from '@web/lib/cookie/authCookie';
+import { SessionStorageItem } from '@web/lib/window/constants';
+import { getSessionStorageItem } from '@web/lib/window/window';
 
 // TODO(clinton): Write unit tests for this component
 const AuthCallbackPage = (): JSX.Element => {
@@ -24,7 +26,7 @@ const AuthCallbackPage = (): JSX.Element => {
       }
 
       // Check that state hasn't changed
-      const storedState = window.sessionStorage.getItem('auth_state');
+      const storedState = getSessionStorageItem(SessionStorageItem.AuthState);
       if (storedState !== parsed.state) {
         throw Error('AuthCallbackPage error: state does not match');
       }
@@ -44,7 +46,7 @@ const AuthCallbackPage = (): JSX.Element => {
     };
 
     loginUser();
-  });
+  }, []);
 
   return <div>Loading...</div>;
 };

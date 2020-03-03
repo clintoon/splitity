@@ -33,7 +33,7 @@ interface CurrentUserResult {
 
 interface AuthHeaders {
   headers: {
-    'Access-Token': string | undefined;
+    'Access-Token': string;
   };
 }
 
@@ -44,10 +44,14 @@ interface GithubAppInstallation {
 
 type GithubAppInstallationsResult = GithubAppInstallation[];
 
-const getAuthHeaders = (): AuthHeaders => {
+const getAuthHeaders = (): AuthHeaders | null => {
+  const authToken = getOAuthToken();
+  if (!authToken) {
+    return null;
+  }
   return {
     headers: {
-      'Access-Token': getOAuthToken(),
+      'Access-Token': authToken,
     },
   };
 };

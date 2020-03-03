@@ -43,7 +43,7 @@ class SplitPullRequestJob < ApplicationJob
 
   def perform(*args)
     params = args[0]
-    patches = EncryptionService.new.decrypt(params[:patches])
+    patches = EncryptionService.decrypt_and_verify(params[:patches])
 
     github_app = GithubAppService.new
     installation_token = github_app.repo_installation_token(

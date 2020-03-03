@@ -24,7 +24,7 @@ class PullRequestsController < ApplicationController
       parent_pr_id: params[:pull_request_id],
       repo_owner: params[:owner],
       repo_name: params[:repo_name],
-      patches: EncryptionService.new.encrypt(params[:patches]),
+      patches: EncryptionService.encrypt_and_sign(params[:patches]),
       installation_id: installation_id,
       split_initiated_by_user_id: @current_user[:id]
     )
@@ -55,7 +55,6 @@ class PullRequestsController < ApplicationController
   private
 
   def user_write_repo_access?(repo)
-    access_token = request.headers[:HTTP_ACCESS_TOKEN]
     github = GithubService.new(access_token: @github_access_token)
 
     permission = github.permission_level(repo, @current_user[:login])[:permission]
