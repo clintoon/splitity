@@ -21,7 +21,17 @@ class AuthController < ApplicationController
 
     encrypted = EncryptionService.encrypt_and_sign(access_token, expires_in: 1.month, purpose: :login)
 
-    resp = { access_token: encrypted }
+    github = GithubService.new(access_token: access_token)
+    gh_user_id = github.current_user[:id]
+    provider_user_id = "github|#{gh_user_id}"
+    is_new_user = !User.exists?(provider_user_id: provider_user_id)
+
+    if is_new_user
+      new_user = User.new(provider_user_id: provider_user_id)
+      new_user.save!
+    end
+
+    resp = { access_token: encrypted, is_new_user: is_new_user }
     render json: resp
   end
 end
