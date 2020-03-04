@@ -70,9 +70,6 @@ jobs:
             DISABLE_SPRING=1 CI=true bin/rails test
       - store_artifacts:
           path: backend/coverage
-      - codecov/upload:
-          file: backend/coverage/.resultset.json
-          flags: backend,unit
 
   build_web:
     working_directory: ~/splitity
