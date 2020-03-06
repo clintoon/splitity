@@ -14,7 +14,8 @@ class SplitPullRequestService
       repo_owner: info[:repo_owner],
       repo_name: info[:repo_name],
       patches: info[:patches],
-      installation_id: info[:installation_id]
+      installation_id: info[:installation_id],
+      user_gh_access_token: info[:user_gh_access_token]
     )
 
     split_pr_job_record.id
