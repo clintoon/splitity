@@ -26,7 +26,8 @@ class PullRequestsController < ApplicationController
       repo_name: params[:repo_name],
       patches: EncryptionService.encrypt_and_sign(params[:patches]),
       installation_id: installation_id,
-      split_initiated_by_user_id: @current_user[:id]
+      split_initiated_by_user_id: @current_user[:id],
+      user_gh_access_token: EncryptionService.encrypt_and_sign(@github_access_token)
     )
 
     render json: { split_pull_request_job_id: split_pr_job_id }

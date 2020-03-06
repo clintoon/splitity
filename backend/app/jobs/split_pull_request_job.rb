@@ -44,18 +44,21 @@ class SplitPullRequestJob < ApplicationJob
   def perform(*args)
     params = args[0]
     patches = EncryptionService.decrypt_and_verify(params[:patches])
+    user_gh_access_token = EncryptionService.decrypt_and_verify(params[:user_gh_access_token])
 
     github_app = GithubAppService.new
     installation_token = github_app.repo_installation_token(
       params[:installation_id], params[:repo_id]
     )[:token]
 
-    github = GithubService.new(access_token: installation_token)
-    pr_info = github.pull_request(params[:repo_id], params[:pr_id])
+    github_user_client = GithubService.new(access_token: user_gh_access_token)
+
+    github_bot_client = GithubService.new(access_token: installation_token)
+    pr_info = github_user_client.pull_request(params[:repo_id], params[:pr_id])
 
     git_client_creds = Rugged::Credentials::UserPassword.new(
       username: params[:repo_owner],
-      password: installation_token
+      password: user_gh_access_token
     )
 
     # For each of the diff
@@ -111,7 +114,7 @@ class SplitPullRequestJob < ApplicationJob
       split_count += 1
 
       repo.push('origin', "refs/heads/splitity/pull-request-#{params[:pr_id]}/job-#{params[:job_id]}/split-#{split_count}", credentials: git_client_creds)
-      created_pr = github.create_pull_request(
+      created_pr = github_user_client.create_pull_request(
         params[:repo_id],
         pr_info[:base_ref],
         "splitity/pull-request-#{params[:pr_id]}/job-#{params[:job_id]}/split-#{split_count}",
@@ -121,7 +124,7 @@ class SplitPullRequestJob < ApplicationJob
       split_pr_job_record.child_pull_requests << [child_pr]
     end
 
-    github.add_comment_on_issue(
+    github_bot_client.add_comment_on_issue(
       repo: params[:repo_id],
       number: params[:pr_id],
       comment: "This PR has been split into:
