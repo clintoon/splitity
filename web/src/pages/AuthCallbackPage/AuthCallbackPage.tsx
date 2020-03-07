@@ -47,7 +47,7 @@ const AuthCallbackPage = (): JSX.Element => {
       }
 
       // Unable to get cookies without refreshing on iOS chrome and firefox
-      // which is why we are not getting the auth token until we do a
+      // which is why we are not getting the auth token from cookie until we do a
       // full page refresh
       setOAuthToken(accessToken);
       setHref(GithubRoutePath.AppRoot);
