@@ -56,16 +56,15 @@ const HomePage = (): JSX.Element => {
           },
           {
             head: 'Split',
-            content:
-              'When your ready, with the click of a button, we will automatically create the newly split pull requests',
+            content: 'We will automatically create the those pull requests',
           },
         ]}
       />
       <InfoPanel
         title="Why use Splitity?"
         bulletPoints={[
-          'Split big pull requests into atomic code reviews and encourage good pull request practices within your team.',
-          'Save the time and trouble with doing it manually. Just click and go.',
+          'Big pull requests are hard to review and splitting them is also hard. Splitity will help alleviate this.',
+          'Help encourage good pull request culture within your team.',
         ]}
         color={Color.White}
         illustration={<DevProductivity width="100%" height="100%" />}
