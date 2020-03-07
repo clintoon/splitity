@@ -5,7 +5,7 @@ const setOAuthToken = (authToken: string): void => {
   Cookies.set(
     CookieName.Auth,
     { authToken },
-    { sameSite: 'strict', expires: 28 }
+    { sameSite: 'strict', expires: 28, domain: window.location.hostname }
   );
 };
 
