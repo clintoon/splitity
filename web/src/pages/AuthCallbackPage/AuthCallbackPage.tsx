@@ -46,7 +46,7 @@ const AuthCallbackPage = (): JSX.Element => {
         identify(currentUserId);
       }
 
-      // Unable to get cookies without refreshing on iOs chrome and firefox
+      // Unable to get cookies without refreshing on iOS chrome and firefox
       // which is why we are not getting the auth token until we do a
       // full page refresh
       setOAuthToken(accessToken);
