@@ -6,13 +6,12 @@ import { BackendAPI } from '@web/lib/backend/backendApi';
 import { useStore } from '@web/stores/useStore';
 import { setOAuthToken, getOAuthToken } from '@web/lib/cookie/authCookie';
 import { SessionStorageItem } from '@web/lib/window/constants';
-import { getSessionStorageItem } from '@web/lib/window/window';
+import { getSessionStorageItem, setHref } from '@web/lib/window/window';
 import { identify, alias } from '@web/lib/analytics/tracking';
 
 // TODO(clinton): Write unit tests for this component
 const AuthCallbackPage = (): JSX.Element => {
   const location = useLocation();
-  const history = useHistory();
   const store = useStore();
 
   useEffect((): void => {
@@ -35,29 +34,23 @@ const AuthCallbackPage = (): JSX.Element => {
       // Call the backend to log in and store token in cookie
       let backend = new BackendAPI();
       const { accessToken, isNewUser } = await backend.login({ code });
-      setOAuthToken(accessToken);
-
-      console.log('access token 1:', accessToken);
-      console.log('access token 2:', getOAuthToken());
 
       // Set current user store
-      try {
-        const currentUser = await backend.getCurrentUser();
-        store.auth.signInUser(currentUser);
+      const currentUser = await backend.getCurrentUser(accessToken);
+      store.auth.signInUser(currentUser);
 
-        console.log('currentUser', currentUser);
-
-        const currentUserId = currentUser.userId.toString();
-        if (isNewUser) {
-          alias(currentUserId);
-        } else {
-          identify(currentUserId);
-        }
-
-        history.replace(GithubRoutePath.AppRoot);
-      } catch (error) {
-        console.log('caught error: ', error);
+      const currentUserId = currentUser.userId.toString();
+      if (isNewUser) {
+        alias(currentUserId);
+      } else {
+        identify(currentUserId);
       }
+
+      // Unable to get cookies without refreshing on iOs chrome and firefox
+      // which is why we are not getting the auth token until we do a
+      // full page refresh
+      setOAuthToken(accessToken);
+      setHref(GithubRoutePath.AppRoot);
     };
 
     loginUser();
