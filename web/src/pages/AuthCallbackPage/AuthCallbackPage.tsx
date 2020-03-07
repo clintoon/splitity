@@ -4,7 +4,7 @@ import { GithubRoutePath } from '@web/constants/routes';
 import queryString from 'query-string';
 import { BackendAPI } from '@web/lib/backend/backendApi';
 import { useStore } from '@web/stores/useStore';
-import { setOAuthToken } from '@web/lib/cookie/authCookie';
+import { setOAuthToken, getOAuthToken } from '@web/lib/cookie/authCookie';
 import { SessionStorageItem } from '@web/lib/window/constants';
 import { getSessionStorageItem } from '@web/lib/window/window';
 import { identify, alias } from '@web/lib/analytics/tracking';
@@ -37,18 +37,27 @@ const AuthCallbackPage = (): JSX.Element => {
       const { accessToken, isNewUser } = await backend.login({ code });
       setOAuthToken(accessToken);
 
+      console.log('access token 1:', accessToken);
+      console.log('access token 2:', getOAuthToken());
+
       // Set current user store
-      const currentUser = await backend.getCurrentUser();
-      store.auth.signInUser(currentUser);
+      try {
+        const currentUser = await backend.getCurrentUser();
+        store.auth.signInUser(currentUser);
 
-      const currentUserId = currentUser.userId.toString();
-      if (isNewUser) {
-        alias(currentUserId);
-      } else {
-        identify(currentUserId);
+        console.log('currentUser', currentUser);
+
+        const currentUserId = currentUser.userId.toString();
+        if (isNewUser) {
+          alias(currentUserId);
+        } else {
+          identify(currentUserId);
+        }
+
+        history.replace(GithubRoutePath.AppRoot);
+      } catch (error) {
+        console.log('caught error: ', error);
       }
-
-      history.replace(GithubRoutePath.AppRoot);
     };
 
     loginUser();
