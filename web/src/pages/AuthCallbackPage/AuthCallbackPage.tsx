@@ -12,7 +12,6 @@ import { identify, alias } from '@web/lib/analytics/tracking';
 // TODO(clinton): Write unit tests for this component
 const AuthCallbackPage = (): JSX.Element => {
   const location = useLocation();
-  const store = useStore();
 
   useEffect((): void => {
     const loginUser = async (): Promise<void> => {
@@ -37,7 +36,6 @@ const AuthCallbackPage = (): JSX.Element => {
 
       // Set current user store
       const currentUser = await backend.getCurrentUser(accessToken);
-      store.auth.signInUser(currentUser);
 
       const currentUserId = currentUser.userId.toString();
       if (isNewUser) {
