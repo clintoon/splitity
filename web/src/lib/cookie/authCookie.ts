@@ -1,16 +1,20 @@
 import Cookies from 'js-cookie';
 import { CookieName } from '@web/lib/cookie/constants';
 
-const setOAuthToken = (oAuthToken: string): void => {
-  Cookies.set(CookieName.Auth, { oAuthToken }, { sameSite: 'strict' });
+const setOAuthToken = (authToken: string): void => {
+  Cookies.set(
+    CookieName.Auth,
+    { authToken },
+    { sameSite: 'strict', expires: 28 }
+  );
 };
 
 const getOAuthToken = (): string | undefined => {
-  const oAuthToken = Cookies.getJSON(CookieName.Auth)?.oAuthToken;
-  if (!oAuthToken) {
+  const authToken = Cookies.getJSON(CookieName.Auth)?.authToken;
+  if (!authToken) {
     return undefined;
   }
-  return oAuthToken;
+  return authToken;
 };
 
 const clearAuthCookie = (): void => {
