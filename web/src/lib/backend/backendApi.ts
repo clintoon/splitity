@@ -45,8 +45,8 @@ interface GithubAppInstallation {
 
 type GithubAppInstallationsResult = GithubAppInstallation[];
 
-const getAuthHeaders = (): AuthHeaders | null => {
-  const authToken = getOAuthToken();
+const getAuthHeaders = (passedInAuthToken?: string): AuthHeaders | null => {
+  const authToken = passedInAuthToken ?? getOAuthToken();
   if (!authToken) {
     return null;
   }
@@ -104,11 +104,13 @@ class BackendAPI {
     };
   }
 
-  public async getCurrentUser(): Promise<CurrentUserResult> {
+  public async getCurrentUser(
+    passedInAuthToken?: string
+  ): Promise<CurrentUserResult> {
     const resp = await this.http({
       method: 'get',
       url: '/v1/current_user',
-      ...getAuthHeaders(),
+      ...getAuthHeaders(passedInAuthToken),
     });
 
     return {
