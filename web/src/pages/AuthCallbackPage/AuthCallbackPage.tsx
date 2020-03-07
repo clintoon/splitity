@@ -4,16 +4,14 @@ import { GithubRoutePath } from '@web/constants/routes';
 import queryString from 'query-string';
 import { BackendAPI } from '@web/lib/backend/backendApi';
 import { useStore } from '@web/stores/useStore';
-import { setOAuthToken } from '@web/lib/cookie/authCookie';
+import { setOAuthToken, getOAuthToken } from '@web/lib/cookie/authCookie';
 import { SessionStorageItem } from '@web/lib/window/constants';
-import { getSessionStorageItem } from '@web/lib/window/window';
+import { getSessionStorageItem, setHref } from '@web/lib/window/window';
 import { identify, alias } from '@web/lib/analytics/tracking';
 
 // TODO(clinton): Write unit tests for this component
 const AuthCallbackPage = (): JSX.Element => {
   const location = useLocation();
-  const history = useHistory();
-  const store = useStore();
 
   useEffect((): void => {
     const loginUser = async (): Promise<void> => {
@@ -35,11 +33,9 @@ const AuthCallbackPage = (): JSX.Element => {
       // Call the backend to log in and store token in cookie
       let backend = new BackendAPI();
       const { accessToken, isNewUser } = await backend.login({ code });
-      setOAuthToken(accessToken);
 
       // Set current user store
-      const currentUser = await backend.getCurrentUser();
-      store.auth.signInUser(currentUser);
+      const currentUser = await backend.getCurrentUser(accessToken);
 
       const currentUserId = currentUser.userId.toString();
       if (isNewUser) {
@@ -48,7 +44,11 @@ const AuthCallbackPage = (): JSX.Element => {
         identify(currentUserId);
       }
 
-      history.replace(GithubRoutePath.AppRoot);
+      // Unable to get cookies without refreshing on iOS chrome and firefox
+      // which is why we are not getting the auth token from cookie until we do a
+      // full page refresh
+      setOAuthToken(accessToken);
+      setHref(GithubRoutePath.AppRoot);
     };
 
     loginUser();
