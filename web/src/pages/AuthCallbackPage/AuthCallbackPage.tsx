@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { GithubRoutePath } from '@web/constants/routes';
 import queryString from 'query-string';
 import { BackendAPI } from '@web/lib/backend/backendApi';
-import { useStore } from '@web/stores/useStore';
-import { setOAuthToken, getOAuthToken } from '@web/lib/cookie/authCookie';
+import { setOAuthToken } from '@web/lib/cookie/authCookie';
 import { SessionStorageItem } from '@web/lib/window/constants';
 import { getSessionStorageItem, setHref } from '@web/lib/window/window';
-import { identify, alias } from '@web/lib/analytics/tracking';
+import { identify, alias, track } from '@web/lib/analytics/tracking';
+import { TrackingEvent } from '@web/lib/analytics/events';
 
 // TODO(clinton): Write unit tests for this component
 const AuthCallbackPage = (): JSX.Element => {
@@ -40,6 +40,7 @@ const AuthCallbackPage = (): JSX.Element => {
       const currentUserId = currentUser.userId.toString();
       if (isNewUser) {
         alias(currentUserId);
+        track(TrackingEvent.signUpCompleted);
       } else {
         identify(currentUserId);
       }
