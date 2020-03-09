@@ -57,10 +57,15 @@ class GithubService
 
   def app_installations_for_user
     @client.auto_paginate = true
-    installations = @client.find_user_installations
+    installations = @client.find_user_installations[:installations]
     @client.auto_paginate = false
 
-    installations
+    installations.map do |installation|
+      {
+        installation_id: installation.id,
+        account_id: installation.account.id
+      }
+    end
   end
 
   def pull_request_diff(owner:, repo_name:, pull_request_id:)

@@ -8,14 +8,8 @@ class CurrentUserController < ApplicationController
 
   def github_app_installations
     github = GithubService.new(access_token: @github_access_token)
-    installations = github.app_installations_for_user[:installations]
+    installations = github.app_installations_for_user
 
-    formatted_installations = installations.map do |installation|
-      {
-        installation_id: installation.id,
-        account_id: installation.account.id
-      }
-    end
-    render json: { installations: formatted_installations }
+    render json: { installations: installations }
   end
 end
