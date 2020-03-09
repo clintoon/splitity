@@ -136,10 +136,13 @@ const isValidFileDiff = (file: File): boolean => {
 
 const getDiff = (filesDiff: FileDiff[], lineGroupIds: Set<string>): Diff => {
   const filesDiffCpy = cloneDeep(filesDiff);
-  let fileOffSet = 0;
+  // Have each file maintain its own fileOffset counter
+  let fileOffsets: Record<number, number> = {};
 
   const files = filesDiffCpy.map(
     (fileDiff, fileIndex): File => {
+      let currentFileOffset = fileOffsets[fileIndex] ?? 0;
+
       const {
         chunks,
         totalAdditions,
@@ -149,10 +152,10 @@ const getDiff = (filesDiff: FileDiff[], lineGroupIds: Set<string>): Diff => {
         fileDiff,
         fileIndex,
         lineGroupIds,
-        fileOffSet
+        currentFileOffset
       );
 
-      fileOffSet = updatedFileOffset;
+      fileOffsets[fileIndex] = updatedFileOffset;
 
       return {
         ...fileDiff,
