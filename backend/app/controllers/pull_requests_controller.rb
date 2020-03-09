@@ -24,16 +24,15 @@ class PullRequestsController < ApplicationController
       parent_pr_id: params[:pull_request_id],
       repo_owner: params[:owner],
       repo_name: params[:repo_name],
-      patches: EncryptionService.encrypt_and_sign(params[:patches]),
       installation_id: installation_id,
       split_initiated_by_user_id: @current_user[:id],
+      patches: EncryptionService.encrypt_and_sign(params[:patches]),
       user_gh_access_token: EncryptionService.encrypt_and_sign(@github_access_token)
     )
 
     render json: { split_pull_request_job_id: split_pr_job_id }
   end
 
-  # TODO(clinton): Write unit tests
   def get_diff
     github = GithubService.new(access_token: @github_access_token)
 
