@@ -21,7 +21,6 @@ class AuthController < ApplicationController
 
     encrypted = EncryptionService.encrypt_and_sign(access_token, expires_in: 1.month, purpose: :login)
 
-    # TODO(clinton): write unit tests for below
     github = GithubService.new(access_token: access_token)
     gh_user_id = github.current_user[:id]
     provider_user_id = gh_user_id.to_s

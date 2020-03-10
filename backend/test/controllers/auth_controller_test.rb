@@ -70,4 +70,47 @@ class AuthControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unauthorized
   end
+
+  test 'stores a new user and returns is_new_user to be true if user is new' do
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
+    Rails.application.credentials.stubs(:github).returns({ client_id: 'client_id', client_secret: 'client_secret' })
+
+    mock_body = { access_token: 'abc123' }.to_json
+    stub_request(:post, 'https://github.com/login/oauth/access_token').to_return(body: mock_body)
+
+    GithubService.any_instance.stubs(:current_user).returns({ id: 123, login: 'clintoon' })
+
+    post(
+      '/v1/auth/login',
+      params: { code: 'code123' }
+    )
+
+    parsed_resp = JSON.parse(@response.body)
+
+    assert_not_nil User.find_by(provider_user_id: 123)
+    assert_equal parsed_resp['is_new_user'], true
+  end
+
+  test 'returns is_new_user as false when user already exists' do
+    User.create(provider_user_id: 123)
+
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
+    Rails.application.credentials.stubs(:github).returns({ client_id: 'client_id', client_secret: 'client_secret' })
+
+    mock_body = { access_token: 'abc123' }.to_json
+    stub_request(:post, 'https://github.com/login/oauth/access_token').to_return(body: mock_body)
+
+    GithubService.any_instance.stubs(:current_user).returns({ id: 123, login: 'clintoon' })
+
+    post(
+      '/v1/auth/login',
+      params: { code: 'code123' }
+    )
+
+    parsed_resp = JSON.parse(@response.body)
+
+    assert_equal parsed_resp['is_new_user'], false
+  end
 end
