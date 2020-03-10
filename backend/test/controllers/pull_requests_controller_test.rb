@@ -190,4 +190,49 @@ class PullRequestsControllerTest < ActionDispatch::IntegrationTest
     assert_mock github_mock
     assert_mock github_app_mock
   end
+
+  test 'get diff should return unauthorized if no auth header' do
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
+
+    get('/v1/repos/clintoon/test01/pulls/123/diff')
+
+    assert_response :unauthorized
+  end
+
+  test 'get diff should return unauthorized if gh access token is not valid' do
+    Rails.application.credentials.stubs(:github).returns({ client_id: 'client_id', client_secret: 'client_secret' })
+
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
+
+    invalid_auth_token = EncryptionService.encrypt_and_sign('abc123', purpose: :login)
+
+    GithubService.any_instance.stubs(:current_user).returns(nil)
+
+    get('/v1/repos/clintoon/test01/pulls/123/diff', { headers: { 'HTTP_AUTHORIZATION': "Bearer #{invalid_auth_token}" } })
+
+    assert_response :unauthorized
+  end
+
+  test 'get diff should return success if auth token is valid' do
+    Rails.application.credentials.stubs(:github).returns({ client_id: 'client_id', client_secret: 'client_secret' })
+
+    key = SecureRandom.random_bytes(16)
+    Rails.application.credentials.stubs(:encryption_key).returns(key)
+
+    valid_auth_token = EncryptionService.encrypt_and_sign('abc123', purpose: :login)
+
+    GithubService.any_instance.stubs(:current_user).returns({ id: 123, login: 'clintoon' })
+    GithubService.any_instance.stubs(:pull_request_diff).returns('diff123')
+    GithubService.any_instance.stubs(:pull_request).returns({ title: 'pull request123' })
+
+    get('/v1/repos/clintoon/test01/pulls/123/diff', { headers: { 'HTTP_AUTHORIZATION': "Bearer #{valid_auth_token}" } })
+
+    parsed_resp = JSON.parse(@response.body)
+
+    assert_response :success
+    assert_equal parsed_resp['title'], 'pull request123'
+    assert_equal parsed_resp['diff'], 'diff123'
+  end
 end
