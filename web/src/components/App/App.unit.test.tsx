@@ -12,7 +12,7 @@ import { NAVBAR_TESTID } from '@web/design/components/Navbar/Navbar';
 
 import { BackendAPI } from '@web/lib/backend/backendApi';
 import { currentUserFactory } from '@web/testing/mockCurrentUser';
-import { clearAuthCookie } from '@web/lib/cookie/authCookie';
+import { clearAuthCookie, getOAuthToken } from '@web/lib/cookie/authCookie';
 import { resetTracking, identify } from '@web/lib/analytics/tracking';
 
 jest.mock('@web/lib/cookie/authCookie');
@@ -25,6 +25,7 @@ interface RenderAppOptions {
   initialRoute: string;
   isAuthenticated: boolean;
   initialStoreAuthenticated: boolean;
+  cookieSet: boolean;
 }
 
 interface RenderAppResult {
@@ -35,6 +36,10 @@ interface RenderAppResult {
 
 const renderApp = (options: RenderAppOptions): RenderAppResult => {
   const { isAuthenticated, initialRoute } = options;
+
+  if (options.cookieSet) {
+    (getOAuthToken as jest.Mock).mockReturnValue('abc123');
+  }
 
   if (isAuthenticated) {
     jest
@@ -81,6 +86,7 @@ describe('<App/>', (): void => {
       initialRoute: RoutePath.Root,
       isAuthenticated: false,
       initialStoreAuthenticated: false,
+      cookieSet: true,
     });
     expect(renderResult.queryByTestId(APP_LOADING)).not.toBe(null);
     await wait();
@@ -91,6 +97,7 @@ describe('<App/>', (): void => {
       initialRoute: RoutePath.Root,
       isAuthenticated: false,
       initialStoreAuthenticated: false,
+      cookieSet: true,
     });
     await wait((): void => {
       expect(renderResult.queryByTestId(PAGE_CONTENT_TESTID)).not.toBe(null);
@@ -102,6 +109,7 @@ describe('<App/>', (): void => {
       initialRoute: RoutePath.Root,
       isAuthenticated: true,
       initialStoreAuthenticated: false,
+      cookieSet: true,
     });
     await wait((): void => {
       expect(stores.auth.isLoggedIn()).toBe(true);
@@ -114,6 +122,23 @@ describe('<App/>', (): void => {
       initialRoute: RoutePath.Root,
       isAuthenticated: false,
       initialStoreAuthenticated: true,
+      cookieSet: true,
+    });
+    await wait((): void => {
+      expect(stores.auth.isLoggedIn()).toBe(false);
+      expect(clearAuthCookie).toBeCalled();
+      expect(resetTracking).toBeCalled();
+    });
+  });
+
+  it('logs out the user if does not have auth cookie', async (): Promise<
+    void
+  > => {
+    const { stores } = renderApp({
+      initialRoute: RoutePath.Root,
+      isAuthenticated: false,
+      initialStoreAuthenticated: true,
+      cookieSet: false,
     });
     await wait((): void => {
       expect(stores.auth.isLoggedIn()).toBe(false);
@@ -127,6 +152,7 @@ describe('<App/>', (): void => {
       initialRoute: RoutePath.Root,
       isAuthenticated: false,
       initialStoreAuthenticated: false,
+      cookieSet: true,
     });
     await wait((): void => {
       expect(renderResult.queryByTestId(NAVBAR_TESTID)).not.toBe(null);
