@@ -39,6 +39,8 @@ const renderApp = (options: RenderAppOptions): RenderAppResult => {
 
   if (options.cookieSet) {
     (getOAuthToken as jest.Mock).mockReturnValue('abc123');
+  } else {
+    (getOAuthToken as jest.Mock).mockReturnValue(undefined);
   }
 
   if (isAuthenticated) {
