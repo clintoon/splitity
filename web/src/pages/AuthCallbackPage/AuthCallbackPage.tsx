@@ -5,7 +5,12 @@ import queryString from 'query-string';
 import { BackendAPI } from '@web/lib/backend/backendApi';
 import { setOAuthToken } from '@web/lib/cookie/authCookie';
 import { SessionStorageItem } from '@web/lib/window/constants';
-import { getSessionStorageItem, setHref } from '@web/lib/window/window';
+import {
+  getSessionStorageItem,
+  setHref,
+  removeSessionStorageItem,
+  clearQueryParams,
+} from '@web/lib/window/window';
 import { identify, alias, track } from '@web/lib/analytics/tracking';
 import { TrackingEvent } from '@web/lib/analytics/events';
 
@@ -25,7 +30,11 @@ const AuthCallbackPage = (): JSX.Element => {
       }
 
       // Check that state hasn't changed
-      const storedState = getSessionStorageItem(SessionStorageItem.AuthState);
+      const storedState =
+        getSessionStorageItem(SessionStorageItem.AuthState) ?? undefined;
+      clearQueryParams();
+      removeSessionStorageItem(SessionStorageItem.AuthState);
+
       if (storedState !== parsed.state) {
         throw Error('AuthCallbackPage error: state does not match');
       }
