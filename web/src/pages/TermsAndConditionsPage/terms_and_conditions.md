@@ -68,7 +68,7 @@ Our Privacy Policy carefully before using Our Service.
 # Age Requirement for Users
 
 Users must be of age 13 or older to be permitted to use the Service.
-If We learn of any users under the age of 13, we will terminate their access immediately.
+If We learn of any users under the age of 13, We will terminate their access immediately.
 
 # Subscriptions
 
