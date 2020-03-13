@@ -9,6 +9,7 @@ interface Link {
   id: string;
   text: string;
   to: string;
+  external?: boolean;
 }
 
 interface FooterProps {
@@ -37,7 +38,13 @@ const LinkWrapper = styled.span`
   }
 `;
 
-const LinksSection = styled.div``;
+const LinksSection = styled.div`
+  display: flex;
+
+  @media (max-width: ${Breakpoint.sm}) {
+    flex-direction: column;
+  }
+`;
 
 const TextWrapper = styled.div`
   margin: 0 10px 0 0;
@@ -58,7 +65,9 @@ const Footer = ({ text, links }: FooterProps): JSX.Element => {
           (link): JSX.Element => {
             return (
               <LinkWrapper key={link.id}>
-                <Link to={link.to}>{link.text}</Link>
+                <Link to={link.to} external={link.external}>
+                  {link.text}
+                </Link>
               </LinkWrapper>
             );
           }

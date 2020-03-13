@@ -10,15 +10,38 @@ interface LinkProps {
   to: string;
   children: string;
   color?: string;
+  external: boolean;
 }
 
-const StyledLink = styled(RouterLink)<Required<LinkProps>>`
+interface StyledLinkProps {
+  children: string;
+  color: string;
+}
+
+const StyledLink = styled(RouterLink)<StyledLinkProps>`
   font-size: 14px;
   ${fontFamily};
   color: ${({ color }): string => color};
 `;
 
-const Link = ({ to, color, children }: LinkProps): JSX.Element => {
+const StyledAnchor = styled.a<StyledLinkProps>`
+  font-size: 14px;
+  ${fontFamily};
+  color: ${({ color }): string => color};
+`;
+
+const Link = ({ to, color, children, external }: LinkProps): JSX.Element => {
+  if (external) {
+    return (
+      <StyledAnchor
+        data-testid={LINK_TESTID}
+        href={to}
+        color={color || Color.Blue600}
+      >
+        {children}
+      </StyledAnchor>
+    );
+  }
   return (
     <StyledLink
       data-testid={LINK_TESTID}
@@ -28,6 +51,10 @@ const Link = ({ to, color, children }: LinkProps): JSX.Element => {
       {children}
     </StyledLink>
   );
+};
+
+Link.defaultProps = {
+  external: false,
 };
 
 export { Link, LINK_TESTID };
