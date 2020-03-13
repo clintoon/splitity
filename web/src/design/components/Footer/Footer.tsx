@@ -9,6 +9,7 @@ interface Link {
   id: string;
   text: string;
   to: string;
+  external?: boolean;
 }
 
 interface FooterProps {
@@ -58,7 +59,9 @@ const Footer = ({ text, links }: FooterProps): JSX.Element => {
           (link): JSX.Element => {
             return (
               <LinkWrapper key={link.id}>
-                <Link to={link.to}>{link.text}</Link>
+                <Link to={link.to} external={link.external}>
+                  {link.text}
+                </Link>
               </LinkWrapper>
             );
           }
