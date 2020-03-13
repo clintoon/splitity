@@ -1,6 +1,6 @@
 # Terms and Conditions
 
-Last updated: March 12, 2020
+Last updated: March 13, 2020
 
 Please read these terms and conditions carefully before using Our Service.
 
@@ -64,6 +64,11 @@ describes Our policies and procedures on the collection, use and disclosure of
 Your personal information when You use the Application or the Website and
 tells You about Your privacy rights and how the law protects You. Please read
 Our Privacy Policy carefully before using Our Service.
+
+# Age Requirement for Users
+
+Users must be of age 13 or older to be permitted to use the Service.
+If We learn of any users under the age of 13, We will terminate their access immediately.
 
 # Subscriptions
 
