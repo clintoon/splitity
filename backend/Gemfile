@@ -25,7 +25,7 @@ gem 'puma', '~> 4.3'
 gem 'bootsnap', '>= 1.4.2', require: false
 
 # Github Octokit API
-gem 'octokit', '~> 4.15'
+gem 'octokit', '~> 4.17'
 
 # Git client
 gem 'rugged', git: 'https://github.com/libgit2/rugged.git', submodules: true
