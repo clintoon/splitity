@@ -52,7 +52,7 @@ const HomePage = (): JSX.Element => {
           {
             head: 'Allocate your changes across different pull requests.',
             content:
-              'Use our easy to use interface to click and highlight code changes within and across your files into different pull requests',
+              'Use our easy to use interface to highlight code changes within and across your files into different pull requests',
           },
           {
             head: 'Split',
@@ -63,8 +63,7 @@ const HomePage = (): JSX.Element => {
       <InfoPanel
         title="Why use Splitity?"
         bulletPoints={[
-          'Big pull requests are hard to review and splitting them is also hard. Splitity will help alleviate this.',
-          'Help encourage good pull request culture within your team.',
+          'Easily split your pull requests into more atomic chunks when needed, and save time while doing so when compared to doing it manually',
         ]}
         color={Color.White}
         illustration={<DevProductivity width="100%" height="100%" />}
