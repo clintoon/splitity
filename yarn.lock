@@ -3019,9 +3019,9 @@
   integrity sha512-ce5d3q03Ex0sy4R14722Rmt6MT07Ua+k4FwDfdcToYJcMKNtRVQvJ6JCAPdAmAnbRb6CsX6aYb9m96NGod9uTw==
 
 "@types/randomcolor@^0.5.3":
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/@types/randomcolor/-/randomcolor-0.5.3.tgz#2030101c695dd1b048e82ba3d5e6d605b37b9c0c"
-  integrity sha512-eIhyxP1VKqLRNPrQ9yhsenCj8W+ZIzMrUZqjLCyy1KTV1noh0YPi0DWqTITG82buHVZpzKOf6CCznvZHRQIRPg==
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@types/randomcolor/-/randomcolor-0.5.4.tgz#75230e780326bf372c13015c361dddca1087eb0f"
+  integrity sha512-7pIw2aYtWXEiqfP01L1+b+Xk3mGGKA14yW492CfaR0lliSM4W6PGB/uhjQX08kFMEK8sAOrT3ufiKUnLlG0ulw==
 
 "@types/reach__router@^1.2.3":
   version "1.2.4"
