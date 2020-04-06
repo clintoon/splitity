@@ -125,7 +125,7 @@ GEM
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     parallel (1.19.1)
-    parser (2.7.0.3)
+    parser (2.7.1.0)
       ast (~> 2.4.0)
     pg (1.2.2)
     public_suffix (4.0.3)
@@ -174,14 +174,14 @@ GEM
     request_store (1.5.0)
       rack (>= 1.4)
     rexml (3.2.4)
-    rubocop (0.80.1)
+    rubocop (0.81.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
       parser (>= 2.7.0.1)
       rainbow (>= 2.2.2, < 4.0)
       rexml
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 1.7)
+      unicode-display_width (>= 1.4.0, < 2.0)
     rubocop-rails (2.4.2)
       rack (>= 1.1)
       rubocop (>= 0.72.0)
@@ -218,7 +218,7 @@ GEM
     timecop (0.9.1)
     tzinfo (1.2.6)
       thread_safe (~> 0.1)
-    unicode-display_width (1.6.1)
+    unicode-display_width (1.7.0)
     webmock (3.8.2)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -249,7 +249,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 6.0.2)
   rb-readline
-  rubocop (~> 0.80.1)
+  rubocop (~> 0.81.0)
   rubocop-rails
   rugged!
   sentry-raven (~> 3.0)
