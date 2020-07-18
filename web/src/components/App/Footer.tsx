@@ -16,12 +16,6 @@ const Footer = (): JSX.Element => {
           text: 'Privacy policy',
           to: '/privacy-policy',
         },
-        {
-          id: 'contact-us',
-          text: 'Contact Us',
-          to: 'mailto:support@splitity.com',
-          external: true,
-        },
       ]}
     />
   );
