@@ -1,7 +1,8 @@
 files:
   - /backend/log/production.log
 destination:
-  host: logs6.papertrailapp.com
-  port: 39519
+  # TODO: Uncomment and fill out the below to enable papertrail logging
+  # host:
+  # port:
   protocol: tls
 pid_file: /var/run/remote_syslog.pid
